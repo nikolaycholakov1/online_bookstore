@@ -1,0 +1,19 @@
+/* Add this CSS in the <head> section of your HTML or link to an external CSS file */
+
+/* Button styles */
+.btn-pop-out {
+    /*background-color: #007bff;*/
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    margin-left: 10px;
+}
+
+/* Hover effect */
+.btn-pop-out:hover {
+    transform: scale(1.1); /* Increase the scale by 10% on hover */
+}
