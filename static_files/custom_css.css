@@ -1,8 +1,32 @@
 /* Add this CSS in the <head> section of your HTML or link to an external CSS file */
 
+body {
+    background-color: lightgrey;
+}
+
+/* Style for the navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #333;
+    padding: 10px 20px;
+}
+
+/* Style for the navigation links in the navbar */
+.navbar a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.nav-item {
+    margin-left: 25px;
+}
+
 /* Button styles */
 .btn-pop-out {
-    /*background-color: #007bff;*/
+    background-color: #007bff;
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -10,7 +34,6 @@
     font-size: 16px;
     cursor: pointer;
     transition: transform 0.2s ease;
-    margin-left: 10px;
 }
 
 /* Hover effect */

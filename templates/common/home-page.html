@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <h1>Welcome to the Online Bookstore!</h1>
+
+        <h2>Featured Books:</h2>
+        <div class="row">
+            <!-- Sample book card (you can repeat this for each featured book) -->
+            {% for book in featured_books %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ book.cover_image }}" class="card-img-top" alt="Book Cover">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">{{ book.author }}</p>
+                            <p class="card-text">{{ book.publication_date }}</p>
+                            <p class="card-text">{{ book.description }}</p>
+                            <p class="card-text">{{ book.price }}</p>
+                            <a href="#" class="btn btn-primary">Details</a>
+                            <a href="#" class="btn btn-primary">Buy</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <!-- End of sample book card -->
+        </div>
+    </div>
+{% endblock %}
