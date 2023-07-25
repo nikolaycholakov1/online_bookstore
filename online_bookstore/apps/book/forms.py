@@ -19,3 +19,9 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = BookReview
         fields = ['review_text']
+        labels = {
+            'review_text': 'Write your review here:'
+        }
+        widgets = {
+            'review_text': forms.Textarea(attrs={'style': 'min-width: 0;'}),
+        }

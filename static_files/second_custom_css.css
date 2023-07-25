@@ -1,5 +1,3 @@
-/* custom_css.css or your custom CSS file */
-
 /* Style for the book title and author */
 h1 {
     font-size: 2.5rem;
@@ -44,7 +42,10 @@ h2 {
     font-size: 1rem;
 }
 
-/* Add some margin between reviews */
 .card:not(:last-child) {
     margin-bottom: 20px;
+}
+
+.custom-form {
+    min-width: 0;
 }

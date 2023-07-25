@@ -51,6 +51,7 @@ class Book(models.Model):
     description = models.TextField(
         null=False,
         blank=False,
+
     )
 
     price = models.DecimalField(
