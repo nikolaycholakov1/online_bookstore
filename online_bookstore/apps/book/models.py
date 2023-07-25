@@ -72,7 +72,7 @@ class Book(models.Model):
 
 class BookReview(models.Model):
     book = models.ForeignKey(
-        Book,
+        'Book',
         on_delete=models.CASCADE,
         related_name='reviews',
         null=False,

@@ -15,7 +15,7 @@
                             <p class="card-text">{{ book.author }}</p>
                             <p class="card-text">{{ book.description|truncatechars:20 }}</p>
                             <p class="card-text">{{ book.price }}</p>
-                            <a href="{% url 'book-detail' book_id=book.id %}" class="btn btn-primary">Details</a>
+                            <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary">Details</a>
                             <a href="#" class="btn btn-primary">Buy</a>
                         </div>
                     </div>
