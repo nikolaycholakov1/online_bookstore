@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<!-- book_detail.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{{ book.cover_image }}" class="img-fluid" alt="Book Cover">
+            </div>
+            <div class="col-md-6">
+                <h1 class="mb-3">{{ book.title }}</h1>
+                <p class="text-muted">By {{ book.author }}</p>
+                <p class="mb-4">{{ book.description }}</p>
+                <a href="#" class="btn btn-primary btn-lg">Buy Now</a>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Reader Reviews</h2>
+        {% for review in book.review_set.all %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text">{{ review.content }}</p>
+                    <p class="text-muted">By {{ review.user.username }} on {{ review.created_at }}</p>
+                </div>
+            </div>
+        {% empty %}
+            <p>No reviews yet.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
