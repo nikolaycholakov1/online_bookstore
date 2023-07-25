@@ -1,3 +1,75 @@
+{#{% load static %}#}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <title>Online Bookstore</title>#}
+{#    <!-- Link to your Bootstrap or Google Material Design CSS files -->#}
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">#}
+{#    <link rel="stylesheet" href="{% static 'custom_css.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'register.css' %}">#}
+{#</head>#}
+{#<body class="bg-image">#}
+{#<!-- Navigation bar -->#}
+{#<nav class="navbar navbar-expand-lg navbar-dark bg-dark">#}
+{#    <a class="navbar-brand" href="{% url 'home-page' %}">Online Bookstore</a>#}
+{#    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"#}
+{#            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">#}
+{#        <span class="navbar-toggler-icon"></span>#}
+{#    </button>#}
+{#    <div class="collapse navbar-collapse" id="navbarNav">#}
+{#        <ul class="navbar-nav ml-auto">#}
+{##}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="#">Catalogue</a>#}
+{#            </li>#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="#">Publish</a>#}
+{#            </li>#}
+{##}
+{#            {% if not user.is_authenticated %}#}
+{#                <li class="nav-item">#}
+{#                    <a class="nav-link btn btn-pop-out btn-success" href="{% url 'register' %}">Register</a>#}
+{#                </li>#}
+{#                <li class="nav-item">#}
+{#                    <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'login' %}">Login</a>#}
+{#                </li>#}
+{#            {% else %}#}
+{#                <li class="nav-item">#}
+{#                    <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'logout' %}">Logout</a>#}
+{##}
+{#                </li>#}
+{#            {% endif %}#}
+{##}
+{#        </ul>#}
+{#    </div>#}
+{#</nav>#}
+{##}
+{#<!-- Main content -->#}
+{#{% block content %}#}
+{##}
+{#{% endblock %}#}
+{##}
+{#<footer class="bg-dark text-white text-center py-3">#}
+{#    <div class="container">#}
+{#        <p>&copy; 2023 Online Bookstore. All rights reserved.</p>#}
+{#        <ul class="list-inline mb-0">#}
+{#            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>#}
+{#            <li class="list-inline-item"><a href="#">Terms of Service</a></li>#}
+{#            <li class="list-inline-item"><a href="#">Contact Us</a></li>#}
+{#        </ul>#}
+{#    </div>#}
+{#</footer>#}
+{##}
+{#<!-- JavaScript and jQuery (required for Bootstrap) -->#}
+{#<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>#}
+{#<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>#}
+{#<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>#}
+{#</body>#}
+{#</html>#}
+
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -5,7 +77,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Bookstore</title>
-    <!-- Link to your Bootstrap or Google Material Design CSS files -->
+    <!-- Link to Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'custom_css.css' %}">
     <link rel="stylesheet" href="{% static 'register.css' %}">
@@ -38,7 +110,6 @@
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'logout' %}">Logout</a>
-
                 </li>
             {% endif %}
 
@@ -62,7 +133,7 @@
     </div>
 </footer>
 
-<!-- JavaScript and jQuery (required for Bootstrap) -->
+<!-- JavaScript and jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
