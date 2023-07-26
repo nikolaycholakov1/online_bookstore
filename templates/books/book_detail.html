@@ -44,7 +44,9 @@
                 <button type="submit" class="btn btn-primary">Submit Review</button>
             </form>
         {% else %}
-            <p>Please <a href="{% url 'login' %}">login</a> to write a review.</p>
+            <div class="alert alert-info mt-3">
+                <p>Please <a href="{% url 'login' %}">login</a> to write a review.</p>
+            </div>
         {% endif %}
     </div>
 {% endblock %}
