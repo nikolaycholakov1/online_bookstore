@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'online_bookstore.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "bookstore_db",
+        "NAME": "book_store_db",
         "USER": "postgres-user2",
         "PASSWORD": "password2",
         "HOST": "127.0.0.1",
@@ -135,6 +135,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = '/'
+
+AUTH_USER_MODEL = 'book.Customer'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

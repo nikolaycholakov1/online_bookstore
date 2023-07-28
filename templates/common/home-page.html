@@ -5,7 +5,6 @@
 
         <h2>Featured Books:</h2>
         <div class="row">
-            <!-- Sample book card (you can repeat this for each featured book) -->
             {% for book in featured_books %}
                 <div class="col-md-4 mb-4">
                     <div class="card">
@@ -16,13 +15,13 @@
                             <p class="card-text">{{ book.description|truncatechars:20 }}</p>
                             <p class="card-text">${{ book.price }}</p>
                             <a href="{% url 'book_detail' pk=book.pk %}" class="btn btn-primary">Details</a>
-                            <a href="#" class="btn btn-primary">Buy</a>
+                            <a href="{% url 'process_order' pk=book.pk %}" class="btn btn-primary">Buy</a>
+
                         </div>
                     </div>
                 </div>
             {% endfor %}
 
-            <!-- End of sample book card -->
         </div>
     </div>
 {% endblock %}
