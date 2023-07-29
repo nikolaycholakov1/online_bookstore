@@ -6,22 +6,31 @@ from .models import Customer, Book, BookReview, Order, OrderItem, DeliveryAddres
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    # Add custom options for the Customer model in the admin interface
-    list_display = ('username', 'name', 'email', 'age', 'delivery_address')
+    list_display = ('username', 'name', 'email', 'age', 'delivery_address', 'get_review_count')
     list_filter = ('is_staff', 'is_active')
     search_fields = ('username', 'name', 'email')
     ordering = ('username',)
     list_per_page = 10
 
+    def get_review_count(self, obj):
+        return obj.bookreview_set.count()
+
+    get_review_count.short_description = 'Number of Reviews'
+
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     # Add custom options for the Book model in the admin interface
-    list_display = ('title', 'author', 'price', 'featured', 'category')
+    list_display = ('title', 'author', 'price', 'featured', 'category', 'get_review_count')
     list_filter = ('category', 'featured')
     search_fields = ('title', 'author')
     ordering = ('title',)
     list_per_page = 10
+
+    def get_review_count(self, obj):
+        return obj.reviews.count()
+
+    get_review_count.short_description = 'Number of Reviews'
 
 
 @admin.register(BookReview)

@@ -27,11 +27,9 @@
             {% if user.is_authenticated %}
                 {% if user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Publish</a>
+                        <a class="nav-link" href="{% url 'publish-book' %}">Publish</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Publish</a>
-                    </li>
+
                 {% endif %}
                 <li class="nav-item">
                     <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'logout' %}">Logout</a>

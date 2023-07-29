@@ -98,7 +98,7 @@ class Book(models.Model):
         blank=False,
     )
     cover_image = models.ImageField(
-        upload_to='book_covers/',
+        upload_to='media/book_covers/',
         null=False,
         blank=False,
     )

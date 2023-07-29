@@ -2,7 +2,7 @@
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from online_bookstore.apps.book.models import BookReview, Customer
+from online_bookstore.apps.book.models import BookReview, Customer, Book
 
 
 class RegistrationForm(UserCreationForm):
@@ -46,4 +46,16 @@ class UserProfileForm(forms.ModelForm):
         fields = ['name', 'email', 'age', 'profile_picture', 'delivery_address']
         widgets = {
             'delivery_address': forms.Textarea(attrs={'rows': 3, 'cols': 32}),
+        }
+
+
+# forms.py
+
+
+class BookPublishForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = '__all__'
+        widgets = {
+            'cover_image': forms.FileInput(attrs={'class': 'form-control-file'})
         }

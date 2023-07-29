@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
 
-from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm
+from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm, BookPublishForm
 from .models import Book, Order, OrderItem, DeliveryAddress, Customer
 
 from django.shortcuts import render
@@ -167,3 +167,22 @@ class ProcessOrderView(View):
         }
 
         return render(request, 'books/order_form.html', context)
+
+
+def publish_book(request):
+    if not request.user.is_staff:
+        return redirect('home-page')
+
+    if request.method == 'POST':
+        form = BookPublishForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home-page')
+    else:
+        form = BookPublishForm()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'books/publish_book.html', context)

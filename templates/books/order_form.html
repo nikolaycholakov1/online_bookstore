@@ -29,6 +29,8 @@
                                 <hr>
                                 <p class="card-text">Price: ${{ book.price }}</p>
                                 <hr>
+                                <a href="{% url 'book_detail' pk=book.pk %}" class="btn btn-primary">Details</a>
+                                <hr>
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import RegisterView, HomePageView, BookDetailView, profile_page, ProcessOrderView
+from .views import RegisterView, HomePageView, BookDetailView, profile_page, ProcessOrderView, publish_book
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home-page'),
@@ -14,4 +14,5 @@ urlpatterns = [
 
     path('book_detail/<int:pk>/', BookDetailView.as_view(), name='book_detail'),
     path('process_order/<int:pk>/', ProcessOrderView.as_view(), name='process_order'),
+    path('publish/', publish_book, name='publish-book'),
 ]

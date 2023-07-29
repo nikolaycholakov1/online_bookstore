@@ -6,13 +6,13 @@
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-6">
-                <img src="{{ book.cover_image }}" class="img-fluid" alt="Book Cover">
+                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Cover">
             </div>
             <div class="col-md-6">
                 <h1 class="mb-3">{{ book.title }}</h1>
                 <p class="text-muted">By {{ book.author }}</p>
                 <p class="mb-4">{{ book.description }}</p>
-                <a href="#" class="btn btn-primary btn-lg">Buy Now</a>
+                <a href="{% url 'process_order' pk=book.pk %}" class="btn btn-primary btn-lg">Buy Now</a>
             </div>
         </div>
 
@@ -28,11 +28,12 @@
                     <p>
                         {{ review.created_at }}
                     </p>
+                    <hr>
                     <p class="card-text">{{ review.review_text }}</p>
                 </div>
             </div>
         {% empty %}
-            <p>No reviews yet.</p>
+            <p>No reviews yet. Be the first one to write one!</p>
         {% endfor %}
 
         {% if user.is_authenticated %}

@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'online_bookstore.apps.core',
     'online_bookstore.apps.book',
     'online_bookstore.apps.order',
