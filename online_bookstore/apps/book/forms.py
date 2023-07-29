@@ -56,6 +56,4 @@ class BookPublishForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = '__all__'
-        widgets = {
-            'cover_image': forms.FileInput(attrs={'class': 'form-control-file'})
-        }
+

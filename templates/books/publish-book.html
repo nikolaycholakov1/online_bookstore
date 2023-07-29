@@ -1,61 +1,28 @@
-{#<!-- publish_book.html -->#}
-{#{% extends 'base.html' %}#}
-{#{% block content %}#}
-{#    <div class="container mt-4">#}
-{#        <h2 class="mb-4">Publish Book</h2>#}
-{#        <form method="post" enctype="multipart/form-data">#}
-{#            {% csrf_token %}#}
-{#            <div class="form-group">#}
-{#                <label for="id_title">Title:</label>#}
-{#                <input type="text" name="title" id="id_title" class="form-control">#}
-{#            </div>#}
-{#            <div class="form-group">#}
-{#                <label for="id_category">Category:</label>#}
-{#                <select name="category" id="id_category" class="form-control">#}
-{#                    <option value="Children's literature">Children's literature</option>#}
-{#                    <option value="Fiction">Fiction</option>#}
-{#                    <option value="Historical Fiction">Historical Fiction</option>#}
-{#                    <option value="Science fiction">Science fiction</option>#}
-{#                    <option value="Mystery">Mystery</option>#}
-{#                    <option value="Memoir">Memoir</option>#}
-{#                    <option value="Thriller">Thriller</option>#}
-{#                    <option value="Humor">Humor</option>#}
-{#                    <option value="Romance novel">Romance novel</option>#}
-{##}
-{#                </select>#}
-{#            </div>#}
-{#            <div class="form-group">#}
-{#                <label for="id_author">Author:</label>#}
-{#                <input type="text" name="author" id="id_author" class="form-control">#}
-{#            </div>#}
-{#            <div class="form-group">#}
-{#                <label for="id_description">Description:</label>#}
-{#                <textarea name="description" id="id_description" class="form-control" rows="4"></textarea>#}
-{#            </div>#}
-{#            <div class="form-group">#}
-{#                <label for="id_price">Price:</label>#}
-{#                <input type="number" name="price" id="id_price" class="form-control">#}
-{#            </div>#}
-{#            <div class="form-group">#}
-{#                <label for="id_cover_image">Cover Image:</label>#}
-{#                <input type="file" name="cover_image" id="id_cover_image" class="form-control-file">#}
-{#            </div>#}
-{#            <div class="form-check mb-3">#}
-{#                <input type="checkbox" name="featured" id="id_featured" class="form-check-input">#}
-{#                <label class="form-check-label" for="id_featured">Featured</label>#}
-{#            </div>#}
-{#            <button type="submit" class="btn btn-primary">Publish</button>#}
-{#        </form>#}
-{#    </div>#}
-{#{% endblock %}#}
 
-
-<!-- publish_book.html -->
 {% extends 'base.html' %}
+
 {% block content %}
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary mt-3">Publish Book</button>
-    </form>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Publish Book</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                </div>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-primary btn-block mt-3">Publish Book</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

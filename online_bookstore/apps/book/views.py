@@ -2,11 +2,12 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DeleteView
 
 from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm, BookPublishForm
 from .models import Book, Order, OrderItem, DeliveryAddress, Customer
@@ -17,7 +18,7 @@ from .forms import UserProfileForm
 
 @login_required
 def profile_page(request):
-    user = request.user  # Getting the current authenticated user instance
+    user = request.user
     total_comments = user.get_total_comments()
     form = UserProfileForm(request.POST or None, request.FILES or None, instance=user)
 
@@ -32,43 +33,6 @@ def profile_page(request):
     }
 
     return render(request, 'common/profile.html', context)
-
-
-class BookDetailView(View):
-    template_name = 'books/book-detail.html'
-
-    def get(self, request, pk):
-        book = get_object_or_404(Book, pk=pk)
-        reviews = book.reviews.all()
-        review_form = ReviewForm()
-
-        context = {
-            'book': book,
-            'reviews': reviews,
-            'review_form': review_form,
-        }
-
-        return render(request, self.template_name, context)
-
-    def post(self, request, pk):
-        book = get_object_or_404(Book, pk=pk)
-        review_form = ReviewForm(request.POST)
-
-        if review_form.is_valid():
-            review = review_form.save(commit=False)
-            review.book = book
-            review.user = request.user
-            review.save()
-            return redirect('book-detail', pk=pk)  # Redirect to the same book detail page
-
-        reviews = book.reviews.all()
-        context = {
-            'book': book,
-            'reviews': reviews,
-            'review_form': review_form,
-        }
-
-        return render(request, self.template_name, context)
 
 
 class HomePageView(TemplateView):
@@ -119,13 +83,39 @@ class RegisterView(View):
         return render(request, self.template_name, context)
 
 
+class CataloguePageView(ListView):
+    model = Book
+    template_name = 'common/catalogue-page.html'
+    context_object_name = 'books'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        books = context['books']
+
+        page_number = self.request.GET.get('page')
+        paginator = context['paginator']
+        try:
+            books = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            books = paginator.get_page(1)
+        except EmptyPage:
+            books = paginator.get_page(paginator.num_pages)
+
+        context['books'] = books
+        context['is_paginated'] = books.has_other_pages()
+        context['page_obj'] = books
+
+        return context
+
+
 class ProcessOrderView(View):
 
     def get(self, request, pk):
         try:
             book = Book.objects.get(pk=pk)
         except Book.DoesNotExist:
-            return render(request, 'error.html', {'message': 'Book not found'})
+            return render(request, 'error404.html', {'message': 'Book not found'})
 
         shipping_info_form = ShippingInfoForm()
 
@@ -144,7 +134,7 @@ class ProcessOrderView(View):
             try:
                 book = Book.objects.get(pk=pk)
             except Book.DoesNotExist:
-                return render(request, 'error.html', {'message': 'Book not found'})
+                return render(request, 'error404.html', {'message': 'Book not found'})
 
             quantity = form.cleaned_data['quantity']
             delivery_address = form.cleaned_data['delivery_address']
@@ -189,27 +179,55 @@ def publish_book(request):
     return render(request, 'books/publish-book.html', context)
 
 
-class CataloguePageView(ListView):
-    model = Book
-    template_name = 'common/catalogue-page.html'
-    context_object_name = 'books'
-    paginate_by = 15
+class BookDetailView(View):
+    template_name = 'books/book-detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        books = context['books']
+    def get(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        reviews = book.reviews.all()
+        review_form = ReviewForm()
 
-        page_number = self.request.GET.get('page')
-        paginator = context['paginator']
-        try:
-            books = paginator.get_page(page_number)
-        except PageNotAnInteger:
-            books = paginator.get_page(1)
-        except EmptyPage:
-            books = paginator.get_page(paginator.num_pages)
+        context = {
+            'book': book,
+            'reviews': reviews,
+            'review_form': review_form,
+        }
 
-        context['books'] = books
-        context['is_paginated'] = books.has_other_pages()
-        context['page_obj'] = books
+        return render(request, self.template_name, context)
 
-        return context
+    def post(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        review_form = ReviewForm(request.POST)
+
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.book = book
+            review.user = request.user
+            review.save()
+            return redirect('book-detail', pk=pk)  # Redirect to the same book detail page
+
+        reviews = book.reviews.all()
+        context = {
+            'book': book,
+            'reviews': reviews,
+            'review_form': review_form,
+        }
+
+        return render(request, self.template_name, context)
+
+
+def delete_book(request, pk):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('login')
+
+    book = get_object_or_404(Book, pk=pk)
+
+    if request.method == 'POST':
+        book.delete()
+        return redirect('catalogue-page')
+
+    return render(request, 'books/confirm-delete.html', {'book': book})
+
+
+def error_404_view(request, exception):
+    return render(request, 'error404.html', status=404)

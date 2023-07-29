@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Confirm Delete</h2>
+        <hr>
+        <div class="card">
+            <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Cover">
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text">By {{ book.author }}</p>
+                <p class="card-text">Price: ${{ book.price }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    <a href="{% url 'catalogue-page' %}" class="btn btn-secondary btn-sm">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

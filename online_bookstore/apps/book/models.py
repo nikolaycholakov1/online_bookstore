@@ -59,6 +59,7 @@ class Book(models.Model):
         ("Thriller", "Thriller"),
         ("Humor", "Humor"),
         ("Romance novel", "Romance novel"),
+        ("Non-fiction", "Non-fiction"),
     )
 
     title = models.CharField(
