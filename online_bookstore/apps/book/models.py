@@ -30,7 +30,7 @@ class Customer(AbstractUser):
         null=True,
         blank=True,
     )
-    delivery_address = models.TextField(
+    delivery_address = models.CharField(
         null=True,
         blank=True,
     )

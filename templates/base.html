@@ -24,30 +24,42 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Catalogue</a>
             </li>
-            {% if .is_authenticated %}
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Publish</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Publish</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Publish</a>
+                    <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'logout' %}">Logout</a>
                 </li>
-            {% endif %}
-            {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile-page' %}">
+                        <div class="username">{{ user.username }}</div>
+                        <i class="fas fa-user"></i>
+                    </a>
+                </li>
+            {% else %}
                 <li class="nav-item">
                     <a class="nav-link btn btn-pop-out btn-success" href="{% url 'register' %}">Register</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'login' %}">Login</a>
                 </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'profile-page' %}"><i class="fas fa-user"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'logout' %}">Logout</a>
+                <li class="nav-item guest-user">
+                    <div class="username">Guest</div>
+                    <i class="fas fa-user"></i>
                 </li>
             {% endif %}
         </ul>
-
     </div>
+
+
 </nav>
+
 
 <!-- Main content -->
 {% block content %}

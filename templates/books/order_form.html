@@ -1,38 +1,39 @@
 <!-- order_form.html -->
 {% extends 'base.html' %}
 {% block content %}
-    <form method="post" action="{% url 'process_order' pk=book.pk %}">
-        {% csrf_token %}
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-6">
 
-        {{ form.as_p }}
-
-        <!--a hidden input field to pass the book.pk value -->
-        <input type="hidden" name="pk" value="{{ book.pk }}">
-
-        <button type="submit">Place Order</button>
-    </form>
+                <h2 class="mt-4">Shipping Information</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ shipping_info_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Place Order</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <a href="{% url 'home-page' %}" class="btn btn-primary">Back to the Store</a>
+                <h2 class="mt-4">Order Summary</h2>
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="{{ book.cover_image }}" class="card-img-top card-img-big" alt="Book Cover">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <hr>
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <hr>
+                                <p class="card-text">Author: {{ book.author }}</p>
+                                <hr>
+                                <p class="card-text">Price: ${{ book.price }}</p>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
-
-
-<!-- order_form.html -->
-
-{#<form method="post" action="{% url 'process_order' pk=book.pk %}">#}
-{#    {% csrf_token %}#}
-{##}
-{#    <!-- Display book details here, e.g., title, author, price -->#}
-{#    <input type="hidden" name="book_id" value="{{ book.id }}">#}
-{##}
-{#    <label for="quantity">Quantity:</label>#}
-{#    <input type="number" name="quantity" value="1">#}
-{##}
-{#    <label for="delivery_address">Delivery Address:</label>#}
-{#    <input type="text" name="delivery_address" required>#}
-{##}
-{#    <label for="city">City:</label>#}
-{#    <input type="text" name="city" required>#}
-{##}
-{#    <label for="zip_code">ZIP Code:</label>#}
-{#    <input type="text" name="zip_code" required>#}
-{##}
-{#    <button type="submit">Place Order</button>#}
-{#</form>#}

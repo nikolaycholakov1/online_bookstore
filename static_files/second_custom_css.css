@@ -49,3 +49,29 @@ h2 {
 .custom-form {
     min-width: 0;
 }
+
+.card-img-big {
+    width: 100%;
+    height: 100%;
+}
+
+.fa-user {
+    color: lawngreen;
+}
+
+a.nav-link div.username {
+    color: white;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+li.guest-user > div.username {
+    color: white;
+    display: inline-block;
+    margin-right: 5px;
+    margin-top: 10px;
+}
+
+li.guest-user > i.fas.fa-user {
+    color: red;
+}

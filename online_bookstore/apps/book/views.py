@@ -6,13 +6,25 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
 
-from .forms import RegistrationForm, ReviewForm, OrderForm
+from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm
 from .models import Book, Order, OrderItem, DeliveryAddress
+
+from django.shortcuts import render
+from .forms import UserProfileForm
 
 
 @login_required
 def profile_page(request):
-    return render(request, 'common/profile.html')
+    user = request.user  # Get the current logged-in user
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserProfileForm(instance=user)
+
+    return render(request, 'common/profile.html', {'form': form})
 
 
 class BookDetailView(View):
@@ -91,7 +103,7 @@ class RegisterView(View):
             if user:
                 login(request, user)
 
-            return redirect(reverse('home-page'))  # Redirect to the home page after successful registration
+            return redirect(reverse('home-page'))
 
         context = {
             'form': form
@@ -108,8 +120,12 @@ class ProcessOrderView(View):
         except Book.DoesNotExist:
             return render(request, 'error.html', {'message': 'Book not found'})
 
-        form = OrderForm(initial={'pk': pk})
-        context = {'book': book, 'form': form}
+        shipping_info_form = ShippingInfoForm()
+
+        context = {
+            'book': book,
+            'shipping_info_form': shipping_info_form,
+        }
         return render(request, 'books/order_form.html', context)
 
     def post(self, request, pk):  # Do not remove pk param or the Place Order button breaks
@@ -134,11 +150,14 @@ class ProcessOrderView(View):
 
             OrderItem.objects.create(order=order, book=book, quantity=quantity, price=book.price)
 
-            # Use request.user directly instead of request.user.customer
+            # Using request.user directly instead of request.user.customer
             DeliveryAddress.objects.create(customer=request.user, order=order,
                                            address=delivery_address, city=city, zip_code=zip_code)
 
-            return redirect('home-page')  # Replace 'order_confirmation' with the URL name for the confirmation page
+            return redirect('home-page')
 
-        context = {'form': form}
+        context = {
+            'form': form,
+        }
+
         return render(request, 'books/order_form.html', context)
