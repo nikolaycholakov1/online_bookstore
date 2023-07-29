@@ -9,7 +9,7 @@
                 <img src="{{ book.cover_image.url }}" class="card-img-top custom-card-size" alt="Book Cover">
             </div>
             <div class="col-md-6">
-                <a href="{% url 'process_order' pk=book.pk %}" class="btn btn-primary btn-lg">Buy Now</a>
+                <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-primary btn-lg">Buy Now</a>
                 <hr>
                 <p class="card-text">Price: ${{ book.price }}</p>
                 <hr>
@@ -51,30 +51,29 @@
                         {{ review.created_at }}
                     </p>
                     <hr>
-                    <p class="card-text">
-                        {% if review.review_text|length > 500 %}
-                            <div class="description-truncate">
-                                <p class="mb-4">{{ review.review_text|truncatechars:500 }}
-                                    <button class="btn btn-link show-more-btn">Show More...</button>
-                                </p>
-                            </div>
-                            <div class="description-full" style="display: none">
-                                <p class="mb-4">{{ review.review_text }}
-                                    <button class="btn btn-link show-less-btn">Show Less...</button>
-                                </p>
-                            </div>
-                        {% endif %}
-                    </p>
+                    {% if review.review_text|length > 500 %}
+                        <div class="description-truncate mb-4">
+                            {{ review.review_text|truncatechars:500 }}
+                            <button class="btn btn-link show-more-btn">Show More...</button>
+                        </div>
+                        <div class="description-full" style="display: none;">
+                            {{ review.review_text }}
+                            <button class="btn btn-link show-less-btn">Show Less...</button>
+                        </div>
+                    {% else %}
+                        <div class="mb-4">{{ review.review_text }}</div>
+                    {% endif %}
                 </div>
             </div>
         {% empty %}
             <p>No reviews yet. Be the first to write one!</p>
         {% endfor %}
 
+
         {% if user.is_authenticated %}
             <hr>
             <h2>Write a Review</h2>
-            <form method="post" class="mt-3 custom-form-style">
+            <form method="post" class="mt-3 custom-form">
                 {% csrf_token %}
                 {{ review_form.as_p }}
                 <button type="submit" class="btn btn-primary">Submit Review</button>

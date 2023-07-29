@@ -1,0 +1,50 @@
+<!-- catalogue_page.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Catalogue</h2>
+
+        <div class="row">
+            {% for book in books %}
+                <div class="col-md-2 mb-4">
+                    <div class="card">
+                        <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Cover">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">By {{ book.author }}</p>
+                            <p class="card-text">Price: ${{ book.price }}</p>
+                            <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary btn-sm">Details</a>
+                            <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-success btn-sm">Buy</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-4">
+            {% if is_paginated %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; first</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

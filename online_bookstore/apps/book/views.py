@@ -2,10 +2,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm, BookPublishForm
 from .models import Book, Order, OrderItem, DeliveryAddress, Customer
@@ -34,7 +35,7 @@ def profile_page(request):
 
 
 class BookDetailView(View):
-    template_name = 'books/book_detail.html'
+    template_name = 'books/book-detail.html'
 
     def get(self, request, pk):
         book = get_object_or_404(Book, pk=pk)
@@ -58,7 +59,7 @@ class BookDetailView(View):
             review.book = book
             review.user = request.user
             review.save()
-            return redirect('book_detail', pk=pk)  # Redirect to the same book detail page
+            return redirect('book-detail', pk=pk)  # Redirect to the same book detail page
 
         reviews = book.reviews.all()
         context = {
@@ -132,7 +133,7 @@ class ProcessOrderView(View):
             'book': book,
             'shipping_info_form': shipping_info_form,
         }
-        return render(request, 'books/order_form.html', context)
+        return render(request, 'books/order-form.html', context)
 
     def post(self, request, pk):  # Do not remove pk param or the Place Order button breaks
         form = OrderForm(request.POST)
@@ -166,7 +167,7 @@ class ProcessOrderView(View):
             'form': form,
         }
 
-        return render(request, 'books/order_form.html', context)
+        return render(request, 'books/order-form.html', context)
 
 
 def publish_book(request):
@@ -185,4 +186,30 @@ def publish_book(request):
         'form': form,
     }
 
-    return render(request, 'books/publish_book.html', context)
+    return render(request, 'books/publish-book.html', context)
+
+
+class CataloguePageView(ListView):
+    model = Book
+    template_name = 'common/catalogue-page.html'
+    context_object_name = 'books'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        books = context['books']
+
+        page_number = self.request.GET.get('page')
+        paginator = context['paginator']
+        try:
+            books = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            books = paginator.get_page(1)
+        except EmptyPage:
+            books = paginator.get_page(paginator.num_pages)
+
+        context['books'] = books
+        context['is_paginated'] = books.has_other_pages()
+        context['page_obj'] = books
+
+        return context
