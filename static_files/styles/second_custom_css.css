@@ -46,9 +46,6 @@ h2 {
     margin-bottom: 20px;
 }
 
-.custom-form {
-    min-width: 0;
-}
 
 .card-img-big {
     width: 100%;
@@ -74,4 +71,19 @@ li.guest-user > div.username {
 
 li.guest-user > i.fas.fa-user {
     color: red;
+}
+
+
+/* book detail page */
+
+.body > div > div.row > div:nth-child(1) > img {
+    width: 70%;
+}
+
+.body > div > .custom-form-style {
+    width: 50%;
+}
+
+#id_review_text {
+    width: 100%;
 }
