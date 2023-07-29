@@ -1,4 +1,3 @@
-<!-- common/profile.html -->
 {% extends 'base.html' %}
 {% block content %}
     <div class="container mt-4">
@@ -6,21 +5,123 @@
 
         <hr>
 
-        <h2>User Profile:</h2>
+        <h2>{{ user.username }} Profile:</h2>
         <br>
         <div class="row">
             <div class="col-md-6">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form.as_p }}
+
+                    <!-- First Name -->
+                    <div class="form-group">
+                        <label for="id_name">Name:</label>
+                        <input type="text" name="name" value="{{ user.name }}" maxlength="30" required="" id="id_name"
+                               class="form-control">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="id_email">Email:</label>
+                        <input type="email" name="email" value="{{ user.email }}" maxlength="50" required=""
+                               id="id_email" class="form-control">
+                    </div>
+
+                    <!-- Age -->
+                    <div class="form-group">
+                        <label for="id_age">Age:</label>
+                        <input type="number" name="age" value="{{ user.age }}" min="0" id="id_age" class="form-control">
+                    </div>
+
+                    <!-- Profile Picture -->
+                    <div class="form-group">
+                        <label for="id_profile_picture">Profile picture:</label>
+                        {% if user.profile_picture %}
+                            <br>
+                            <input type="checkbox" name="profile_picture-clear" id="profile_picture-clear_id">
+                            <label for="profile_picture-clear_id">Clear</label>
+                        {% endif %}
+                        <br>
+                        Change:
+                        <input type="file" name="profile_picture" accept="image/*" id="id_profile_picture"
+                               class="form-control-file">
+                    </div>
+
+                    <!-- Delivery Address -->
+                    <div class="form-group">
+                        <label for="id_delivery_address">Delivery address:</label>
+                        <textarea name="delivery_address" cols="32" rows="3" id="id_delivery_address"
+                                  class="form-control">{{ user.delivery_address }}</textarea>
+                    </div>
+
+                    <!-- Save Button -->
                     <button type="submit" class="btn btn-primary mt-3">Save Profile</button>
                 </form>
             </div>
             <div class="col-md-6">
-                {% if user.profile_picture %}
-                    <img src="{{ user.profile_picture.url }}" class="img-fluid rounded-circle mt-3"
-                         alt="Profile Picture" style="max-height: 200px;">
-                {% endif %}
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                    <tr>
+                        <td colspan="2" class="colhead colhead_fix bg-secondary text-white" style="height: 40px;">
+                            Profile Overview
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ user.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Registration Date</td>
+                        <td>{{ user.date_joined }}</td>
+                    </tr>
+                    <tr>
+                        <td>Years</td>
+                        <td>{{ user.age }}</td>
+                    </tr>
+                    <tr>
+                        <td>Delivery Address</td>
+                        <td>
+                            {{ user.delivery_address }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Site Color Theme</td>
+                        <td>
+                            <form method="post">
+                                {% csrf_token %}
+                                <select name="site_color_theme" id="id_site_color_theme" class="form-control">
+                                    <option value="classic" {% if user.classic %}selected{% endif %}>Classic</option>
+                                    <option value="dark" {% if user.dark %}selected{% endif %}>Dark Mode</option>
+                                    <option value="light" {% if user.light %}selected{% endif %}>Light Mode</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary mt-3">Save Theme</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Comments</td>
+                        {% if total_comments %}
+                            <td>{{ total_comments }}</td>
+                        {% else %}
+                            <td>No comments yet</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Profile Picture</td>
+                        <td>
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
+                                     class="img-fluid rounded-circle" style="max-height: 200px;">
+                            {% else %}
+                                No Profile Picture Available
+                            {% endif %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

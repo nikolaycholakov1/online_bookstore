@@ -1,4 +1,5 @@
 # book/views.py
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -7,7 +8,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm
-from .models import Book, Order, OrderItem, DeliveryAddress
+from .models import Book, Order, OrderItem, DeliveryAddress, Customer
 
 from django.shortcuts import render
 from .forms import UserProfileForm
@@ -15,16 +16,21 @@ from .forms import UserProfileForm
 
 @login_required
 def profile_page(request):
-    user = request.user  # Get the current logged-in user
+    user = request.user  # Getting the current authenticated user instance
+    total_comments = user.get_total_comments()
+    form = UserProfileForm(request.POST or None, request.FILES or None, instance=user)
 
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
-    else:
-        form = UserProfileForm(instance=user)
+            messages.success(request, 'Your profile has been updated successfully.')
 
-    return render(request, 'common/profile.html', {'form': form})
+    context = {
+        'form': form,
+        'total_comments': total_comments,
+    }
+
+    return render(request, 'common/profile.html', context)
 
 
 class BookDetailView(View):

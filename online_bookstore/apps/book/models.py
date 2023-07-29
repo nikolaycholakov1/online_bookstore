@@ -38,6 +38,9 @@ class Customer(AbstractUser):
     def __str__(self):
         return self.username
 
+    def get_total_comments(self):
+        return self.bookreview_set.count()
+
 
 class Book(models.Model):
     TITLE_MAX_LEN = 200
