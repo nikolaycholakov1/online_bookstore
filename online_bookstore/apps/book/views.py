@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
@@ -87,20 +88,35 @@ class CataloguePageView(ListView):
     model = Book
     template_name = 'common/catalogue-page.html'
     context_object_name = 'books'
-    paginate_by = 15
+    paginate_by = 18
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('search_query')
+
+        if search_query:
+            # Use Q objects to perform case-insensitive search on author, title, and category
+            queryset = queryset.filter(
+                Q(author__icontains=search_query) |
+                Q(title__icontains=search_query) |
+                Q(category__icontains=search_query)
+            )
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         books = context['books']
 
         page_number = self.request.GET.get('page')
-        paginator = context['paginator']
+        paginator = Paginator(books, self.paginate_by)
+
         try:
-            books = paginator.get_page(page_number)
+            books = paginator.page(page_number)
         except PageNotAnInteger:
-            books = paginator.get_page(1)
+            books = paginator.page(1)
         except EmptyPage:
-            books = paginator.get_page(paginator.num_pages)
+            books = paginator.page(paginator.num_pages)
 
         context['books'] = books
         context['is_paginated'] = books.has_other_pages()
