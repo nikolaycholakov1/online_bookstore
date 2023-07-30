@@ -2,19 +2,15 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, ListView, DeleteView
+from django.views.generic import TemplateView, ListView
 
 from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm, BookPublishForm
-from .models import Book, Order, OrderItem, DeliveryAddress, Customer
-
-from django.shortcuts import render
-from .forms import UserProfileForm
+from .models import Book, Order, OrderItem, DeliveryAddress
 
 
 @login_required
@@ -84,6 +80,12 @@ class RegisterView(View):
         return render(request, self.template_name, context)
 
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic import ListView
+from django.db.models import Q
+from .models import Book
+
+
 class CataloguePageView(ListView):
     model = Book
     template_name = 'common/catalogue-page.html'
@@ -106,21 +108,21 @@ class CataloguePageView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        books = context['books']
 
         page_number = self.request.GET.get('page')
-        paginator = Paginator(books, self.paginate_by)
-
+        paginator = context['paginator']
         try:
-            books = paginator.page(page_number)
+            books = paginator.get_page(page_number)
         except PageNotAnInteger:
-            books = paginator.page(1)
+            books = paginator.get_page(1)
         except EmptyPage:
-            books = paginator.page(paginator.num_pages)
+            books = paginator.get_page(paginator.num_pages)
 
-        context['books'] = books
-        context['is_paginated'] = books.has_other_pages()
-        context['page_obj'] = books
+        context = {
+            'books': books,
+            'is_paginated': books.has_other_pages(),
+            'page_obj': books,
+        }
 
         return context
 
@@ -245,5 +247,6 @@ def delete_book(request, pk):
     return render(request, 'books/confirm-delete.html', {'book': book})
 
 
+# TODO: fix 404 page
 def error_404_view(request, exception):
     return render(request, 'error404.html', status=404)

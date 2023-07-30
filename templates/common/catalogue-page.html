@@ -6,29 +6,62 @@
         <hr>
         <div class="row">
             <div class="col-md-6">
-                <form method="GET" class="form-inline mb-4">
-                    <input type="text" name="search_query" class="form-control mr-sm-2"
+                <form method="GET" style="width: 100%" class="form-inline">
+                    <input type="text" name="search_query" style="width: 100%" class="form-control mr-sm-2"
                            placeholder="Search by author, title, or category" aria-label="Search"
                            value="{{ request.GET.search_query }}">
                     <button type="submit" class="btn btn-outline-primary my-2 my-sm-0">Search</button>
                     {% if request.GET.search_query %}
-                        <a href="{% url 'catalogue-page' %}" class="btn btn-secondary my-2 my-sm-0 ml-2">Clear
-                            Search</a>
+                        <a href="{% url 'catalogue-page' %}" class="btn btn-secondary ml-2">Clear Search</a>
                     {% endif %}
                 </form>
             </div>
         </div>
         <hr>
+        <div class="mt-4" id="pagination">
+            {% if is_paginated %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?search_query={{ request.GET.search_query }}&page=1">&laquo;
+                                first</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?search_query={{ request.GET.search_query }}&page={{ page_obj.previous_page_number }}">previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?search_query={{ request.GET.search_query }}&page={{ page_obj.next_page_number }}">next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?search_query={{ request.GET.search_query }}&page={{ page_obj.paginator.num_pages }}">last
+                                &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
         <div class="row">
             {% for book in books %}
-                <div class="col-md-2 mb-4">
-                    <div class="card">
-                        <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Cover">
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Cover"
+                             style="width: 253px; height: 350px;">
                         <div class="card-body">
                             <h5 class="card-title">{{ book.title }}</h5>
+                            <hr>
+
                             <p class="card-text">By {{ book.author }}</p>
                             <p class="card-text">Price: ${{ book.price }}</p>
-                            <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary btn-sm">Details</a>
+                            <hr>
+
+                            <a href="{% url 'book-detail' pk=book.pk %}" style="background-color: #007bff"
+                               class="btn btn-success btn-sm">Details</a>
                             <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-success btn-sm">Buy</a>
                             {% if user.is_authenticated and user.is_staff %}
                                 <a href="{% url 'delete-book' pk=book.pk %}" class="btn btn-danger btn-sm">Delete</a>
@@ -38,25 +71,29 @@
                 </div>
             {% endfor %}
         </div>
-
         <div class="mt-4" id="pagination">
             {% if is_paginated %}
                 <ul class="pagination">
                     {% if page_obj.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?page=1">&laquo; first</a>
+                            <a class="page-link" href="?search_query={{ request.GET.search_query }}&page=1">&laquo;
+                                first</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                            <a class="page-link"
+                               href="?search_query={{ request.GET.search_query }}&page={{ page_obj.previous_page_number }}">previous</a>
                         </li>
                     {% endif %}
 
                     {% if page_obj.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+                            <a class="page-link"
+                               href="?search_query={{ request.GET.search_query }}&page={{ page_obj.next_page_number }}">next</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                            <a class="page-link"
+                               href="?search_query={{ request.GET.search_query }}&page={{ page_obj.paginator.num_pages }}">last
+                                &raquo;</a>
                         </li>
                     {% endif %}
                 </ul>
