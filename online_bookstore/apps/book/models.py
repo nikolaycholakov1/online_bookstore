@@ -53,7 +53,7 @@ class Book(models.Model):
         ("Children's literature", "Children's literature"),
         ("Fiction", "Fiction"),
         ("Historical Fiction", "Historical Fiction"),
-        ("Science fiction", "Science fiction"),
+        ("Science Fiction", "Science Fiction"),
         ("Mystery", "Mystery"),
         ("Memoir", "Memoir"),
         ("Thriller", "Thriller"),

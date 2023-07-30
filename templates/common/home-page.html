@@ -21,12 +21,10 @@
                             <p class="card-text">${{ book.price }}</p>
                             <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary">Details</a>
                             <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-primary">Buy</a>
-
                         </div>
                     </div>
                 </div>
             {% endfor %}
-
         </div>
     </div>
 {% endblock %}

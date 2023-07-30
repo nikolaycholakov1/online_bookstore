@@ -2,12 +2,13 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, UpdateView
 
 from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm, BookPublishForm
 from .models import Book, Order, OrderItem, DeliveryAddress, BookReview
@@ -250,6 +251,18 @@ def delete_review(request, pk):
     if request.user.is_staff or request.user == review.user:
         review.delete()
         return redirect('book-detail', pk=review.book.pk)
+
+
+class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Book
+    form_class = BookPublishForm
+    template_name = 'books/edit_book.html'
+
+    def get_success_url(self):
+        return reverse_lazy('book-detail', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        return self.request.user.is_staff
 
 
 # TODO: fix 404 page
