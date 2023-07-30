@@ -12,74 +12,76 @@
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
 </head>
 <body class="bg-image" id="custom-body-id">
-<!-- Navigation bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="{% url 'home-page' %}">The Bookstack Emporium</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'catalogue-page' %}">Catalogue</a>
-            </li>
-            {% if user.is_authenticated %}
-                {% if user.is_staff %}
+
+<div class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'home-page' %}">The Bookstack Emporium</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catalogue-page' %}">Catalogue</a>
+                </li>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'publish-book' %}">Publish</a>
+                        </li>
+
+                    {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'publish-book' %}">Publish</a>
+                        <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'logout' %}">Logout</a>
                     </li>
-
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'logout' %}">Logout</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'profile-page' %}">
-                        <div class="username">{{ user.username }}</div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile-page' %}">
+                            <div class="username">{{ user.username }}</div>
+                            <i class="fas fa-user"></i>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-pop-out btn-success" href="{% url 'register' %}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item guest-user">
+                        <div class="username">Guest</div>
                         <i class="fas fa-user"></i>
-                    </a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link btn btn-pop-out btn-success" href="{% url 'register' %}">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-pop-out btn-primary" href="{% url 'login' %}">Login</a>
-                </li>
-                <li class="nav-item guest-user">
-                    <div class="username">Guest</div>
-                    <i class="fas fa-user"></i>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
 
+    <!-- Main content -->
+    <main class="flex-grow-1">
+        {% block content %}
+        {% endblock %}
+    </main>
 
-</nav>
-
-
-<!-- Main content -->
-{% block content %}
-
-{% endblock %}
-
-<footer id="footer" class="bg-dark text-white text-center py-3 mt-auto">
-    <div class="container">
-        <p>&copy; 2023 The Bookstack Emporium. All rights reserved.</p>
-        <ul class="list-inline mb-0">
-            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-            <li class="list-inline-item"><a href="#">Terms of Service</a></li>
-            <li class="list-inline-item"><a href="#">Contact Us</a></li>
-        </ul>
-    </div>
-</footer>
+    <!-- Footer -->
+    <footer id="footer" class="bg-dark text-white text-center py-3" style="margin-top: 50px">
+        <div class="container">
+            <p>&copy; 2023 The Bookstack Emporium. All rights reserved.</p>
+            <ul class="list-inline mb-0">
+                <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+                <li class="list-inline-item"><a href="#">Terms of Service</a></li>
+                <li class="list-inline-item"><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </footer>
+</div>
 
 <!-- JavaScript and jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+{#Customer Java Script#}
 <script src="{% static 'js/order_form_page.js' %}"></script>
 <script src="{% static 'js/book_detail_page.js' %}"></script>
 

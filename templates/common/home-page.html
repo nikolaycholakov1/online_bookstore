@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+
     <div class="container mt-4">
-        <h1>Welcome to The Bookstack Emporium!</h1>
+        <h1 class="center-heading">Welcome to The Bookstack Emporium!</h1>
         <hr>
 
         <h2>Featured Books:</h2>
@@ -10,7 +11,7 @@
             {% for book in featured_books %}
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Book Cover">
+                        <img src="{{ book.cover_image.url }}" class="card-img-top fit-img-size" alt="Book Cover">
                         <div class="card-body">
                             <h5 class="card-title">{{ book.title }}</h5>
                             <hr>

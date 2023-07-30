@@ -58,9 +58,21 @@
             <div class="col-md-6">
                 <table class="table table-bordered table-striped">
                     <tbody>
+
                     <tr>
                         <td colspan="2" class="colhead colhead_fix bg-secondary text-white" style="height: 40px;">
                             Profile Overview
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Profile Picture</td>
+                        <td>
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
+                                     class="img-fluid rounded-circle" style="max-height: 200px;">
+                            {% else %}
+                                No Profile Picture Available
+                            {% endif %}
                         </td>
                     </tr>
                     <tr>
@@ -107,17 +119,7 @@
                             <td>No comments yet</td>
                         {% endif %}
                     </tr>
-                    <tr>
-                        <td>Profile Picture</td>
-                        <td>
-                            {% if user.profile_picture %}
-                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
-                                     class="img-fluid rounded-circle" style="max-height: 200px;">
-                            {% else %}
-                                No Profile Picture Available
-                            {% endif %}
-                        </td>
-                    </tr>
+
                     </tbody>
                 </table>
             </div>

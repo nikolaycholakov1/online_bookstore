@@ -4,11 +4,35 @@
 
 {% block content %}
 
-    <h2>Register</h2>
-    <form method="post" action="{% url 'register' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Register</div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'register' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="{{ form.username.id_for_label }}">Username:</label>
+                                {{ form.username }}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.password1.id_for_label }}">Password:</label>
+                                {{ form.password1 }}
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.password2.id_for_label }}">Confirm Password:</label>
+                                {{ form.password2 }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

@@ -48,16 +48,21 @@ body {
     transform: scale(1.1); /* Increase the scale by 10% on hover */
 }
 
-#footer{
+#footer {
     margin-top: auto;
 }
 
-#pagination{
+#pagination {
     align-items: center;
 }
 
-/*order-form*/
-.positioning {
+.center-heading {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+}
+
+.fit-img-size {
+    width: 348px;
+    height: 530px;
+    object-fit: cover;
 }
