@@ -17,21 +17,21 @@
                 <hr>
                 <p class="card-text">Price: ${{ book.price }}</p>
                 {% if user.is_authenticated and user.is_staff %}
-                    <button>Edit -- ADD FUNCTIONALITY</button>
+                    <button>Edit</button>
 
                 {% endif %}
 
                 <hr>
                 <h1 class="mb-3">{{ book.title }} </h1>
                 {% if user.is_authenticated and user.is_staff %}
-                    <button>Edit -- ADD FUNCTIONALITY</button>
+                    <button>Edit</button>
 
                 {% endif %}
 
 
                 <p class="text-muted">By {{ book.author }}</p>
                 {% if user.is_authenticated and user.is_staff %}
-                    <button>Edit -- ADD FUNCTIONALITY</button>
+                    <button>Edit</button>
 
                 {% endif %}
 
@@ -39,7 +39,7 @@
                 <hr>
                 <h2>Plot Summary</h2>
                 {% if user.is_authenticated and user.is_staff %}
-                    <button>Edit -- ADD FUNCTIONALITY</button>
+                    <button>Edit</button>
 
                 {% endif %}
 
@@ -91,11 +91,14 @@
                     {% else %}
                         <div class="mb-4">{{ review.review_text }}</div>
                     {% endif %}
+                    <hr>
                     {% if user.is_authenticated and user.is_staff %}
-                        <button class="btn btn-danger delete-review-btn" data-reviewid="{{ review.id }}">Delete user
-                            review -- ADD FUNCTIONALITY
-                        </button>
+                        {% if user.is_authenticated and user.is_staff %}
+                            <a href="{% url 'delete-review' pk=review.pk %}"
+                               class="btn btn-danger delete-review-btn">Delete user review</a>
+                        {% endif %}
                     {% endif %}
+
                 </div>
             </div>
         {% empty %}

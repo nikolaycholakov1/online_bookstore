@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic import TemplateView, ListView
 
 from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm, BookPublishForm
-from .models import Book, Order, OrderItem, DeliveryAddress
+from .models import Book, Order, OrderItem, DeliveryAddress, BookReview
 
 
 @login_required
@@ -241,6 +241,15 @@ def delete_book(request, pk):
         return redirect('catalogue-page')
 
     return render(request, 'books/confirm-delete.html', {'book': book})
+
+
+@login_required
+def delete_review(request, pk):
+    review = get_object_or_404(BookReview, pk=pk)
+
+    if request.user.is_staff or request.user == review.user:
+        review.delete()
+        return redirect('book-detail', pk=review.book.pk)
 
 
 # TODO: fix 404 page
