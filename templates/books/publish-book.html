@@ -1,24 +1,24 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
     <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Publish Book</h4>
+                        <h4 class="mb-0">Publish a new book to the Emporium</h4>
                     </div>
                     <div class="card-body">
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             {% for field in form %}
                                 <div class="form-group">
-                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    <label for="{{ field.id_for_label }}"
+                                           class="font-weight-bold">{{ field.label }}: </label>
                                     {{ field }}
                                 </div>
                             {% endfor %}
-                            <button type="submit" class="btn btn-primary btn-block mt-3">Publish Book</button>
+                            <button type="submit" class="btn btn-primary btn-block mt-4">Publish Book</button>
                         </form>
                     </div>
                 </div>

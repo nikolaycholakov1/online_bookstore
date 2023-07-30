@@ -15,12 +15,24 @@
                 {% endif %}
                 <hr>
                 <p class="card-text">Price: ${{ book.price }}</p>
+                <button>Edit -- ADD FUNCTIONALITY</button>
+
                 <hr>
                 <h1 class="mb-3">{{ book.title }} </h1>
+                <button>Edit -- ADD FUNCTIONALITY</button>
+
+
                 <p class="text-muted">By {{ book.author }}</p>
+                <button>Edit -- ADD FUNCTIONALITY</button>
+
+
                 <hr>
                 <h2>Plot Summary</h2>
+                <button>Edit -- ADD FUNCTIONALITY</button>
+
                 <div class="book-description">
+
+
                     {% if book.description|length > 1000 %}
                         <div class="description-truncate">
                             <p class="mb-4">{{ book.description|truncatechars:1000 }}
@@ -42,6 +54,7 @@
         <hr>
 
         <h2>Reader Reviews</h2>
+        <hr>
         {% for review in book.reviews.all %}
             <div class="card mb-3">
                 <div class="card-body">
@@ -53,6 +66,7 @@
                     </p>
                     <hr>
                     {% if review.review_text|length > 500 %}
+
                         <div class="description-truncate mb-4">
                             {{ review.review_text|truncatechars:500 }}
                             <button class="btn btn-link show-more-btn">Show More...</button>
@@ -63,6 +77,11 @@
                         </div>
                     {% else %}
                         <div class="mb-4">{{ review.review_text }}</div>
+                    {% endif %}
+                    {% if user.is_authenticated and user.is_staff %}
+                        <button class="btn btn-danger delete-review-btn" data-reviewid="{{ review.id }}">Delete user
+                            review -- ADD FUNCTIONALITY
+                        </button>
                     {% endif %}
                 </div>
             </div>

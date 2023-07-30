@@ -80,17 +80,11 @@ class RegisterView(View):
         return render(request, self.template_name, context)
 
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import ListView
-from django.db.models import Q
-from .models import Book
-
-
 class CataloguePageView(ListView):
     model = Book
     template_name = 'common/catalogue-page.html'
     context_object_name = 'books'
-    paginate_by = 18
+    paginate_by = 16
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -143,11 +137,10 @@ class ProcessOrderView(View):
         }
         return render(request, 'books/order-form.html', context)
 
-    def post(self, request, pk):  # Do not remove pk param or the Place Order button breaks
+    def post(self, request, pk):
         form = OrderForm(request.POST)
 
         if form.is_valid():
-            pk = form.cleaned_data['pk']
 
             try:
                 book = Book.objects.get(pk=pk)
@@ -159,15 +152,18 @@ class ProcessOrderView(View):
             city = form.cleaned_data['city']
             zip_code = form.cleaned_data['zip_code']
 
-            total_price = book.price * quantity
-
             order = Order.objects.create(user=request.user)
 
             OrderItem.objects.create(order=order, book=book, quantity=quantity, price=book.price)
 
             # Using request.user directly instead of request.user.customer
-            DeliveryAddress.objects.create(customer=request.user, order=order,
-                                           address=delivery_address, city=city, zip_code=zip_code)
+            DeliveryAddress.objects.create(
+                customer=request.user,
+                order=order,
+                address=delivery_address,
+                city=city,
+                zip_code=zip_code
+            )
 
             return redirect('home-page')
 
@@ -175,7 +171,7 @@ class ProcessOrderView(View):
             'form': form,
         }
 
-        return render(request, 'books/order-form.html', context)
+        return render(request, 'common/home-page.html', context)
 
 
 def publish_book(request):

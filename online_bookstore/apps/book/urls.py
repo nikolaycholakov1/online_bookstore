@@ -18,4 +18,5 @@ urlpatterns = [
     path('book_detail/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
     path('process_order/<int:pk>/', ProcessOrderView.as_view(), name='process-order'),
     path('delete-book/<int:pk>/', delete_book, name='delete-book'),
+
 ]

@@ -55,3 +55,9 @@ body {
 #pagination{
     align-items: center;
 }
+
+/*order-form*/
+.positioning {
+    display: flex;
+    flex-direction: column;
+}

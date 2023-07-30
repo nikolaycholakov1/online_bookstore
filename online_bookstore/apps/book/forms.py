@@ -2,12 +2,10 @@
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from online_bookstore.apps.book.models import BookReview, Customer, Book
+from online_bookstore.apps.book.models import BookReview, Customer, Book, DeliveryAddress
 
 
 class RegistrationForm(UserCreationForm):
-    email = forms.EmailField()
-
     class Meta:
         model = Customer
         fields = ['username', 'email', 'password1', 'password2']
@@ -33,11 +31,35 @@ class OrderForm(forms.Form):
     zip_code = forms.CharField(widget=forms.TextInput(attrs={'required': True}))
 
 
-class ShippingInfoForm(forms.Form):
-    delivery_address = forms.CharField()
-    city = forms.CharField(max_length=30)
-    zip_code = forms.CharField(max_length=9)
-    country = forms.CharField(max_length=30)
+class ShippingInfoForm(forms.ModelForm):
+    class Meta:
+        model = DeliveryAddress
+        fields = ['country', 'city', 'address', 'zip_code', 'shipping_method']
+
+    def __init__(self, *args, **kwargs):
+        super(ShippingInfoForm, self).__init__(*args, **kwargs)
+
+        labels = {
+            'country': 'Country',
+            'city': 'City',
+            'address': 'Address',
+            'zip_code': 'ZIP Code',
+            'shipping_method': 'Shipping Method',
+        }
+
+        for field_name, label in labels.items():
+            self.fields[field_name].label = label
+
+        widget_placeholders = {
+            'country': 'Enter your Country',
+            'address': 'Enter your address',
+            'city': 'Enter your city',
+            'zip_code': 'Enter your ZIP code',
+            'shipping_method': 'Enter your Shipping Method',
+        }
+
+        for field_name, placeholder in widget_placeholders.items():
+            self.fields[field_name].widget.attrs['placeholder'] = placeholder
 
 
 class UserProfileForm(forms.ModelForm):
@@ -56,4 +78,6 @@ class BookPublishForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = '__all__'
-
+        widgets = {
+            'description': forms.Textarea(attrs={'cols': 32, 'rows': 7}),
+        }

@@ -69,5 +69,5 @@ class DeliveryAddressAdmin(admin.ModelAdmin):
     list_display = ('customer', 'order', 'city', 'address', 'zip_code')
     list_filter = ('customer__is_staff', 'order__status')
     search_fields = ('customer__username', 'order__user__username')
-    ordering = ('-date_added',)
+    # ordering = ('-date_added',)
     list_per_page = 10

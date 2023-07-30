@@ -207,9 +207,15 @@ class OrderItem(models.Model):
 
 
 class DeliveryAddress(models.Model):
+    COUNTRY_MAX_LEN = 100
     CITY_MAX_LEN = 30
     ADDRESS_MAX_LEN = 200
     ZIP_CODE_MAX_LEN = 9
+    SHIPPING_CHOICES = (
+        ('By courier', 'By courier'),
+        ('From courier office', 'From courier office'),
+        ('Supplier', 'Supplier'),
+    )
 
     customer = models.ForeignKey(
         Customer,
@@ -221,6 +227,11 @@ class DeliveryAddress(models.Model):
         Order,
         on_delete=models.SET_NULL,
         blank=True,
+        null=True,
+    )
+
+    country = models.CharField(
+        max_length=COUNTRY_MAX_LEN,
         null=True,
     )
 
@@ -237,8 +248,12 @@ class DeliveryAddress(models.Model):
         max_length=ZIP_CODE_MAX_LEN,
         null=True,
     )
-    date_added = models.DateTimeField(
-        auto_now_add=True
+
+    shipping_method = models.CharField(
+        choices=SHIPPING_CHOICES,
+        default='By courier',
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
