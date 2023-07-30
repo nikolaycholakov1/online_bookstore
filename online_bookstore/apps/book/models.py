@@ -4,13 +4,20 @@ from django.contrib.auth.models import User, AbstractUser
 from django.core import validators
 from django.db import models
 
+from validators import validate_letters_only
+
 
 class Customer(AbstractUser):
     NAME_MAX_LEN = 30
+    NAME_MIN_LEN = 2
     EMAIL_MAX_LEN = 50
 
     name = models.CharField(
         max_length=NAME_MAX_LEN,
+        validators=[
+            validators.MinLengthValidator(NAME_MIN_LEN),
+            validate_letters_only,
+        ],
         null=True,
     )
     email = models.EmailField(

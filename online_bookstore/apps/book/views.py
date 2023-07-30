@@ -1,36 +1,46 @@
 # book/views.py
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, UpdateView
-
-from .forms import RegistrationForm, ReviewForm, OrderForm, ShippingInfoForm, UserProfileForm, BookPublishForm
+from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
+from .forms import RegistrationForm, ReviewForm, ShippingInfoForm, UserProfileForm, BookPublishForm, OrderForm
 from .models import Book, Order, OrderItem, DeliveryAddress, BookReview
 
 
-@login_required
-def profile_page(request):
-    user = request.user
-    total_comments = user.get_total_comments()
-    form = UserProfileForm(request.POST or None, request.FILES or None, instance=user)
+class ProfilePageView(LoginRequiredMixin, View):
 
-    if request.method == 'POST':
+    def get(self, request):
+        user = request.user
+        total_comments = user.get_total_comments()
+        form = UserProfileForm(instance=user)
+
+        context = {
+            'form': form,
+            'total_comments': total_comments,
+        }
+
+        return render(request, 'common/profile.html', context)
+
+    def post(self, request):
+        user = request.user
+        total_comments = user.get_total_comments()
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile has been updated successfully.')
 
-    context = {
-        'form': form,
-        'total_comments': total_comments,
-    }
+        context = {
+            'form': form,
+            'total_comments': total_comments,
+        }
 
-    return render(request, 'common/profile.html', context)
+        return render(request, 'common/profile.html', context)
 
 
 class HomePageView(TemplateView):
@@ -175,23 +185,27 @@ class ProcessOrderView(View):
         return render(request, 'common/home-page.html', context)
 
 
-def publish_book(request):
-    if not request.user.is_staff:
-        return redirect('home-page')
+class PublishBookView(LoginRequiredMixin, View):
+    template_name = 'books/publish-book.html'
+    form_class = BookPublishForm
 
-    if request.method == 'POST':
-        form = BookPublishForm(request.POST, request.FILES)
+    def get(self, request):
+        form = self.form_class()
+        context = {
+            'form': form,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('home-page')
-    else:
-        form = BookPublishForm()
 
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'books/publish-book.html', context)
+        context = {
+            'form': form,
+        }
+        return render(request, self.template_name, context)
 
 
 class BookDetailView(View):
@@ -231,26 +245,25 @@ class BookDetailView(View):
         return render(request, self.template_name, context)
 
 
-def delete_book(request, pk):
-    if not request.user.is_authenticated or not request.user.is_staff:
-        return redirect('login')
+class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Book
+    template_name = 'books/confirm-delete.html'
+    success_url = reverse_lazy('catalogue-page')
 
-    book = get_object_or_404(Book, pk=pk)
-
-    if request.method == 'POST':
-        book.delete()
-        return redirect('catalogue-page')
-
-    return render(request, 'books/confirm-delete.html', {'book': book})
+    def test_func(self):
+        return self.request.user.is_staff
 
 
-@login_required
-def delete_review(request, pk):
-    review = get_object_or_404(BookReview, pk=pk)
+class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
 
-    if request.user.is_staff or request.user == review.user:
-        review.delete()
-        return redirect('book-detail', pk=review.book.pk)
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def dispatch(self, request, *args, **kwargs):
+        review = get_object_or_404(BookReview, pk=self.kwargs['pk'])
+        if self.request.user.is_staff:
+            review.delete()
+            return redirect('book-detail', pk=review.book.pk)
 
 
 class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

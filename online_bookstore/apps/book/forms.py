@@ -71,9 +71,6 @@ class UserProfileForm(forms.ModelForm):
         }
 
 
-# forms.py
-
-
 class BookPublishForm(forms.ModelForm):
     class Meta:
         model = Book
