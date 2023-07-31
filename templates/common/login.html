@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">Login</div>
+                    <div class="card-header" style="display: flex; justify-content: center">Login</div>
                     <hr>
                     <div>
                         <p>Non staff demo account details:</p>
@@ -27,6 +27,9 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Login</button>
                         </form>
+                    </div>
+                    <div class="card-footer">
+                        <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
                     </div>
                 </div>
             </div>

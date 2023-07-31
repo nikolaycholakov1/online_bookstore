@@ -2,6 +2,8 @@
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
+
 from online_bookstore.apps.book.models import BookReview, Customer, Book, DeliveryAddress
 
 
@@ -69,6 +71,12 @@ class UserProfileForm(forms.ModelForm):
         widgets = {
             'delivery_address': forms.Textarea(attrs={'rows': 3, 'cols': 32}),
         }
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if not all(char.isalpha() or char.isspace() for char in name):
+            raise ValidationError('Name can only contain letters and whitespace.')
+        return name
 
 
 class BookPublishForm(forms.ModelForm):

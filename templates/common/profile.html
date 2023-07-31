@@ -1,16 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
     <div class="container mt-4">
 
         <h2>{{ user.username }}</h2>
         <hr>
+
+
         <br>
         <div class="row">
             <div class="col-md-6">
 
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <h5>Edit Profile Information</h5>
+                    <h5>
+                        Edit Profile Information
+                    </h5>
                     <hr>
 
                     <div class="form-group">
@@ -68,7 +73,8 @@
                                 <img src="{{ user.profile_picture.url }}" alt="Profile Picture"
                                      class="img-fluid rounded-circle" style="max-height: 200px;">
                             {% else %}
-                                No Profile Picture Available
+                                <img src="{% static 'images/default_profile_picture.svg' %}" alt="Profile Picture"
+                                     class="img-fluid rounded-circle" style="min-height: 200px;">
                             {% endif %}
                         </td>
                     </tr>
@@ -116,7 +122,6 @@
                             <td>No comments yet</td>
                         {% endif %}
                     </tr>
-
                     </tbody>
                 </table>
             </div>
