@@ -1,10 +1,9 @@
 # book/urls.py
 
 from django.urls import path
-from django.contrib.auth import views as auth_views
 from .views import RegisterView, HomePageView, BookDetailView, ProcessOrderView, \
     CataloguePageView, EditBookView, PublishBookView, DeleteBookView, DeleteReviewView, ProfilePageView, LoginUserView, \
-    LogoutUserView
+    LogoutUserView, BookNotFoundView
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home-page'),
@@ -19,6 +18,8 @@ urlpatterns = [
     path('publish/', PublishBookView.as_view(), name='publish-book'),
     path('catalogue/', CataloguePageView.as_view(), name='catalogue-page'),
     path('book-detail/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
+    path('book-not-found/', BookNotFoundView.as_view(), name='book-not-found'),
+
     path('process-order/<int:pk>/', ProcessOrderView.as_view(), name='process-order'),
     path('delete-book/<int:pk>/', DeleteBookView.as_view(), name='delete-book'),
     path('edit-book/<int:pk>/', EditBookView.as_view(), name='edit-book'),

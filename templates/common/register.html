@@ -15,18 +15,30 @@
                             <div class="form-group">
                                 <label for="{{ form.username.id_for_label }}">Username:</label>
                                 {{ form.username }}
+                                {% for error in form.username.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
                             </div>
                             <div class="form-group">
                                 <label for="{{ form.email.id_for_label }}">Email:</label>
                                 {{ form.email }}
+                                {% for error in form.email.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
                             </div>
                             <div class="form-group">
                                 <label for="{{ form.password1.id_for_label }}">Password:</label>
                                 {{ form.password1 }}
+                                {% for error in form.password1.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
                             </div>
                             <div class="form-group">
                                 <label for="{{ form.password2.id_for_label }}">Confirm Password:</label>
                                 {{ form.password2 }}
+                                {% for error in form.password2.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                {% endfor %}
                             </div>
                             <button type="submit" class="btn btn-primary">Register</button>
                         </form>

@@ -78,6 +78,7 @@ class LogoutUserView(LogoutView):
 
 class RegisterView(View):
     template_name = 'common/register.html'
+    success_url = reverse_lazy('home-page')  # Use reverse_lazy to avoid import errors
 
     def get(self, request):
         form = RegistrationForm()
@@ -102,7 +103,7 @@ class RegisterView(View):
             if user:
                 login(request, user)
 
-            return redirect(reverse('home-page'))
+            return redirect(self.success_url)
 
         context = {
             'form': form
@@ -153,13 +154,13 @@ class CataloguePageView(ListView):
 
 
 class BookDetailView(View):
-    template_name = 'books/book-detail.html'
+    template_name = 'book-detail.html'
 
     def get(self, request, pk):
         try:
             book = Book.objects.get(pk=pk)
         except Book.DoesNotExist:
-            return HttpResponseNotFound(render(request, settings.PAGE_404))  # Render the custom 404 page
+            return redirect(reverse('book-not-found'))  # Redirect to the book not found page
 
         reviews = book.reviews.all()
         review_form = ReviewForm()
@@ -191,6 +192,13 @@ class BookDetailView(View):
         }
 
         return render(request, self.template_name, context)
+
+
+class BookNotFoundView(View):
+    template_name = 'book-not-found.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
 
 
 class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -314,6 +322,7 @@ class ProcessOrderView(View):
 
         return render(request, 'common/home-page.html', context)
 
+
 # TODO: fix 404 page
-# def error_404_view(request, exception):
-#     return render(request, '404-page-not-found.html', status=404)
+def error_404_view(request, exception):
+    return render(request, '404-page-not-found.html', status=404)

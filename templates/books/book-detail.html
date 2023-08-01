@@ -12,7 +12,8 @@
             <div class="col-md-6">
                 <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-primary btn-lg">Buy Now</a>
                 {% if user.is_authenticated and user.is_staff %}
-                    <a href="{% url 'delete-book' pk=book.pk %}" style="margin-left: 24%" class="btn btn-danger btn-lg">Delete Book</a>
+                    <a href="{% url 'delete-book' pk=book.pk %}" style="margin-left: 24%" class="btn btn-danger btn-lg">Delete
+                        Book</a>
                     <a href="{% url 'edit-book' pk=book.pk %}" class="btn btn-secondary btn-lg">Edit Book</a>
                 {% endif %}
                 <hr>
@@ -32,7 +33,7 @@
                 <div class="book-description">
 
                     {% if book.description|length > 1000 %}
-{#                        Show more / show less functionality starts here#}
+                        {#                        Show more / show less functionality starts here#}
 
                         <div class="description-truncate">
                             <p class="mb-4">{{ book.description|truncatechars:1000 }}
@@ -44,7 +45,7 @@
                                 <button class="btn btn-link show-less-btn">Show Less...</button>
                             </p>
                         </div>
-{#                        Show more / show less functionality ends here#}
+                        {#                        Show more / show less functionality ends here#}
 
                     {% else %}
                         <p class="mb-4">{{ book.description }}</p>
@@ -68,7 +69,7 @@
                     </p>
                     <hr>
                     {% if review.review_text|length > 500 %}
-{#                        Show more / show less functionality starts here#}
+                        {#                        Show more / show less functionality starts here#}
                         <div class="description-truncate mb-4">
                             {{ review.review_text|truncatechars:500 }}
                             <button class="btn btn-link show-more-btn">Show More...</button>
@@ -77,7 +78,7 @@
                             {{ review.review_text }}
                             <button class="btn btn-link show-less-btn">Show Less...</button>
                         </div>
-{#                        Show more / show less functionality end here#}
+                        {#                        Show more / show less functionality end here#}
 
 
 
