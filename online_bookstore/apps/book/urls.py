@@ -5,6 +5,7 @@ from .views import RegisterView, HomePageView, BookDetailView, \
     CataloguePageView, EditBookView, PublishBookView, DeleteBookView, DeleteReviewView, ProfilePageView, LoginUserView, \
     LogoutUserView, BookNotFoundView
 
+
 urlpatterns = [
     path('', HomePageView.as_view(), name='home-page'),
 

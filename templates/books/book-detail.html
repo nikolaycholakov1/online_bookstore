@@ -10,13 +10,28 @@
                 <img src="{{ book.cover_image.url }}" class="card-img-top custom-card-size" alt="Book Cover">
             </div>
             <div class="col-md-6">
-{#            BEFORE STORE APP#}
-{#                <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-primary btn-lg">Buy Now</a>#}
-                {% if user.is_authenticated and user.is_staff %}
-                    <a href="{% url 'delete-book' pk=book.pk %}" style="margin-left: 24%" class="btn btn-danger btn-lg">Delete
-                        Book</a>
-                    <a href="{% url 'edit-book' pk=book.pk %}" class="btn btn-secondary btn-lg">Edit Book</a>
-                {% endif %}
+
+                <div class="row">
+                    {% if user.is_authenticated and user.is_staff %}
+                        <div class="col-lg-6 mb-3">
+                            <a href="{% url 'delete-book' pk=book.pk %}" class="btn btn-danger btn-lg btn-block">Delete
+                                Book</a>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <a href="{% url 'edit-book' pk=book.pk %}" class="btn btn-secondary btn-lg btn-block">Edit
+                                Book</a>
+                        </div>
+                    {% endif %}
+                    <div class="col-lg-12">
+                        <form style="background-color: transparent; box-shadow: none;" method="post"
+                              action="{% url 'add-to-cart' pk=book.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 <hr>
                 <p class="card-text">Price: ${{ book.price }}</p>
 

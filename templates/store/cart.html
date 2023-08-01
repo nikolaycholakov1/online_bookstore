@@ -51,11 +51,11 @@
                         <div class="card-body">
                             <h5 class="card-title">Order Summary</h5>
                             <hr>
-                            <h6>Total Items: {{ cart_items|length }}</h6>
+                            <h6>Total Items: {{ cart.total_items }}</h6>
                             <h6>Total Price: ${{ cart.total_price }}</h6>
                             <hr>
-                            <a style="margin-bottom: 15px" class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Continue shopping</a>
-                            <a href="{% url 'checkout' %}" class="btn btn-primary btn-block">Proceed to Checkout</a>
+                            <a style="margin-bottom: 15px" class="btn btn-primary" href="{% url 'catalogue-page' %}">&#x2190; Continue shopping</a>
+                            <a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout &#x2192;</a>
                         </div>
                     </div>
                 </div>

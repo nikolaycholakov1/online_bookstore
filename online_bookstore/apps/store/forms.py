@@ -28,6 +28,7 @@ class CheckoutForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     payment_method = forms.ChoiceField(label='Payment Method', choices=(
+        ('debit_card', 'Debit Card'),
         ('credit_card', 'Credit Card'),
         ('paypal', 'PayPal'),
         ('bank_transfer', 'Bank Transfer'),

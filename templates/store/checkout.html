@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="box-element p-3 rounded bg-white shadow">
-                    <form style="width: 100%" method="post">
+                    <form style="width: 100%" method="post" action="{% url 'catalogue-page' %}">
                         {% csrf_token %}
                         <div class="form-field">
                             <label for="{{ form.shipping_full_name.id_for_label }}">*Full Name:</label>
@@ -52,7 +52,8 @@
 
             <div class="col-lg-6">
                 <div class="box-element p-3 rounded bg-white shadow">
-                    <a class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+{#                    <a class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>#}
+                    <a class="btn btn-primary" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
                     <hr>
                     <h3>Order Summary</h3>
                     <hr>

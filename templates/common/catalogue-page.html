@@ -61,13 +61,32 @@
                             <p class="card-text">Price: ${{ book.price }}</p>
                             <hr>
 
-                            <a href="{% url 'book-detail' pk=book.pk %}" style="background-color: #007bff"
-                               class="btn btn-success btn-sm">Details</a>
-{#                            BEFORE STORE APP#}
-{#                            <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-success btn-sm">Buy</a>#}
-                            {% if user.is_authenticated and user.is_staff %}
-                                <a href="{% url 'delete-book' pk=book.pk %}" class="btn btn-danger btn-sm">Delete</a>
-                            {% endif %}
+                            <div class="btn-container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a href="{% url 'book-detail' pk=book.pk %}" style="background-color: #007bff"
+                                           class="btn btn-success btn-sm btn-block">Details</a>
+                                    </div>
+                                    {% if user.is_authenticated and user.is_staff %}
+                                        <div class="col-6">
+                                            <a href="{% url 'delete-book' pk=book.pk %}"
+                                               class="btn btn-danger btn-sm btn-block">Delete</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <form  style="width: 100%" method="post" action="{% url 'add-to-cart' pk=book.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-primary btn-sm btn-block">
+                                                <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </div>

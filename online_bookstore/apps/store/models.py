@@ -104,6 +104,9 @@ class Cart(models.Model):
             total += item.get_total()
         return total
 
+    def total_items(self):
+        return sum(item.quantity for item in self.cartitem_set.all())
+
     def __str__(self):
         return f"Cart for {self.user}"
 
