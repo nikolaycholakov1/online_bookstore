@@ -76,7 +76,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <form  style="width: 100%" method="post" action="{% url 'add-to-cart' pk=book.pk %}">
+                                        <form style="width: 100%; background-color: transparent; box-shadow: none;" method="post"
+                                              action="{% url 'add-to-cart' pk=book.pk %}">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-primary btn-sm btn-block">
                                                 <i class="fas fa-shopping-cart mr-2"></i> Add to Cart

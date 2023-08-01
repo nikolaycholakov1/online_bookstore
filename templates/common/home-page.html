@@ -24,7 +24,7 @@
                             <div class="mt-auto text-center">
                                 <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary btn-sm">Details</a>
                                 <form method="post" action="{% url 'add-to-cart' pk=book.pk %}"
-                                      style="display: inline;">
+                                      style="width: 100%; background-color: transparent; box-shadow: none;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
                                 </form>
