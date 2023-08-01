@@ -1,33 +1,32 @@
-const readMoreBtns = document.querySelectorAll('.read-more-btn');
-readMoreBtns.forEach((btn) => {
-    btn.addEventListener('click', (event) => {
-        const reviewContent = event.target.parentElement.querySelector('.review-content');
-        const fullText = reviewContent.dataset.fullText;
-        reviewContent.textContent = fullText;
-        event.target.style.display = 'none';
-    });
-}); // <-- Missing closing parenthesis
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Add event listener to "Show More" button
-    const showMoreBtn = document.querySelector('.show-more-btn');
-    const descriptionTruncate = document.querySelector('.description-truncate');
-    const descriptionFull = document.querySelector('.description-full');
+    // Show More buttons in the "Reader Reviews" section
+    const showMoreBtns = document.querySelectorAll('.description-truncate .show-more-btn');
+    // Show Less buttons in the "Reader Reviews" section
+    const showLessBtns = document.querySelectorAll('.description-full .show-less-btn');
 
-    if (showMoreBtn && descriptionTruncate && descriptionFull) {
-        showMoreBtn.addEventListener('click', () => {
+    // Add event listeners to Show More buttons
+    showMoreBtns.forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+            const showMoreBtn = event.target;
+            const reviewContainer = showMoreBtn.closest('.card-body');
+            const descriptionTruncate = reviewContainer.querySelector('.description-truncate');
+            const descriptionFull = reviewContainer.querySelector('.description-full');
+
             descriptionTruncate.style.display = 'none';
             descriptionFull.style.display = 'block';
         });
-    }
+    });
 
-    // Add event listener to "Show Less" button
-    const showLessBtn = document.querySelector('.show-less-btn');
+    // Add event listeners to Show Less buttons
+    showLessBtns.forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+            const showLessBtn = event.target;
+            const reviewContainer = showLessBtn.closest('.card-body');
+            const descriptionTruncate = reviewContainer.querySelector('.description-truncate');
+            const descriptionFull = reviewContainer.querySelector('.description-full');
 
-    if (showLessBtn && descriptionTruncate && descriptionFull) {
-        showLessBtn.addEventListener('click', () => {
-            descriptionTruncate.style.display = 'block';
             descriptionFull.style.display = 'none';
+            descriptionTruncate.style.display = 'block';
         });
-    }
+    });
 });

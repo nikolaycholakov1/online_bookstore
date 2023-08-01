@@ -32,6 +32,8 @@
                 <div class="book-description">
 
                     {% if book.description|length > 1000 %}
+{#                        Show more / show less functionality starts here#}
+
                         <div class="description-truncate">
                             <p class="mb-4">{{ book.description|truncatechars:1000 }}
                                 <button class="btn btn-link show-more-btn">Show More...</button>
@@ -42,6 +44,8 @@
                                 <button class="btn btn-link show-less-btn">Show Less...</button>
                             </p>
                         </div>
+{#                        Show more / show less functionality ends here#}
+
                     {% else %}
                         <p class="mb-4">{{ book.description }}</p>
                     {% endif %}
@@ -53,7 +57,6 @@
 
         <h2>Reader Reviews</h2>
         <hr>
-        {#TODO: users can update their reviews#}
         {% for review in book.reviews.all %}
             <div class="card mb-3">
                 <div class="card-body">
@@ -65,7 +68,7 @@
                     </p>
                     <hr>
                     {% if review.review_text|length > 500 %}
-
+{#                        Show more / show less functionality starts here#}
                         <div class="description-truncate mb-4">
                             {{ review.review_text|truncatechars:500 }}
                             <button class="btn btn-link show-more-btn">Show More...</button>
@@ -74,6 +77,10 @@
                             {{ review.review_text }}
                             <button class="btn btn-link show-less-btn">Show Less...</button>
                         </div>
+{#                        Show more / show less functionality end here#}
+
+
+
                     {% else %}
                         <div class="mb-4">{{ review.review_text }}</div>
                     {% endif %}

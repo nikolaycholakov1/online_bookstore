@@ -132,6 +132,112 @@ class CataloguePageView(ListView):
         return context
 
 
+class BookDetailView(View):
+    template_name = 'books/book-detail.html'
+
+    def get(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        reviews = book.reviews.all()
+        review_form = ReviewForm()
+
+        context = {
+            'book': book,
+            'reviews': reviews,
+            'review_form': review_form,
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        review_form = ReviewForm(request.POST)
+
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.book = book
+            review.user = request.user
+            review.save()
+            return redirect('book-detail', pk=pk)  # Redirect to the same book detail page
+
+        reviews = book.reviews.all()
+        context = {
+            'book': book,
+            'reviews': reviews,
+            'review_form': review_form,
+        }
+
+        return render(request, self.template_name, context)
+
+
+class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
+    template_name = 'books/publish-book.html'
+    form_class = BookPublishForm
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def handle_no_permission(self):
+        # Redirect non-staff users to a different page with an error message
+        return render(self.request, 'no-access.html')
+
+    def get(self, request):
+        form = self.form_class()
+        context = {
+            'form': form,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home-page')
+
+        context = {
+            'form': form,
+        }
+        return render(request, self.template_name, context)
+
+
+class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Book
+    template_name = 'books/confirm-delete.html'
+    success_url = reverse_lazy('catalogue-page')
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def handle_no_permission(self):
+        return render(self.request, 'no-access.html')
+
+
+class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def dispatch(self, request, *args, **kwargs):
+        review = get_object_or_404(BookReview, pk=self.kwargs['pk'])
+        if self.request.user.is_staff:
+            review.delete()
+            return redirect('book-detail', pk=review.book.pk)
+
+
+class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Book
+    form_class = BookPublishForm
+    template_name = 'books/edit_book.html'
+
+    def get_success_url(self):
+        return reverse_lazy('book-detail', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def handle_no_permission(self):
+        return render(self.request, 'no-access.html')
+
+
 class ProcessOrderView(View):
 
     def get(self, request, pk):
@@ -183,99 +289,6 @@ class ProcessOrderView(View):
         }
 
         return render(request, 'common/home-page.html', context)
-
-
-class PublishBookView(LoginRequiredMixin, View):
-    template_name = 'books/publish-book.html'
-    form_class = BookPublishForm
-
-    def get(self, request):
-        form = self.form_class()
-        context = {
-            'form': form,
-        }
-        return render(request, self.template_name, context)
-
-    def post(self, request):
-        form = self.form_class(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home-page')
-
-        context = {
-            'form': form,
-        }
-        return render(request, self.template_name, context)
-
-
-class BookDetailView(View):
-    template_name = 'books/book-detail.html'
-
-    def get(self, request, pk):
-        book = get_object_or_404(Book, pk=pk)
-        reviews = book.reviews.all()
-        review_form = ReviewForm()
-
-        context = {
-            'book': book,
-            'reviews': reviews,
-            'review_form': review_form,
-        }
-
-        return render(request, self.template_name, context)
-
-    def post(self, request, pk):
-        book = get_object_or_404(Book, pk=pk)
-        review_form = ReviewForm(request.POST)
-
-        if review_form.is_valid():
-            review = review_form.save(commit=False)
-            review.book = book
-            review.user = request.user
-            review.save()
-            return redirect('book-detail', pk=pk)  # Redirect to the same book detail page
-
-        reviews = book.reviews.all()
-        context = {
-            'book': book,
-            'reviews': reviews,
-            'review_form': review_form,
-        }
-
-        return render(request, self.template_name, context)
-
-
-class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Book
-    template_name = 'books/confirm-delete.html'
-    success_url = reverse_lazy('catalogue-page')
-
-    def test_func(self):
-        return self.request.user.is_staff
-
-
-class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
-
-    def test_func(self):
-        return self.request.user.is_staff
-
-    def dispatch(self, request, *args, **kwargs):
-        review = get_object_or_404(BookReview, pk=self.kwargs['pk'])
-        if self.request.user.is_staff:
-            review.delete()
-            return redirect('book-detail', pk=review.book.pk)
-
-
-class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Book
-    form_class = BookPublishForm
-    template_name = 'books/edit_book.html'
-
-    def get_success_url(self):
-        return reverse_lazy('book-detail', kwargs={'pk': self.object.pk})
-
-    def test_func(self):
-        return self.request.user.is_staff
 
 
 # TODO: fix 404 page
