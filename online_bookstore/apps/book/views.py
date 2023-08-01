@@ -1,19 +1,17 @@
 # book/views.py
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.db.models import Q
-from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
 from .forms import RegistrationForm, ReviewForm, ShippingInfoForm, UserProfileForm, BookPublishForm, OrderForm
-from .models import Book, Order, OrderItem, DeliveryAddress, BookReview
+from .models import Book, DeliveryAddress, BookReview
 
 
 class ProfilePageView(LoginRequiredMixin, View):
@@ -240,7 +238,7 @@ class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'error_pages/../../../templates/no-access.html')
+        return render(self.request, 'no-access.html')
 
 
 class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -255,6 +253,7 @@ class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
             return redirect('book-detail', pk=review.book.pk)
 
 
+# /TODO: Fix render no access
 class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
     form_class = BookPublishForm
@@ -267,67 +266,63 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'error_pages/../../../templates/no-access.html')
+        return render(self.request, 'no-access.html')
 
 
-class ProcessOrderView(View):
+# BEFORE STORE APP
+# class ProcessOrderView(View):
+#
+#     def get(self, request, pk):
+#         try:
+#             book = Book.objects.get(pk=pk)
+#         except Book.DoesNotExist:
+#             return render(request, 'error_pages/404.html', {'message': 'Book not found'})
+#
+#         shipping_info_form = ShippingInfoForm()
+#
+#         context = {
+#             'book': book,
+#             'shipping_info_form': shipping_info_form,
+#         }
+#         return render(request, 'books/order-form.html', context)
+#
+#     def post(self, request, pk):
+#         form = OrderForm(request.POST)
+#
+#         if form.is_valid():
+#
+#             try:
+#                 book = Book.objects.get(pk=pk)
+#             except Book.DoesNotExist:
+#                 return render(request, 'error_pages/404.html', {'message': 'Book not found'})
+#
+#             quantity = form.cleaned_data['quantity']
+#             delivery_address = form.cleaned_data['delivery_address']
+#             city = form.cleaned_data['city']
+#             zip_code = form.cleaned_data['zip_code']
+#
+#
+#             order = Order.objects.create(user=request.user)
+#
+#             OrderItem.objects.create(order=order, book=book, quantity=quantity, price=book.price)
+#
+#             # Using request.user directly instead of request.user.customer
+#             DeliveryAddress.objects.create(
+#                 customer=request.user,
+#                 order=order,
+#                 address=delivery_address,
+#                 city=city,
+#                 zip_code=zip_code
+#             )
+#
+#             return redirect('home-page')
+#
+#         context = {
+#             'form': form,
+#         }
+#
+#         return render(request, 'common/home-page.html', context)
 
-    def get(self, request, pk):
-        try:
-            book = Book.objects.get(pk=pk)
-        except Book.DoesNotExist:
-            return render(request, 'error_pages/404.html', {'message': 'Book not found'})
-
-        shipping_info_form = ShippingInfoForm()
-
-        context = {
-            'book': book,
-            'shipping_info_form': shipping_info_form,
-        }
-        return render(request, 'books/order-form.html', context)
-
-    def post(self, request, pk):
-        form = OrderForm(request.POST)
-
-        if form.is_valid():
-
-            try:
-                book = Book.objects.get(pk=pk)
-            except Book.DoesNotExist:
-                return render(request, 'error_pages/404.html', {'message': 'Book not found'})
-
-            quantity = form.cleaned_data['quantity']
-            delivery_address = form.cleaned_data['delivery_address']
-            city = form.cleaned_data['city']
-            zip_code = form.cleaned_data['zip_code']
-
-            order = Order.objects.create(user=request.user)
-
-            OrderItem.objects.create(order=order, book=book, quantity=quantity, price=book.price)
-
-            # Using request.user directly instead of request.user.customer
-            DeliveryAddress.objects.create(
-                customer=request.user,
-                order=order,
-                address=delivery_address,
-                city=city,
-                zip_code=zip_code
-            )
-
-            return redirect('home-page')
-
-        context = {
-            'form': form,
-        }
-
-        return render(request, 'common/home-page.html', context)
-
-
-# TODO: fix 404 page
-
-# def custom_404_view(request, exception):
-#     # return render(request, 'error_pages/404.html', status=404)
-#     return render(request, 'error_pages/404.html')
 
 def bad_request(request, exception):
     context = {}

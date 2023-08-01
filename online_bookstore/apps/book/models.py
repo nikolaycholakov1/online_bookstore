@@ -104,6 +104,7 @@ class Book(models.Model):
         decimal_places=2,
         null=False,
         blank=False,
+        default=0,
     )
     cover_image = models.ImageField(
         upload_to='media/book_covers/',
@@ -149,69 +150,69 @@ class BookReview(models.Model):
         return f"{self.user.username} - {self.book.title}"
 
 
-class Order(models.Model):
-    ORDER_STATUS = (
-        ('Pending', 'Pending'),
-        ('Processing', 'Processing'),
-        ('Shipped', 'Shipped'),
-        ('Delivered', 'Delivered'),
-        ('Cancelled', 'Cancelled'),
-    )
-
-    user = models.ForeignKey(
-        'book.Customer',
-        on_delete=models.CASCADE,
-        related_name='orders'
-    )
-    order_date = models.DateTimeField(
-        auto_now_add=True
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=ORDER_STATUS,
-        default='Pending'
-    )
-
-    def shipping(self):
-        shipping = False
-        order_items = self.orderitem_set.all()
-        for item in order_items:
-            if not item.book.digital_copy:
-                shipping = True
-                break
-        return shipping
-
-    def __str__(self):
-        return str(self.id)
-
-
-class OrderItem(models.Model):
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-    )
-    book = models.ForeignKey(
-        Book,
-        on_delete=models.CASCADE,
-    )
-    quantity = models.PositiveIntegerField(
-        default=1,
-        null=True,
-        blank=True,
-    )
-    price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2
-    )
-
-    def __str__(self):
-        return f"{self.quantity} x {self.book.title}"
-
-    @property
-    def get_total(self):
-        total = self.book.price * self.quantity
-        return total
-
+# class Order(models.Model):
+#     ORDER_STATUS = (
+#         ('Pending', 'Pending'),
+#         ('Processing', 'Processing'),
+#         ('Shipped', 'Shipped'),
+#         ('Delivered', 'Delivered'),
+#         ('Cancelled', 'Cancelled'),
+#     )
+#
+#     user = models.ForeignKey(
+#         'book.Customer',
+#         on_delete=models.CASCADE,
+#         related_name='orders'
+#     )
+#     order_date = models.DateTimeField(
+#         auto_now_add=True
+#     )
+#     status = models.CharField(
+#         max_length=20,
+#         choices=ORDER_STATUS,
+#         default='Pending'
+#     )
+#
+#     def shipping(self):
+#         shipping = False
+#         order_items = self.orderitem_set.all()
+#         for item in order_items:
+#             if not item.book.digital_copy:
+#                 shipping = True
+#                 break
+#         return shipping
+#
+#     def __str__(self):
+#         return str(self.id)
+#
+#
+# class OrderItem(models.Model):
+#     order = models.ForeignKey(
+#         Order,
+#         on_delete=models.CASCADE,
+#     )
+#     book = models.ForeignKey(
+#         Book,
+#         on_delete=models.CASCADE,
+#     )
+#     quantity = models.PositiveIntegerField(
+#         default=1,
+#         null=True,
+#         blank=True,
+#     )
+#     price = models.DecimalField(
+#         max_digits=10,
+#         decimal_places=2
+#     )
+#
+#     def __str__(self):
+#         return f"{self.quantity} x {self.book.title}"
+#
+#     @property
+#     def get_total(self):
+#         total = self.book.price * self.quantity
+#         return total
+#
 
 class DeliveryAddress(models.Model):
     COUNTRY_MAX_LEN = 100
@@ -230,12 +231,12 @@ class DeliveryAddress(models.Model):
         blank=True,
         null=True,
     )
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    # order = models.ForeignKey(
+    #     Order,
+    #     on_delete=models.SET_NULL,
+    #     blank=True,
+    #     null=True,
+    # )
 
     country = models.CharField(
         max_length=COUNTRY_MAX_LEN,

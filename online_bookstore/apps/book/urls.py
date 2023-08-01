@@ -1,7 +1,7 @@
 # book/urls.py
 
 from django.urls import path
-from .views import RegisterView, HomePageView, BookDetailView, ProcessOrderView, \
+from .views import RegisterView, HomePageView, BookDetailView, \
     CataloguePageView, EditBookView, PublishBookView, DeleteBookView, DeleteReviewView, ProfilePageView, LoginUserView, \
     LogoutUserView, BookNotFoundView
 
@@ -20,7 +20,8 @@ urlpatterns = [
     path('book-detail/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
     path('book-not-found/', BookNotFoundView.as_view(), name='book-not-found'),
 
-    path('process-order/<int:pk>/', ProcessOrderView.as_view(), name='process-order'),
+    # Before store app
+    # path('process-order/<int:pk>/', ProcessOrderView.as_view(), name='process-order'),
     path('delete-book/<int:pk>/', DeleteBookView.as_view(), name='delete-book'),
     path('edit-book/<int:pk>/', EditBookView.as_view(), name='edit-book'),
     path('delete-review/<int:pk>/', DeleteReviewView.as_view(), name='delete-review'),

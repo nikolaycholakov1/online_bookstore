@@ -63,7 +63,8 @@
 
                             <a href="{% url 'book-detail' pk=book.pk %}" style="background-color: #007bff"
                                class="btn btn-success btn-sm">Details</a>
-                            <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-success btn-sm">Buy</a>
+{#                            BEFORE STORE APP#}
+{#                            <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-success btn-sm">Buy</a>#}
                             {% if user.is_authenticated and user.is_staff %}
                                 <a href="{% url 'delete-book' pk=book.pk %}" class="btn btn-danger btn-sm">Delete</a>
                             {% endif %}

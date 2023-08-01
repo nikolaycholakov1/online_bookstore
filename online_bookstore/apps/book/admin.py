@@ -1,7 +1,7 @@
 # book/admin.py
 
 from django.contrib import admin
-from .models import Customer, Book, BookReview, Order, DeliveryAddress
+from .models import Customer, Book, BookReview, DeliveryAddress
 
 
 @admin.register(Customer)
@@ -42,13 +42,13 @@ class BookReviewAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('user', 'order_date', 'status')
-    list_filter = ('status',)
-    search_fields = ('user__username',)
-    ordering = ('-order_date',)
-    list_per_page = 10
+# @admin.register(Order)
+# class OrderAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'order_date', 'status')
+#     list_filter = ('status',)
+#     search_fields = ('user__username',)
+#     ordering = ('-order_date',)
+#     list_per_page = 10
 
 
 # @admin.register(OrderItem)
@@ -64,7 +64,9 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(DeliveryAddress)
 class DeliveryAddressAdmin(admin.ModelAdmin):
     list_display = ('customer', 'country', 'city', 'address', 'zip_code', 'shipping_method')
-    list_filter = ('customer__is_staff', 'order__status')
+    # before store app
+    # list_filter = ('customer__is_staff', 'order__status')
+    list_filter = ('customer__is_staff',)
     search_fields = ('customer__username', 'order__user__username')
     ordering = ('-zip_code',)
     list_per_page = 10

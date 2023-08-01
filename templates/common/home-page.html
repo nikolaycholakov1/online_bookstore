@@ -1,35 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container mt-4">
-    <h1 class="display-4 text-center mb-4">Welcome to The Bookstack Emporium!</h1>
-    <hr>
+    <div class="container mt-4">
+        <h1 class="display-4 text-center mb-4">Welcome to The Bookstack Emporium!</h1>
+        <hr>
 
-    <h2 class="text-center">Featured Books:</h2>
-    <hr>
-    <div class="row">
-        {% for book in featured_books %}
-            <div class="col-md-3 mb-4">
-                <div class="card">
-                    <img src="{{ book.cover_image.url }}" class="card-img-top img-fluid" style="height: 25rem" alt="Book Cover">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ book.title }}</h5>
-                        <hr>
-                        <p class="card-text">By <strong>{{ book.author }}</strong></p>
-                        <p class="card-text">{{ book.description|truncatechars:70 }}</p>
-                        <hr>
-                        <p class="card-text">Price: ${{ book.price }}</p>
-                        <hr>
-                        <div class="mt-auto text-center">
-                            <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary btn-sm">Details</a>
-                            <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-primary btn-sm">Buy</a>
+        <h2 class="text-center">Featured Books:</h2>
+        <hr>
+        <div class="row">
+            {% for book in featured_books %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="{{ book.cover_image.url }}" class="card-img-top img-fluid" style="height: 25rem"
+                             alt="Book Cover">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <hr>
+                            <p class="card-text">By <strong>{{ book.author }}</strong></p>
+                            <p class="card-text">{{ book.description|truncatechars:70 }}</p>
+                            <hr>
+                            <p class="card-text">Price: ${{ book.price }}</p>
+                            <hr>
+                            <div class="mt-auto text-center">
+                                <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary btn-sm">Details</a>
+                                <form method="post" action="{% url 'add-to-cart' pk=book.pk %}"
+                                      style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endblock %}
-
-

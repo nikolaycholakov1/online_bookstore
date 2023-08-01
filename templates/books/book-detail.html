@@ -10,7 +10,8 @@
                 <img src="{{ book.cover_image.url }}" class="card-img-top custom-card-size" alt="Book Cover">
             </div>
             <div class="col-md-6">
-                <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-primary btn-lg">Buy Now</a>
+{#            BEFORE STORE APP#}
+{#                <a href="{% url 'process-order' pk=book.pk %}" class="btn btn-primary btn-lg">Buy Now</a>#}
                 {% if user.is_authenticated and user.is_staff %}
                     <a href="{% url 'delete-book' pk=book.pk %}" style="margin-left: 24%" class="btn btn-danger btn-lg">Delete
                         Book</a>

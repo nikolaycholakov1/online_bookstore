@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Checkout</h2>
+        <hr>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="box-element p-3 rounded bg-white shadow">
+                    <form style="width: 100%" method="post">
+                        {% csrf_token %}
+                        <div class="form-field">
+                            <label for="{{ form.shipping_full_name.id_for_label }}">*Full Name:</label>
+                            {{ form.shipping_full_name }}
+                        </div>
+                        <div class="form-field">
+                            <label for="{{ form.shipping_email.id_for_label }}">*Email:</label>
+                            {{ form.shipping_email }}
+                        </div>
+                        <div class="form-field">
+                            <label for="{{ form.shipping_country.id_for_label }}">*Country:</label>
+                            {{ form.shipping_country }}
+                        </div>
+                        <div class="form-field">
+                            <label for="{{ form.shipping_city.id_for_label }}">*City:</label>
+                            {{ form.shipping_city }}
+                        </div>
+                        <div class="form-field">
+                            <label for="{{ form.shipping_address.id_for_label }}">*Address:</label>
+                            {{ form.shipping_address }}
+                        </div>
+                        <div class="form-field">
+                            <label for="{{ form.shipping_zipcode.id_for_label }}">*Zip Code:</label>
+                            {{ form.shipping_zipcode }}
+                        </div>
+                        <div class="form-field">
+                            <label for="{{ form.payment_method.id_for_label }}">*Payment Method</label>
+                            {{ form.payment_method }}
+                        </div>
+                        <div class="form-field">
+                            {{ form.agree_to_terms }}
+                            <label for="{{ form.agree_to_terms.id_for_label }}">I agree to the terms and
+                                conditions</label>
+                        </div>
+                        <hr>
+                        <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="col-lg-6">
+                <div class="box-element p-3 rounded bg-white shadow">
+                    <a class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+                    <hr>
+                    <h3>Order Summary</h3>
+                    <hr>
+                    {% for cart_item in cart_items %}
+                        <div class="cart-row d-flex align-items-center">
+                            <div class="col-lg-3">
+                                <img class="img-fluid row-image" src="{{ cart_item.book.cover_image.url }}"
+                                     alt="Book Cover">
+                            </div>
+                            <div class="col-lg-3">
+                                <p><strong>{{ cart_item.book.title }}</strong></p>
+                            </div>
+                            <div class="col-lg-3">
+                                <p>Price: ${{ cart_item.book.price|floatformat:2 }}</p>
+                            </div>
+                            <div class="col-lg-3">
+                                <p>x{{ cart_item.quantity }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                    {% endfor %}
+                    <h5>Items: {{ cart.total_items }}</h5>
+                    <h5>Total: ${{ cart.total_price|floatformat:2 }}</h5>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+{% endblock %}
