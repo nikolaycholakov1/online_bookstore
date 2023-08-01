@@ -1,10 +1,14 @@
 # book/views.py
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.db.models import Q
+from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
+
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
@@ -53,6 +57,22 @@ class HomePageView(TemplateView):
         featured_books = Book.objects.filter(featured=True)
         context['featured_books'] = featured_books
 
+        return context
+
+
+class LoginUserView(LoginView):
+    template_name = 'common/login.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class LogoutUserView(LogoutView):
+    next_page = 'home-page'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         return context
 
 
@@ -136,7 +156,11 @@ class BookDetailView(View):
     template_name = 'books/book-detail.html'
 
     def get(self, request, pk):
-        book = get_object_or_404(Book, pk=pk)
+        try:
+            book = Book.objects.get(pk=pk)
+        except Book.DoesNotExist:
+            return HttpResponseNotFound(render(request, settings.PAGE_404))  # Render the custom 404 page
+
         reviews = book.reviews.all()
         review_form = ReviewForm()
 
@@ -244,7 +268,7 @@ class ProcessOrderView(View):
         try:
             book = Book.objects.get(pk=pk)
         except Book.DoesNotExist:
-            return render(request, 'error404.html', {'message': 'Book not found'})
+            return render(request, '404-page-not-found.html', {'message': 'Book not found'})
 
         shipping_info_form = ShippingInfoForm()
 
@@ -262,7 +286,7 @@ class ProcessOrderView(View):
             try:
                 book = Book.objects.get(pk=pk)
             except Book.DoesNotExist:
-                return render(request, 'error404.html', {'message': 'Book not found'})
+                return render(request, '404-page-not-found.html', {'message': 'Book not found'})
 
             quantity = form.cleaned_data['quantity']
             delivery_address = form.cleaned_data['delivery_address']
@@ -290,7 +314,6 @@ class ProcessOrderView(View):
 
         return render(request, 'common/home-page.html', context)
 
-
 # TODO: fix 404 page
-def error_404_view(request, exception):
-    return render(request, 'error404.html', status=404)
+# def error_404_view(request, exception):
+#     return render(request, '404-page-not-found.html', status=404)
