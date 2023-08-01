@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-exz^#7*u^cf@vc+pu@f&gcov%2ex2$j048ofpj9u)3pnb1%!(t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://127.0.0.1:8000/', '127.0.0.1', ]
 
 # Application definition
 
@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'online_bookstore.apps.book',
+    'online_bookstore.apps.store',
 ]
 
 MIDDLEWARE = [

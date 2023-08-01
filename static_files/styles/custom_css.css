@@ -61,8 +61,3 @@ body {
     justify-content: center;
 }
 
-.fit-img-size {
-    width: 348px;
-    height: 530px;
-    object-fit: cover;
-}

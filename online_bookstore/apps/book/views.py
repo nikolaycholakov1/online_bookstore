@@ -154,7 +154,7 @@ class CataloguePageView(ListView):
 
 
 class BookDetailView(View):
-    template_name = 'book-detail.html'
+    template_name = 'books/book-detail.html'
 
     def get(self, request, pk):
         try:
@@ -195,7 +195,7 @@ class BookDetailView(View):
 
 
 class BookNotFoundView(View):
-    template_name = 'book-not-found.html'
+    template_name = 'error_pages/book-not-found.html'
 
     def get(self, request):
         return render(request, self.template_name)
@@ -240,7 +240,7 @@ class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'no-access.html')
+        return render(self.request, 'error_pages/../../../templates/no-access.html')
 
 
 class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -267,7 +267,7 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'no-access.html')
+        return render(self.request, 'error_pages/../../../templates/no-access.html')
 
 
 class ProcessOrderView(View):
@@ -276,7 +276,7 @@ class ProcessOrderView(View):
         try:
             book = Book.objects.get(pk=pk)
         except Book.DoesNotExist:
-            return render(request, '404-page-not-found.html', {'message': 'Book not found'})
+            return render(request, 'error_pages/404.html', {'message': 'Book not found'})
 
         shipping_info_form = ShippingInfoForm()
 
@@ -294,7 +294,7 @@ class ProcessOrderView(View):
             try:
                 book = Book.objects.get(pk=pk)
             except Book.DoesNotExist:
-                return render(request, '404-page-not-found.html', {'message': 'Book not found'})
+                return render(request, 'error_pages/404.html', {'message': 'Book not found'})
 
             quantity = form.cleaned_data['quantity']
             delivery_address = form.cleaned_data['delivery_address']
@@ -324,5 +324,11 @@ class ProcessOrderView(View):
 
 
 # TODO: fix 404 page
-def error_404_view(request, exception):
-    return render(request, '404-page-not-found.html', status=404)
+
+# def custom_404_view(request, exception):
+#     # return render(request, 'error_pages/404.html', status=404)
+#     return render(request, 'error_pages/404.html')
+
+def bad_request(request, exception):
+    context = {}
+    return render(request, 'error_pages/404.html', context, status=400)
