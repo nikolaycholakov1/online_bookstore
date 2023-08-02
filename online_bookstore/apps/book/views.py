@@ -57,6 +57,9 @@ class HomePageView(TemplateView):
 
         return context
 
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
+
 
 class LoginUserView(LoginView):
     template_name = 'common/login.html'
