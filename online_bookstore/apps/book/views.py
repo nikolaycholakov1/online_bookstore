@@ -10,8 +10,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
-from .forms import RegistrationForm, ReviewForm, ShippingInfoForm, UserProfileForm, BookPublishForm, OrderForm
-from .models import Book, DeliveryAddress, BookReview
+from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm
+from .models import Book, BookReview
+from ..store.models import Order
 
 
 class ProfilePageView(LoginRequiredMixin, View):
@@ -59,6 +60,17 @@ class HomePageView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         return self.get(request, *args, **kwargs)
+
+
+class MyOrdersView(LoginRequiredMixin, View):
+    def get(self, request):
+        # Retrieving the order information related to the current user
+        orders = Order.objects.filter(user=request.user)
+
+        context = {
+            'orders': orders
+        }
+        return render(request, 'common/my-orders.html', context)
 
 
 class LoginUserView(LoginView):

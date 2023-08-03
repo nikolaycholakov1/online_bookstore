@@ -33,7 +33,7 @@ class CheckoutForm(forms.Form):
         ('paypal', 'PayPal'),
         ('bank_transfer', 'Bank Transfer'),
     ))
-    agree_to_terms = forms.BooleanField(
-        label='I agree to the terms and conditions',
-        required=True
-    )
+    # agree_to_terms = forms.BooleanField(
+    #     label='I agree to the terms and conditions',
+    #     required=True
+    # )

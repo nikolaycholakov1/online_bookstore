@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+
 {% block content %}
     <div class="container mt-4">
         <h2>My Orders</h2>
         <hr>
         {% if orders %}
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th>Order ID</th>
@@ -15,12 +16,12 @@
                 </thead>
                 <tbody>
                 {% for order in orders %}
-                    <tr>
-                        <td>{{ order.id }}</td>
-                        <td>{{ order.date }}</td>
-                        <td>${{ order.total_price|floatformat:2 }}</td>
-                        <td>{{ order.status }}</td>
-                    </tr>
+{#                    <tr>#}
+{#                        <td><a href="{% url 'order-detail' order.id %}">{{ order.id }}</a></td>#}
+{#                        <td>{{ order.date_created }}</td>#}
+{#                        <td>${{ order.get_total_price }}</td>#}
+{#                        <td>{{ order.status }}</td>#}
+{#                    </tr>#}
                 {% endfor %}
                 </tbody>
             </table>
