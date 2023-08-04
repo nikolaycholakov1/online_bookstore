@@ -171,7 +171,11 @@ class BookReview(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user.username} - {self.book.title}"
+        return f"Review by {self.user.username} for {self.book.title}"
+
+    # For sorting the reviews
+    class Meta:
+        ordering = ['-created_at']
 
 
 class DeliveryAddress(models.Model):

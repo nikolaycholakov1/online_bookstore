@@ -10,6 +10,8 @@
                 <div class="box-element p-3 rounded bg-white shadow">
                     <form style="width: 100%" method="post" action="{% url 'checkout' %}">
                         {% csrf_token %}
+                        <h3>Shipping Information</h3>
+                        <hr>
                         <div class="form-field">
                             <label for="{{ form.shipping_full_name.id_for_label }}">*Full Name:</label>
                             {{ form.shipping_full_name }}
@@ -38,11 +40,6 @@
                             <label for="{{ form.payment_method.id_for_label }}">*Payment Method</label>
                             {{ form.payment_method }}
                         </div>
-{#                        <div class="form-field">#}
-{#                            {{ form.agree_to_terms }}#}
-{#                            <label for="{{ form.agree_to_terms.id_for_label }}">I agree to the terms and#}
-{#                                conditions</label>#}
-{#                        </div>#}
                         <hr>
                         <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
                     </form>

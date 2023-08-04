@@ -182,9 +182,9 @@ class BookDetailView(View):
         try:
             book = Book.objects.get(pk=pk)
         except Book.DoesNotExist:
-            return redirect(reverse('book-not-found'))  # Redirect to the book not found page
+            return redirect(reverse('book-not-found'))  # Redirect /book-not-found/
 
-        reviews = book.reviews.all()
+        reviews = book.reviews.order_by('-created_at')  # Sort reviews by date in descending order
         review_form = ReviewForm()
 
         context = {
@@ -204,9 +204,9 @@ class BookDetailView(View):
             review.book = book
             review.user = request.user
             review.save()
-            return redirect('book-detail', pk=pk)  # Redirect to the same book detail page
+            return redirect('book-detail', pk=pk)
 
-        reviews = book.reviews.all()
+        reviews = book.reviews.order_by('-created_at')
         context = {
             'book': book,
             'reviews': reviews,

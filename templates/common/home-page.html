@@ -5,7 +5,7 @@
         <h1 class="display-4 text-center mb-4">Welcome to The Bookstack Emporium!</h1>
         <hr>
 
-        <h2 class="text-center">Featured Books:</h2>
+        <h2 class="text-center">Our Featured Books:</h2>
         <hr>
         <div class="row">
             {% for book in featured_books %}
@@ -14,7 +14,7 @@
                         <img src="{{ book.cover_image.url }}" class="card-img-top img-fluid" style="height: 25rem"
                              alt="Book Cover">
                         <div class="card-body">
-                            <h5 class="card-title">{{ book.title }}</h5>
+                            <h5 style="height: 3rem" class="card-title">{{ book.title }}</h5>
                             <hr>
                             <p class="card-text">By <strong>{{ book.author }}</strong></p>
                             <p class="card-text">{{ book.description|truncatechars:60 }}</p>
