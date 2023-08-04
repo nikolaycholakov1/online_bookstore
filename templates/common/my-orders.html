@@ -2,7 +2,10 @@
 
 {% block content %}
     <div class="container mt-4">
-        <h2>My Orders</h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>My Orders</h2>
+            <a href="{% url 'profile-page' %}" class="btn btn-primary">Back to the profile page</a>
+        </div>
         <hr>
         {% if orders %}
             <table class="table table-bordered">
@@ -15,14 +18,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for order in orders %}
+{#                {% for order in orders %}#}
 {#                    <tr>#}
 {#                        <td><a href="{% url 'order-detail' order.id %}">{{ order.id }}</a></td>#}
 {#                        <td>{{ order.date_created }}</td>#}
 {#                        <td>${{ order.get_total_price }}</td>#}
 {#                        <td>{{ order.status }}</td>#}
 {#                    </tr>#}
-                {% endfor %}
+{#                {% endfor %}#}
+                <tr>
+                    <td>placeholder</td>
+                    <td>placeholder</td>
+                    <td>placeholder</td>
+                    <td>placeholder</td>
+                </tr>
                 </tbody>
             </table>
         {% else %}

@@ -1,7 +1,7 @@
 # forms.py
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 
 from online_bookstore.apps.book.models import BookReview, Customer, Book, DeliveryAddress
@@ -11,12 +11,6 @@ class RegistrationForm(UserCreationForm):
     class Meta:
         model = Customer
         fields = ['username', 'email', 'password1', 'password2']
-
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        if Customer.objects.filter(username=username).exists():
-            raise forms.ValidationError('This username is already in use.')
-        return username
 
 
 class ReviewForm(forms.ModelForm):

@@ -115,8 +115,7 @@
                     <tr>
                         <td>Site Color Theme</td>
                         <td>
-                            <form method="post">
-                                {% csrf_token %}
+                            <form>
                                 <select name="site_color_theme" id="id_site_color_theme" class="form-control">
                                     <option value="classic" {% if user.classic %}selected{% endif %}>Classic</option>
                                     <option value="dark" {% if user.dark %}selected{% endif %}>Dark Mode</option>

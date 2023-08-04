@@ -7,13 +7,6 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header" style="display: flex; justify-content: center">Login</div>
-                    <hr>
-                    <div>
-                        <p>Non staff demo account details:</p>
-                        <p>Username: nik23</p>
-                        <p>Password: 123asd123asd</p>
-                    </div>
-                    <hr>
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
@@ -27,6 +20,11 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Login</button>
                         </form>
+                        {% if form.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Error:</strong> Incorrect username or password. Please try again.
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="card-footer">
                         <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>

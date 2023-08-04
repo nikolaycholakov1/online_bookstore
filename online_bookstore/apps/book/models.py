@@ -54,6 +54,18 @@ class Customer(AbstractUser):
         ],
     )
 
+    SITE_COLOR_CHOICES = [
+        ('classic', 'Classic'),
+        ('dark', 'Dark Mode'),
+        ('light', 'Light Mode'),
+    ]
+
+    site_color_theme = models.CharField(
+        max_length=10,
+        choices=SITE_COLOR_CHOICES,
+        default='classic',
+    )
+
     def __str__(self):
         return self.username
 

@@ -81,12 +81,21 @@ class MyOrdersView(LoginRequiredMixin, View):
         return render(request, 'common/my-orders.html', context)
 
 
+# class LoginUserView(LoginView):
+#     template_name = 'common/login.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         return context
+
+
 class LoginUserView(LoginView):
     template_name = 'common/login.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+    def form_invalid(self, form):
+        # Add a custom error message to the form
+        form.add_error(None, "Incorrect username or password. Please try again.")
+        return super().form_invalid(form)
 
 
 class LogoutUserView(LogoutView):
