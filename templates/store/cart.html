@@ -41,7 +41,9 @@
                                                 <i class="fas fa-chevron-up"></i>
                                             </button>
                                         </td>
-                                        <td>${{ cart_item.get_total }}</td>
+                                        <td class="card-text font-weight-bold text-danger">
+                                            ${{ cart_item.get_total }}</td>
+
                                         <td>
                                             <form method="post" action="{% url 'remove-from-cart' %}" class="d-inline">
                                                 {% csrf_token %}
@@ -65,7 +67,8 @@
                             <hr>
                             <!-- Add ids to the following elements -->
                             <h6>Total Items: <span id="total-items">{{ cart.total_items }}</span></h6>
-                            <h6>Total Price: $<span id="total-price">{{ cart.total_price }}</span></h6>
+                            <h6 class="card-text font-weight-bold text-danger">Total Price: $<span
+                                    id="total-price">{{ cart.total_price }}</span></h6>
                             <hr>
                             <a style="margin-bottom: 15px" class="btn btn-primary" href="{% url 'catalogue-page' %}">&#x2190;
                                 Continue shopping</a>

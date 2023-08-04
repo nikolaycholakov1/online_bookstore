@@ -3,7 +3,7 @@
 from django.urls import path
 from .views import RegisterView, HomePageView, BookDetailView, \
     CataloguePageView, EditBookView, PublishBookView, DeleteBookView, DeleteReviewView, ProfilePageView, LoginUserView, \
-    LogoutUserView, BookNotFoundView, MyOrdersView
+    LogoutUserView, BookNotFoundView, MyOrdersView, EditReviewView
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home-page'),
@@ -22,5 +22,6 @@ urlpatterns = [
     path('delete-book/<int:pk>/', DeleteBookView.as_view(), name='delete-book'),
     path('edit-book/<int:pk>/', EditBookView.as_view(), name='edit-book'),
     path('delete-review/<int:pk>/', DeleteReviewView.as_view(), name='delete-review'),
+    path('edit-review/<int:review_id>/', EditReviewView.as_view(), name='edit-review'),
 
 ]

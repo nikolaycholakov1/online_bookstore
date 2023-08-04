@@ -24,6 +24,15 @@ class ReviewForm(forms.ModelForm):
             'review_text': forms.Textarea(attrs={'style': 'min-width: 0;'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        self.review_id = kwargs.pop('review_id', None)
+        super().__init__(*args, **kwargs)
+        if self.review_id:
+            self.fields['review_id'] = forms.IntegerField(
+                initial=self.review_id,
+                widget=forms.HiddenInput()
+            )
+
 
 class OrderForm(forms.Form):
     pk = forms.IntegerField(widget=forms.HiddenInput)

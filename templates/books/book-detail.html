@@ -1,5 +1,3 @@
-<!-- book_detail.html -->
-
 {% extends 'base.html' %}
 
 {% block content %}
@@ -10,7 +8,6 @@
                 <img src="{{ book.cover_image.url }}" class="card-img-top custom-card-size" alt="Book Cover">
             </div>
             <div class="col-md-6">
-
                 <div class="row">
                     {% if user.is_authenticated and user.is_staff %}
                         <div class="col-lg-6 mb-3">
@@ -34,23 +31,16 @@
                 </div>
                 <hr>
                 <p class="card-text font-weight-bold text-danger">Price: ${{ book.price }}</p>
-
                 <hr>
-                <h1 class="mb-3">{{ book.title }} - {{ book.category }} </h1>
-
+                <h1 class="mb-3">{{ book.title }} - {{ book.category }}</h1>
                 <p class="text-muted">By {{ book.author }}</p>
-
                 <hr>
                 <h2>Plot Summary</h2>
                 {% if user.is_authenticated and user.is_staff %}
-
                 {% endif %}
-
                 <div class="book-description">
-
                     {% if book.description|length > 1000 %}
-                        {#                        Show more / show less functionality starts here#}
-
+                        {# Show more / show less functionality starts here #}
                         <div class="description-truncate">
                             <p class="mb-4">{{ book.description|truncatechars:1000 }}
                                 <button class="btn btn-link show-more-btn">Show More...</button>
@@ -61,17 +51,14 @@
                                 <button class="btn btn-link show-less-btn">Show Less...</button>
                             </p>
                         </div>
-                        {#                        Show more / show less functionality ends here#}
-
+                        {# Show more / show less functionality ends here #}
                     {% else %}
                         <p class="mb-4">{{ book.description }}</p>
                     {% endif %}
                 </div>
             </div>
         </div>
-
         <hr>
-
         <h2>Reader Reviews</h2>
         <hr>
         {% for review in book.reviews.all %}
@@ -85,7 +72,6 @@
                     </p>
                     <hr>
                     {% if review.review_text|length > 500 %}
-                        {#                        Show more / show less functionality starts here#}
                         <div class="description-truncate mb-4">
                             {{ review.review_text|truncatechars:500 }}
                             <button class="btn btn-link show-more-btn">Show More...</button>
@@ -94,28 +80,21 @@
                             {{ review.review_text }}
                             <button class="btn btn-link show-less-btn">Show Less...</button>
                         </div>
-                        {#                        Show more / show less functionality end here#}
-
-
-
                     {% else %}
                         <div class="mb-4">{{ review.review_text }}</div>
                     {% endif %}
                     <hr>
-                    {% if user.is_authenticated and user.is_staff %}
-                        {% if user.is_authenticated and user.is_staff %}
-                            <a href="{% url 'delete-review' pk=review.pk %}"
-                               class="btn btn-danger delete-review-btn">Delete user review</a>
+                    {% if user.is_authenticated %}
+                        {% if user == review.user %}
+                            <a href="#" class="btn btn-link edit-review-btn" data-review-id="{{ review.id }}">Edit
+                                Review</a>
                         {% endif %}
                     {% endif %}
-
                 </div>
             </div>
         {% empty %}
             <p>No reviews yet. Be the first to write one!</p>
         {% endfor %}
-
-
         {% if user.is_authenticated %}
             <hr>
             <h2>Write a Review</h2>
@@ -130,4 +109,66 @@
             </div>
         {% endif %}
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Book Description Show More/Less
+            const bookDescriptionShowMoreBtn = document.querySelector('.book-description .show-more-btn');
+            const bookDescriptionShowLessBtn = document.querySelector('.book-description .show-less-btn');
+            const bookDescriptionTruncate = document.querySelector('.book-description .description-truncate');
+            const bookDescriptionFull = document.querySelector('.book-description .description-full');
+
+            bookDescriptionShowMoreBtn.addEventListener('click', () => {
+                bookDescriptionTruncate.style.display = 'none';
+                bookDescriptionFull.style.display = 'block';
+            });
+
+            bookDescriptionShowLessBtn.addEventListener('click', () => {
+                bookDescriptionFull.style.display = 'none';
+                bookDescriptionTruncate.style.display = 'block';
+            });
+
+            // Reader Reviews Show More/Less
+            const showMoreBtns = document.querySelectorAll('.description-truncate .show-more-btn');
+            const showLessBtns = document.querySelectorAll('.description-full .show-less-btn');
+
+            showMoreBtns.forEach((btn) => {
+                btn.addEventListener('click', (event) => {
+                    const showMoreBtn = event.target;
+                    const reviewContainer = showMoreBtn.closest('.card-body');
+                    const descriptionTruncate = reviewContainer.querySelector('.description-truncate');
+                    const descriptionFull = reviewContainer.querySelector('.description-full');
+
+                    descriptionTruncate.style.display = 'none';
+                    descriptionFull.style.display = 'block';
+                });
+            });
+
+            showLessBtns.forEach((btn) => {
+                btn.addEventListener('click', (event) => {
+                    const showLessBtn = event.target;
+                    const reviewContainer = showLessBtn.closest('.card-body');
+                    const descriptionTruncate = reviewContainer.querySelector('.description-truncate');
+                    const descriptionFull = reviewContainer.querySelector('.description-full');
+
+                    descriptionFull.style.display = 'none';
+                    descriptionTruncate.style.display = 'block';
+                });
+            });
+
+            const editReviewBtns = document.querySelectorAll('.edit-review-btn');
+
+            editReviewBtns.forEach((btn) => {
+                btn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const reviewId = btn.dataset.reviewId;
+
+                    // Redirect to the edit page with the reviewId
+                    window.location.href = `/edit-review/${reviewId}/`; // Update URL pattern as needed
+                });
+            });
+
+        });
+    </script>
+
 {% endblock %}

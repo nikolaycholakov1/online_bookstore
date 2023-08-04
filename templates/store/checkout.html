@@ -67,7 +67,8 @@
                                 <p><strong>{{ cart_item.book.title }}</strong></p>
                             </div>
                             <div class="col-lg-3">
-                                <p>${{ cart_item.book.price|floatformat:2 }}</p>
+                                <p class="card-text font-weight-bold text-danger">${{ cart_item.book.price|floatformat:2 }}</p>
+
                             </div>
                             <div class="col-lg-3">
                                 <p>x{{ cart_item.quantity }}</p>
@@ -76,7 +77,7 @@
                         <hr>
                     {% endfor %}
                     <h5>Items: {{ cart.total_items }}</h5>
-                    <h5>Total: ${{ cart.total_price|floatformat:2 }}</h5>
+                    <h5 class="card-text font-weight-bold text-danger">Total Price: ${{ cart.total_price|floatformat:2 }}</h5>
                 </div>
             </div>
 
