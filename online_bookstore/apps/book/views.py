@@ -37,6 +37,14 @@ class ProfilePageView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile has been updated successfully.')
+        else:
+            # Pass cleaned_data to the context to display in case of an invalid form submission
+            context = {
+                'form': form,
+                'total_comments': total_comments,
+                'cleaned_data': form.cleaned_data,
+            }
+            return render(request, 'common/profile.html', context)
 
         context = {
             'form': form,
@@ -282,61 +290,6 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def handle_no_permission(self):
         return render(self.request, 'no-access.html')
-
-
-# BEFORE STORE APP
-# class ProcessOrderView(View):
-#
-#     def get(self, request, pk):
-#         try:
-#             book = Book.objects.get(pk=pk)
-#         except Book.DoesNotExist:
-#             return render(request, 'error_pages/404.html', {'message': 'Book not found'})
-#
-#         shipping_info_form = ShippingInfoForm()
-#
-#         context = {
-#             'book': book,
-#             'shipping_info_form': shipping_info_form,
-#         }
-#         return render(request, 'books/order-form.html', context)
-#
-#     def post(self, request, pk):
-#         form = OrderForm(request.POST)
-#
-#         if form.is_valid():
-#
-#             try:
-#                 book = Book.objects.get(pk=pk)
-#             except Book.DoesNotExist:
-#                 return render(request, 'error_pages/404.html', {'message': 'Book not found'})
-#
-#             quantity = form.cleaned_data['quantity']
-#             delivery_address = form.cleaned_data['delivery_address']
-#             city = form.cleaned_data['city']
-#             zip_code = form.cleaned_data['zip_code']
-#
-#
-#             order = Order.objects.create(user=request.user)
-#
-#             OrderItem.objects.create(order=order, book=book, quantity=quantity, price=book.price)
-#
-#             # Using request.user directly instead of request.user.customer
-#             DeliveryAddress.objects.create(
-#                 customer=request.user,
-#                 order=order,
-#                 address=delivery_address,
-#                 city=city,
-#                 zip_code=zip_code
-#             )
-#
-#             return redirect('home-page')
-#
-#         context = {
-#             'form': form,
-#         }
-#
-#         return render(request, 'common/home-page.html', context)
 
 
 def bad_request(request, exception):

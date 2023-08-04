@@ -10,7 +10,12 @@ from validators import validate_letters_only
 class Customer(AbstractUser):
     NAME_MAX_LEN = 30
     NAME_MIN_LEN = 2
+
     EMAIL_MAX_LEN = 50
+    DELIVERY_ADDRESS_MIN_LEN = 10
+
+    MIN_AGE_VALUE = 1
+    MAX_AGE_VALUE = 150
 
     name = models.CharField(
         max_length=NAME_MAX_LEN,
@@ -31,6 +36,10 @@ class Customer(AbstractUser):
     age = models.PositiveIntegerField(
         null=True,
         blank=True,
+        validators=[
+            validators.MinValueValidator(MIN_AGE_VALUE),
+            validators.MaxValueValidator(MAX_AGE_VALUE),
+        ],
     )
     profile_picture = models.ImageField(
         upload_to='profile_pictures/',
@@ -40,6 +49,9 @@ class Customer(AbstractUser):
     delivery_address = models.CharField(
         null=True,
         blank=True,
+        validators=[
+            validators.MinLengthValidator(DELIVERY_ADDRESS_MIN_LEN),
+        ],
     )
 
     def __str__(self):

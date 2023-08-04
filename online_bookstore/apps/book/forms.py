@@ -80,9 +80,32 @@ class UserProfileForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data['name']
+
         if not all(char.isalpha() or char.isspace() for char in name):
             raise ValidationError('Name can only contain letters and whitespace.')
+        if len(name) < Customer.NAME_MIN_LEN or len(name) > Customer.NAME_MAX_LEN:
+            raise ValidationError(
+                f'Name must be between {Customer.NAME_MIN_LEN} and {Customer.NAME_MAX_LEN} characters.')
         return name
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not email.endswith('.com'):
+            raise ValidationError('Invalid email format. Please use an email ending with @example.com.')
+        return email
+
+    def clean_age(self):
+        age = self.cleaned_data['age']
+        if age is not None and (age < Customer.MIN_AGE_VALUE or age > Customer.MAX_AGE_VALUE):
+            raise ValidationError('Age cannot be 0, lower than 0, or higher than 150.')
+        return age
+
+    def clean_delivery_address(self):
+        delivery_address = self.cleaned_data['delivery_address']
+        if len(delivery_address) < Customer.DELIVERY_ADDRESS_MIN_LEN:
+            raise ValidationError(
+                f'Delivery address must be at least {Customer.DELIVERY_ADDRESS_MIN_LEN} characters.')
+        return delivery_address
 
 
 class BookPublishForm(forms.ModelForm):
