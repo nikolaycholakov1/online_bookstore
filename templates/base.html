@@ -19,14 +19,67 @@
 <body class="bg-image" id="custom-body-id">
 
 <div class="d-flex flex-column min-vh-100">
+    {#    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">#}
+    {#        <a class="navbar-brand d-flex align-items-center" href="{% url 'home-page' %}">#}
+    {#            <span style="margin-right: 20px" class="h3 mb-0">The Bookstack Emporium</span>#}
+    {#            <img style="max-width: 60px; max-height: 60px" src="{% static 'images/bookstack.svg' %}"#}
+    {#                 alt="Bookstack Emporium Logo">#}
+    {#            <a href="">#}
+    {#                <span class="h3 mb-0" id="url"></span>#}
+    {#            </a>#}
+    {#        </a>#}
+    {#        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"#}
+    {#                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">#}
+    {#            <span class="navbar-toggler-icon"></span>#}
+    {#        </button>#}
+    {#        <div class="collapse navbar-collapse" id="navbarNav">#}
+    {#            <ul class="navbar-nav ml-auto">#}
+    {#                <li class="nav-item">#}
+    {#                    <a class="nav-link h5 font-weight-bold" href="{% url 'catalogue-page' %}">Catalogue</a>#}
+    {#                </li>#}
+    {#                {% if user.is_authenticated %}#}
+    {#                    {% if user.is_staff %}#}
+    {#                        <li class="nav-item">#}
+    {#                            <a class="nav-link h5 font-weight-bold" href="{% url 'publish-book' %}">Publish</a>#}
+    {#                        </li>#}
+    {#                    {% endif %}#}
+    {#                    <li class="nav-item">#}
+    {#                        <a class="nav-link btn btn-pop-out btn-primary h5 font-weight-bold" href="{% url 'logout' %}">Logout</a>#}
+    {#                    </li>#}
+    {#                    <li class="nav-item">#}
+    {#                        <a class="nav-link h5 font-weight-bold" href="{% url 'profile-page' %}">#}
+    {#                            <div class="username">{{ user.username }}</div>#}
+    {#                            <i class="fas fa-user"></i>#}
+    {#                        </a>#}
+    {#                    </li>#}
+    {#                {% else %}#}
+    {#                    <li class="nav-item">#}
+    {#                        <a class="nav-link btn btn-pop-out btn-success h5 font-weight-bold" href="{% url 'register' %}">Register</a>#}
+    {#                    </li>#}
+    {#                    <li class="nav-item">#}
+    {#                        <a class="nav-link btn btn-pop-out btn-primary h5 font-weight-bold" href="{% url 'login' %}">Login</a>#}
+    {#                    </li>#}
+    {#                    <li class="nav-item guest-user">#}
+    {#                        <div class="username h5 font-weight-bold">Guest</div>#}
+    {#                        <i class="fas fa-user"></i>#}
+    {#                    </li>#}
+    {#                {% endif %}#}
+    {##}
+    {#                <!-- Cart icon/link -->#}
+    {#                <li class="nav-item">#}
+    {#                    <a class="nav-link" href="{% url 'cart' %}">#}
+    {#                        <i class="fas fa-shopping-cart fa-2x text-white"></i>#}
+    {#                    </a>#}
+    {#                </li>#}
+    {#            </ul>#}
+    {#        </div>#}
+    {#    </nav>#}
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
         <a class="navbar-brand d-flex align-items-center" href="{% url 'home-page' %}">
             <span style="margin-right: 20px" class="h3 mb-0">The Bookstack Emporium</span>
             <img style="max-width: 60px; max-height: 60px" src="{% static 'images/bookstack.svg' %}"
                  alt="Bookstack Emporium Logo">
-            <a href="">
-                <span class="h3 mb-0" id="url"></span>
-            </a>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,14 +96,17 @@
                             <a class="nav-link h5 font-weight-bold" href="{% url 'publish-book' %}">Publish</a>
                         </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-pop-out btn-primary h5 font-weight-bold" href="{% url 'logout' %}">Logout</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link h5 font-weight-bold" href="{% url 'profile-page' %}">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle h5 font-weight-bold" href="#" id="profileDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div class="username">{{ user.username }}</div>
                             <i class="fas fa-user"></i>
                         </a>
+                        <div class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <a class="dropdown-item text-dark" href="{% url 'profile-page' %}">My Profile &#x2192;</a>
+                            <a class="dropdown-item text-dark" href="{% url 'cart' %}">My Cart &#x2192;</a>
+                            <a class="dropdown-item text-dark" href="{% url 'logout' %}">&#x2190; Logout</a>
+                        </div>
                     </li>
                 {% else %}
                     <li class="nav-item">

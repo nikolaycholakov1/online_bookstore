@@ -40,6 +40,7 @@
                 {% endif %}
                 <div class="book-description">
                     {% if book.description|length > 1000 %}
+
                         {# Show more / show less functionality starts here #}
                         <div class="description-truncate">
                             <p class="mb-4">{{ book.description|truncatechars:1000 }}
@@ -52,6 +53,7 @@
                             </p>
                         </div>
                         {# Show more / show less functionality ends here #}
+
                     {% else %}
                         <p class="mb-4">{{ book.description }}</p>
                     {% endif %}

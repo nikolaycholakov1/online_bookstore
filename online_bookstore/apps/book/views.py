@@ -315,3 +315,10 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 def bad_request(request, exception):
     context = {}
     return render(request, 'error_pages/404.html', context, status=400)
+
+
+class Custom404View(TemplateView):
+    template_name = 'error_pages/404.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)

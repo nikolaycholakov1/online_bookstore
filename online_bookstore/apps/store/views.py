@@ -88,12 +88,14 @@ class CheckoutView(View):
             order = Order.objects.create(user=request.user, status='Pending')
 
             for cart_item in cart.cartitem_set.all():
-                OrderItem.objects.create(order=order, book=cart_item.book, quantity=cart_item.quantity,
-                                         price=cart_item.price)
+                OrderItem.objects.create(
+                    order=order,
+                    book=cart_item.book,
+                    quantity=cart_item.quantity,
+                    price=cart_item.price
+                )
 
             cart.cartitem_set.all().delete()
-
-            print("Number of items in cart after deletion:", cart.cartitem_set.count())
 
             return redirect('order-summary')
         else:

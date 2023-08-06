@@ -3,7 +3,7 @@
 from django.urls import path
 from .views import RegisterView, HomePageView, BookDetailView, \
     CataloguePageView, EditBookView, PublishBookView, DeleteBookView, DeleteReviewView, ProfilePageView, LoginUserView, \
-    LogoutUserView, BookNotFoundView, MyOrdersView, EditReviewView
+    LogoutUserView, BookNotFoundView, MyOrdersView, EditReviewView, Custom404View
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home-page'),
@@ -23,5 +23,7 @@ urlpatterns = [
     path('edit-book/<int:pk>/', EditBookView.as_view(), name='edit-book'),
     path('delete-review/<int:pk>/', DeleteReviewView.as_view(), name='delete-review'),
     path('edit-review/<int:review_id>/', EditReviewView.as_view(), name='edit-review'),
+
+    path('404/', Custom404View.as_view(), name='404'),
 
 ]
