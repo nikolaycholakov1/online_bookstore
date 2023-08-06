@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="about-us my-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2 class="mb-4">About Us</h2>
+                    <hr>
+                    <p>Welcome to <strong>Bookstack Emporium</strong>, where a world of stories awaits you. Our passion
+                        for books
+                        and the art of reading drives us to provide you with a unique literary experience.</p>
+                    <p>At Bookstack Emporium, we believe that books have the power to transform, inspire, and connect.
+                        Our goal is
+                        to curate a diverse collection of books that cater to different tastes, genres, and moods.</p>
+                    <p>Our team is composed of dedicated readers, writers, and technology enthusiasts who are committed
+                        to
+                        creating a community where book lovers can explore, discuss, and share their love for
+                        literature.</p>
+                    <p>Join us in celebrating the magic of books and embark on a journey of endless imagination and
+                        discovery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mission bg-light py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="mb-4">Our Mission</h2>
+                    <hr>
+                    <p class="lead">At Bookstack Emporium, our mission is to:</p>
+                    <ul class="list-unstyled">
+                        <li>Provide a platform for readers to discover and explore a wide range of books.</li>
+                        <li>Foster a vibrant community of book enthusiasts to engage in meaningful discussions and share
+                            their insights.
+                        </li>
+                        <li>Promote diverse voices and perspectives in literature.</li>
+                        <li>Offer a seamless and enjoyable shopping experience for book lovers.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-us my-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Contact Us</h2>
+            <hr>
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <ul class="list-unstyled">
+                        <li><strong>Email:</strong> contact@bookstackemporium.com</li>
+                        <li><strong>Phone:</strong> +1 (123) 456-7890</li>
+                        <li><strong>Address:</strong> 123 Bookshelf Street, Literary Town, Bookland</li>
+                        <li>
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d2073.4798475047455!2d23.320115659679498!3d42.69645070763487!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1ssofia%20city%20center!5e0!3m2!1sen!2sbg!4v1691346746830!5m2!1sen!2sbg"
+                                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="terms-of-service bg-light py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="mb-4">Terms of Service</h2>
+                    <hr>
+                    <p>Welcome to Bookstack Emporium! By using our website, you agree to the following terms:</p>
+                    <ul class="list-unstyled">
+                        <li>Content: All content on our site is for informational and entertainment purposes only.</li>
+                        <li>Privacy: We value your privacy and handle your personal data responsibly. Review our Privacy
+                            Policy.
+                        </li>
+                        <li>Reviews: Users can submit book reviews, which must be respectful and follow community
+                            guidelines.
+                        </li>
+                        <li>Orders: Book purchases are subject to availability and our refund policy.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team my-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Meet Our Team</h2>
+            <hr>
+            <div class="row justify-content-center">
+                {% for staff_member in staff_members %}
+                    {% if staff_member not in superusers %}
+                        <div class="col-md-4">
+                            <div class="team-member text-center mb-4">
+                                <div class="rounded-circle img-circle mx-auto team-member-img-container">
+                                    <img src="{{ staff_member.profile_picture.url }}" alt="{{ staff_member.username }}"
+                                         class="img-fluid team-member-img">
+                                </div>
+                                <h3>{{ staff_member.get_full_name }}</h3>
+                                <h6>{{ staff_member.email }}</h6>
+                                <p class="text-muted">Staff</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                {% for superuser in superusers %}
+                    <div class="col-md-4">
+                        <div class="team-member text-center mb-4">
+                            <div class="rounded-circle img-circle mx-auto superuser-img-container">
+                                <img src="{{ superuser.profile_picture.url }}" alt="{{ superuser.username }}"
+                                     class="img-fluid superuser-img">
+                            </div>
+                            <h3>{{ superuser.get_full_name }}</h3>
+                            <h6>{{ superuser.email }}</h6>
+                            <p class="text-muted">CEO</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

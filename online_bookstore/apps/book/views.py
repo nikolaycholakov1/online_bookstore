@@ -11,7 +11,7 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
 from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm
-from .models import Book, BookReview
+from .models import Book, BookReview, Customer
 from ..store.models import Order
 
 
@@ -52,6 +52,18 @@ class ProfilePageView(LoginRequiredMixin, View):
         }
 
         return render(request, 'common/profile.html', context)
+
+
+class AboutUsView(TemplateView):
+    template_name = 'common/about-us.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff_members = Customer.objects.filter(is_staff=True)
+        superusers = Customer.objects.filter(is_superuser=True)
+        context['staff_members'] = staff_members
+        context['superusers'] = superusers
+        return context
 
 
 class HomePageView(TemplateView):

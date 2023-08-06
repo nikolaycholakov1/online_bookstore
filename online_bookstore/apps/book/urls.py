@@ -3,7 +3,7 @@
 from django.urls import path
 from .views import RegisterView, HomePageView, BookDetailView, \
     CataloguePageView, EditBookView, PublishBookView, DeleteBookView, DeleteReviewView, ProfilePageView, LoginUserView, \
-    LogoutUserView, BookNotFoundView, MyOrdersView, EditReviewView
+    LogoutUserView, BookNotFoundView, MyOrdersView, EditReviewView, AboutUsView
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home-page'),
@@ -13,6 +13,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('profile/', ProfilePageView.as_view(), name='profile-page'),
     path('profile/my-orders/', MyOrdersView.as_view(), name='my-orders'),
+    path('about-us/', AboutUsView.as_view(), name='about-us'),
 
     path('publish/', PublishBookView.as_view(), name='publish-book'),
     path('catalogue/', CataloguePageView.as_view(), name='catalogue-page'),

@@ -18,7 +18,7 @@ class AddToCartView(View):
         if not created:
             cart_item.quantity += quantity
         else:
-            cart_item.price = book.price if book.price else 0  # Set the price based on the book's price
+            cart_item.price = book.price
         cart_item.save()
 
         return redirect('cart')
