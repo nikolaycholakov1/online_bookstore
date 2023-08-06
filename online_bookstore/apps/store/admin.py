@@ -17,8 +17,9 @@ class CartItemAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user', 'order_date', 'status', 'total_price']
-    list_filter = ['status']
+    list_filter = ['status', 'order_date', 'user']
     search_fields = ['user__username', 'user__email']
+
 
 
 @admin.register(OrderItem)

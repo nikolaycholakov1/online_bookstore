@@ -2,3 +2,6 @@
 @import "register.css";
 @import "custom_css.css";
 
+th:hover {
+    cursor: pointer;
+}

@@ -11,15 +11,15 @@
             <table class="table table-bordered" id="orders-table">
                 <thead>
                 <tr>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Date Order</th>
-                    <th class="text-center">Total Price</th>
+                    <th class="text-center sortable" data-sort="status">Status</th>
+                    <th class="text-center sortable" data-sort="date">Date Order</th>
+                    <th class="text-center sortable" data-sort="price">Total Price</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for order in orders %}
                     <tr>
-                        <td class="text-center">{{ order.get_status_display }}</td>
+                        <td class="text-center" data-status="{{ order.get_status_display }}">{{ order.get_status_display }}</td>
                         <td class="text-center">{{ order.order_date }}</td>
                         <td class="text-center">${{ order.total_price }}</td>
                     </tr>
@@ -36,23 +36,62 @@
             var ordersTable = document.getElementById("orders-table");
 
             if (ordersTable) {
-                var statusCells = ordersTable.querySelectorAll("tbody td:first-child");
+                var headers = ordersTable.querySelectorAll("thead th.sortable");
 
+                headers.forEach(function (header) {
+                    header.addEventListener("click", function () {
+                        var columnIndex = Array.from(header.parentElement.children).indexOf(header);
+                        var rows = Array.from(ordersTable.querySelectorAll("tbody tr"));
+
+                        rows.sort(function (rowA, rowB) {
+                            var cellA = rowA.querySelectorAll("td")[columnIndex].textContent.trim();
+                            var cellB = rowB.querySelectorAll("td")[columnIndex].textContent.trim();
+
+                            if (columnIndex === 0) {
+                                // Custom sorting logic for Status column
+                                var statusPriority = {
+                                    "Delivered": 0,
+                                    "Shipped": 1,
+                                    "Processing": 2,
+                                    "Pending": 3,
+                                    "Cancelled": 4,
+                                };
+                                return statusPriority[cellA] - statusPriority[cellB];
+                            } else if (columnIndex === 1) {
+                                return new Date(cellA) - new Date(cellB);
+                            } else if (columnIndex === 2) {
+                                return parseFloat(cellB.replace("$", "")) - parseFloat(cellA.replace("$", ""));
+                            } else {
+                                return cellA.localeCompare(cellB);
+                            }
+                        });
+
+                        // Clear existing rows
+                        ordersTable.querySelector("tbody").innerHTML = "";
+
+                        // Append sorted rows
+                        rows.forEach(function (row) {
+                            ordersTable.querySelector("tbody").appendChild(row);
+                        });
+                    });
+                });
+
+                // Add background colors based on status
+                var statusCells = ordersTable.querySelectorAll("td[data-status]");
                 statusCells.forEach(function (cell) {
-                    var status = cell.textContent.trim();
-
+                    var status = cell.getAttribute("data-status");
                     switch (status) {
-                        case "Pending":
-                            cell.style.backgroundColor = "#f0ad4e";
-                            break;
-                        case "Processing":
-                            cell.style.backgroundColor = "#5bc0de";
+                        case "Delivered":
+                            cell.style.backgroundColor = "#0275d8";
                             break;
                         case "Shipped":
                             cell.style.backgroundColor = "#5cb85c";
                             break;
-                        case "Delivered":
-                            cell.style.backgroundColor = "#0275d8";
+                        case "Processing":
+                            cell.style.backgroundColor = "#5bc0de";
+                            break;
+                        case "Pending":
+                            cell.style.backgroundColor = "#f0ad4e";
                             break;
                         case "Cancelled":
                             cell.style.backgroundColor = "#d9534f";
