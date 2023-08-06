@@ -34,14 +34,6 @@ class ReviewForm(forms.ModelForm):
             )
 
 
-class OrderForm(forms.Form):
-    pk = forms.IntegerField(widget=forms.HiddenInput)
-    quantity = forms.IntegerField(initial=1)
-    delivery_address = forms.CharField(widget=forms.TextInput(attrs={'required': True}))
-    city = forms.CharField(widget=forms.TextInput(attrs={'required': True}))
-    zip_code = forms.CharField(widget=forms.TextInput(attrs={'required': True}))
-
-
 class ShippingInfoForm(forms.ModelForm):
     class Meta:
         model = DeliveryAddress

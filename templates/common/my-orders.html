@@ -8,34 +8,59 @@
         </div>
         <hr>
         {% if orders %}
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="orders-table">
                 <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Date</th>
-                    <th>Total Price</th>
-                    <th>Status</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Date Order</th>
+                    <th class="text-center">Total Price</th>
                 </tr>
                 </thead>
                 <tbody>
-{#                {% for order in orders %}#}
-{#                    <tr>#}
-{#                        <td><a href="{% url 'order-detail' order.id %}">{{ order.id }}</a></td>#}
-{#                        <td>{{ order.date_created }}</td>#}
-{#                        <td>${{ order.get_total_price }}</td>#}
-{#                        <td>{{ order.status }}</td>#}
-{#                    </tr>#}
-{#                {% endfor %}#}
-                <tr>
-                    <td>placeholder</td>
-                    <td>placeholder</td>
-                    <td>placeholder</td>
-                    <td>placeholder</td>
-                </tr>
+                {% for order in orders %}
+                    <tr>
+                        <td class="text-center">{{ order.get_status_display }}</td>
+                        <td class="text-center">{{ order.order_date }}</td>
+                        <td class="text-center">${{ order.total_price }}</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
         {% else %}
-            <p>No orders found.</p>
+            <p class="text-center">No orders found.</p>
         {% endif %}
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var ordersTable = document.getElementById("orders-table");
+
+            if (ordersTable) {
+                var statusCells = ordersTable.querySelectorAll("tbody td:first-child");
+
+                statusCells.forEach(function (cell) {
+                    var status = cell.textContent.trim();
+
+                    switch (status) {
+                        case "Pending":
+                            cell.style.backgroundColor = "#f0ad4e";
+                            break;
+                        case "Processing":
+                            cell.style.backgroundColor = "#5bc0de";
+                            break;
+                        case "Shipped":
+                            cell.style.backgroundColor = "#5cb85c";
+                            break;
+                        case "Delivered":
+                            cell.style.backgroundColor = "#0275d8";
+                            break;
+                        case "Cancelled":
+                            cell.style.backgroundColor = "#d9534f";
+                            break;
+                    }
+                });
+            }
+        });
+    </script>
+
 {% endblock %}
