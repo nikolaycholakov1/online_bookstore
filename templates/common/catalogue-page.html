@@ -10,7 +10,7 @@
                     <input type="text" name="search_query" style="width: 100%" class="form-control mr-sm-2"
                            placeholder="Search by author, title, or category" aria-label="Search"
                            value="{{ request.GET.search_query }}">
-                    <button type="submit" class="btn btn-outline-primary my-2 my-sm-0">Search</button>
+                    <button type="submit" class="btn btn-outline-primary my-2 my-sm-0">Search &#x2192;</button>
                     {% if request.GET.search_query %}
                         <a href="{% url 'catalogue-page' %}" class="btn btn-secondary ml-2">Clear Search</a>
                     {% endif %}

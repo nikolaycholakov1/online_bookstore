@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
 {% block content %}
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2>My Orders</h2>
-            <a href="{% url 'profile-page' %}" class="btn btn-primary">Back to the profile page</a>
+            <div>
+                <a href="{% url 'catalogue-page' %}" class="btn btn-primary">&#x2190; Back to the catalogue</a>
+                <a href="{% url 'profile-page' %}" class="btn btn-primary">&#x2190; Back to the profile page</a>
+            </div>
         </div>
         <hr>
         {% if orders %}
@@ -19,12 +23,21 @@
                 <tbody>
                 {% for order in orders %}
                     <tr>
-                        <td class="text-center" data-status="{{ order.get_status_display }}">{{ order.get_status_display }}</td>
+                        <td class="text-center"
+                            data-status="{{ order.get_status_display }}">{{ order.get_status_display }}</td>
                         <td class="text-center">{{ order.order_date }}</td>
                         <td class="text-center">${{ order.total_price }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
+
+                <tfoot>
+                <tr>
+                    <td colspan="3" class="text-center">
+                        <strong>Total Orders: {{ orders|length }}</strong>
+                    </td>
+                </tr>
+                </tfoot>
             </table>
         {% else %}
             <p class="text-center">No orders found.</p>
@@ -33,41 +46,60 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var ordersTable = document.getElementById("orders-table");
+            const ordersTable = document.getElementById("orders-table");
 
             if (ordersTable) {
-                var headers = ordersTable.querySelectorAll("thead th.sortable");
+                // Get the headers that are sortable
+                const headers = ordersTable.querySelectorAll("thead th.sortable");
 
+                // Add pointer cursor and sorting functionality to each sortable header
                 headers.forEach(function (header) {
+                    header.style.cursor = "pointer";
                     header.addEventListener("click", function () {
-                        var columnIndex = Array.from(header.parentElement.children).indexOf(header);
-                        var rows = Array.from(ordersTable.querySelectorAll("tbody tr"));
+                        // Identify the column index that was clicked
+                        const columnIndex = Array.from(header.parentElement.children).indexOf(header);
 
-                        rows.sort(function (rowA, rowB) {
-                            var cellA = rowA.querySelectorAll("td")[columnIndex].textContent.trim();
-                            var cellB = rowB.querySelectorAll("td")[columnIndex].textContent.trim();
+                        const rows = Array.from(ordersTable.querySelectorAll("tbody tr"));
 
-                            if (columnIndex === 0) {
-                                // Custom sorting logic for Status column
-                                var statusPriority = {
-                                    "Delivered": 0,
-                                    "Shipped": 1,
-                                    "Processing": 2,
-                                    "Pending": 3,
-                                    "Cancelled": 4,
-                                };
+                        if (columnIndex === 0) {
+                            const statusPriority = {
+                                "Shipped": 0,
+                                "Processing": 1,
+                                "Pending": 2,
+                                "Delivered": 3,
+                                "Cancelled": 4,
+                            };
+                            // Sort based on status priority
+                            rows.sort(function (rowA, rowB) {
+                                const cellA = rowA.querySelectorAll("td")[columnIndex].textContent.trim();
+                                const cellB = rowB.querySelectorAll("td")[columnIndex].textContent.trim();
                                 return statusPriority[cellA] - statusPriority[cellB];
-                            } else if (columnIndex === 1) {
-                                return new Date(cellA) - new Date(cellB);
-                            } else if (columnIndex === 2) {
-                                return parseFloat(cellB.replace("$", "")) - parseFloat(cellA.replace("$", ""));
-                            } else {
+                            });
+                        } else if (columnIndex === 1) {
+                            // Sort based on Date Order (latest to oldest)
+                            rows.sort(function (rowA, rowB) {
+                                const cellA = new Date(rowA.querySelectorAll("td")[columnIndex].textContent.trim());
+                                const cellB = new Date(rowB.querySelectorAll("td")[columnIndex].textContent.trim());
+                                return cellB - cellA;
+                            });
+                        } else if (columnIndex === 2) {
+                            // Sort based on Total Price (highest to lowest)
+                            rows.sort(function (rowA, rowB) {
+                                const cellA = parseFloat(rowA.querySelectorAll("td")[columnIndex].textContent.replace("$", ""));
+                                const cellB = parseFloat(rowB.querySelectorAll("td")[columnIndex].textContent.replace("$", ""));
+                                return cellB - cellA;
+                            });
+                        } else {
+                            // Sort based on other columns (lexicographic order)
+                            rows.sort(function (rowA, rowB) {
+                                const cellA = rowA.querySelectorAll("td")[columnIndex].textContent.trim();
+                                const cellB = rowB.querySelectorAll("td")[columnIndex].textContent.trim();
                                 return cellA.localeCompare(cellB);
-                            }
-                        });
+                            });
+                        }
 
                         // Clear existing rows
-                        ordersTable.querySelector("tbody").innerHTML = "";
+                        {#ordersTable.querySelector("tbody").innerHTML = "";#}
 
                         // Append sorted rows
                         rows.forEach(function (row) {
@@ -77,9 +109,10 @@
                 });
 
                 // Add background colors based on status
-                var statusCells = ordersTable.querySelectorAll("td[data-status]");
+                const statusCells = ordersTable.querySelectorAll("td[data-status]");
                 statusCells.forEach(function (cell) {
-                    var status = cell.getAttribute("data-status");
+                    const status = cell.getAttribute("data-status");
+                    // Apply background color based on status
                     switch (status) {
                         case "Delivered":
                             cell.style.backgroundColor = "#0275d8";
@@ -100,6 +133,8 @@
                 });
             }
         });
+
+
     </script>
 
 {% endblock %}
