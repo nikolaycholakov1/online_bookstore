@@ -251,7 +251,7 @@ class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def handle_no_permission(self):
         # Redirect non-staff users to a different page with an error message
-        return render(self.request, 'no-access.html')
+        return render(self.request, 'error_pages/no-access.html')
 
     def get(self, request):
         form = self.form_class()
@@ -281,7 +281,7 @@ class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'no-access.html')
+        return render(self.request, 'error_pages/no-access.html')
 
 
 class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -309,16 +309,15 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'no-access.html')
+        return render(self.request, 'error_pages/no-access.html')
 
 
 def bad_request(request, exception):
     context = {}
-    return render(request, 'error_pages/404.html', context, status=400)
+    return render(request, 'error_pages/400.html', context, status=400)
 
 
-class Custom404View(TemplateView):
-    template_name = 'error_pages/404.html'
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+class Custom404View(View):
+    def get(self, request, exception):
+        context = {}
+        return render(request, 'error_pages/404.html', context, status=404)
