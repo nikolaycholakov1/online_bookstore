@@ -7,7 +7,6 @@
     <title>The Bookstack Emporium</title>
     <!-- J Query laod -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Link to Bootstrap -->
@@ -53,6 +52,7 @@
                         <div class="dropdown-menu" aria-labelledby="profileDropdown">
                             <a class="dropdown-item text-dark" href="{% url 'profile-page' %}">My Profile &#x2192;</a>
                             <a class="dropdown-item text-dark" href="{% url 'cart' %}">My Cart &#x2192;</a>
+                            <a class="dropdown-item text-dark" href="{% url 'my-orders' %}">My Orders &#x2192;</a>
                             <a class="dropdown-item text-dark" href="{% url 'logout' %}">&#x2190; Logout</a>
                         </div>
                     </li>
@@ -69,12 +69,15 @@
                     </li>
                 {% endif %}
 
-                <!-- Cart icon/link -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'cart' %}">
-                        <i class="fas fa-shopping-cart fa-2x text-white"></i>
-                    </a>
-                </li>
+                {% if user.not_authenticated %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cart' %}">
+                            <i class="fas fa-shopping-cart fa-2x text-white"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
             </ul>
         </div>
     </nav>
@@ -105,7 +108,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Custom Java Script -->
-<script src="{% static 'js/dynamic_urls.js' %}">
+<script src="{% static 'js/dynamic-urls-for-base.js' %}">
 
 
 </script>

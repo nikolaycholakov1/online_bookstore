@@ -16,6 +16,12 @@
                     {% endif %}
                 </form>
             </div>
+            <div class="col-md-6 text-right">
+                <div class="btn-group" role="group" aria-label="Ordering">
+                    <button type="button" class="btn btn-primary btn-order" id="btn-order-price">Price</button>
+                    <button type="button" class="btn btn-primary btn-order" id="btn-order-category">Category</button>
+                </div>
+            </div>
         </div>
         <hr>
         <div class="mt-4" id="pagination">
@@ -46,6 +52,7 @@
                 </ul>
             {% endif %}
         </div>
+
         <hr>
         <div class="row">
             {% for book in books %}
@@ -56,39 +63,31 @@
                         <div class="card-body">
                             <h5 style="height: 3rem" class="card-title">{{ book.title }}</h5>
                             <hr>
-
                             <p class="card-text">By {{ book.author }}</p>
                             <p class="card-text font-weight-bold text-danger">Price: ${{ book.price }}</p>
-
                             <hr>
-
                             <div class="btn-container">
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div style="margin: 0 auto">
                                         <a href="{% url 'book-detail' pk=book.pk %}" style="background-color: #007bff"
                                            class="btn btn-primary btn-sm">Details</a>
                                     </div>
-                                    {% if user.is_authenticated and user.is_staff %}
-                                        <div class="col-6">
-                                            <a href="{% url 'delete-book' pk=book.pk %}"
-                                               class="btn btn-danger btn-sm btn-block">Delete</a>
-                                        </div>
-                                    {% endif %}
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <form style="width: 100%; background-color: transparent; box-shadow: none;" method="post"
+                                        <form style="width: 100%; background-color: transparent; box-shadow: none;"
+                                              method="post"
                                               action="{% url 'add-to-cart' pk=book.pk %}">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-primary btn-sm btn-block">
-                                                <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
-                                            </button>
+                                            {% if user.is_authenticated %}
+                                                <button type="submit" class="btn btn-primary btn-sm btn-block">
+                                                    <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                                                </button>
+                                            {% endif %}
                                         </form>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -124,4 +123,26 @@
             {% endif %}
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            var current_ordering = 'price';
+
+            $('#btn-order-price').click(function () {
+                current_ordering = (current_ordering === 'price') ? '-price' : 'price';
+                window.location.href = '?search_query={{ request.GET.search_query }}&ordering=' + current_ordering;
+            });
+
+            $('#btn-order-category').click(function () {
+                current_ordering = (current_ordering === 'category') ? '-category' : 'category';
+                window.location.href = '?search_query={{ request.GET.search_query }}&ordering=' + current_ordering;
+            });
+
+            $('#btn-order-author').click(function () {
+                alert('Sorry, you can only order the books by price and category.');
+            });
+        });
+
+
+    </script>
 {% endblock %}

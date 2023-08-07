@@ -23,9 +23,11 @@
                         <form style="background-color: transparent; box-shadow: none;" method="post"
                               action="{% url 'add-to-cart' pk=book.pk %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
+                            {% if user.is_authenticated %}
+                                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
@@ -69,8 +71,13 @@
                     <strong>
                         {{ review.user.username }}
                     </strong>
+
                     <p>
-                        {{ review.created_at }}
+                        Created on: {{ review.created_at }}
+                        <br>
+                        {% if review.updated_at %}
+                            Edited on: {{ review.updated_at }}
+                        {% endif %}
                     </p>
                     <hr>
                     {% if review.review_text|length > 500 %}

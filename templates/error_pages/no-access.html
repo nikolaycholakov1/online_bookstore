@@ -6,8 +6,13 @@
         <div class="alert alert-danger text-center">
             <img src="{% static 'images/man-reading.svg' %}" alt="Man Reading" class="img-fluid"
                  style="max-height: 200px;">
-            <h1 class="display-4 mt-3">Error 403</h1>
-            <h3>You do not have permission to access this page.</h3>
+            <h1 class="display-4 mt-3">Error</h1>
+
+            {% if error_message %}
+                <h3>{{ error_message }} <a href="{% url 'login' %}">Login here</a></h3>
+            {% else %}
+                <h3>You do not have permission to access this page.</h3>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

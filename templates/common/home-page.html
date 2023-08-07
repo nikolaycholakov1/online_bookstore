@@ -27,7 +27,9 @@
                                 <form method="post" action="{% url 'add-to-cart' pk=book.pk %}"
                                       style="width: 100%; background-color: transparent; box-shadow: none;">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                                    {% if user.is_authenticated %}
+                                        <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                                    {% endif %}
                                 </form>
                             </div>
                         </div>

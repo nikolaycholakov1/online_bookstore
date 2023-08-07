@@ -1,6 +1,8 @@
 # store/views.py
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views import View
 from .models import Cart, CartItem, Order, OrderItem
 from .forms import CheckoutForm
@@ -14,6 +16,7 @@ class AddToCartView(View):
 
         cart, _ = Cart.objects.get_or_create(user=request.user)
 
+        # Try to retrieve an existing cart item for the book, or create a new one.
         cart_item, created = CartItem.objects.get_or_create(cart=cart, book=book)
         if not created:
             cart_item.quantity += quantity
@@ -25,8 +28,12 @@ class AddToCartView(View):
 
 
 class CartView(View):
+    template_name = 'store/cart.html'
+
+    @method_decorator(login_required(login_url='login'))
     def get(self, request):
-        cart = Cart.objects.get_or_create(user=request.user)[0]
+        cart, created = Cart.objects.get_or_create(user=request.user)
+
         cart_items = cart.cartitem_set.all()
         total_price = cart.total_price()
 
@@ -36,23 +43,23 @@ class CartView(View):
             'total_price': total_price
         }
 
-        return render(request, 'store/cart.html', context)
+        return render(request, self.template_name, context)
 
 
 class RemoveFromCartView(View):
     def post(self, request):
         cart_item_id = request.POST.get('cart_item_id')
 
-        try:
-            cart_item = CartItem.objects.get(pk=cart_item_id, cart__user=request.user)
-            cart_item.delete()
-        except CartItem.DoesNotExist:
-            pass
+        cart_item = get_object_or_404(CartItem, pk=cart_item_id, cart__user=request.user)
+        cart_item.delete()
 
         return redirect('cart')
 
 
 class OrderSummaryView(View):
+    template_name = 'common/my-orders.html'
+
+    @method_decorator(login_required(login_url='login'))
     def get(self, request):
         orders = Order.objects.filter(user=request.user)
 
@@ -60,10 +67,13 @@ class OrderSummaryView(View):
             'orders': orders
         }
 
-        return render(request, 'common/my-orders.html', context)
+        return render(request, self.template_name, context)
 
 
 class CheckoutView(View):
+    template_name = 'store/checkout.html'
+
+    @method_decorator(login_required(login_url='login'))
     def get(self, request):
         cart = Cart.objects.get_or_create(user=request.user)[0]
         cart_items = cart.cartitem_set.all()
@@ -77,7 +87,7 @@ class CheckoutView(View):
             'form': form
         }
 
-        return render(request, 'store/checkout.html', context)
+        return render(request, self.template_name, context)
 
     def post(self, request):
         cart = Cart.objects.get_or_create(user=request.user)[0]
@@ -109,11 +119,12 @@ class CheckoutView(View):
                 'form': form
             }
 
-            return render(request, 'store/checkout.html', context)
+            return render(request, self.template_name, context)
 
 
 class ChangeCartItemQuantityView(View):
     def post(self, request):
+
         cart_item_id = request.POST.get('cart_item_id')
         quantity_change = int(request.POST.get('quantity_change', 0))
 

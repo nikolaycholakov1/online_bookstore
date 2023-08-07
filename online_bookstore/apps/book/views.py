@@ -6,16 +6,23 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
+
 from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm
 from .models import Book, BookReview, Customer
 from ..store.models import Order
 
 
 class ProfilePageView(LoginRequiredMixin, View):
+    def handle_no_permission(self):
+        error_message = 'Please log in to view this page.'
+
+        context = {
+            'error_message': error_message
+        }
+        return render(self.request, 'error_pages/no-access.html', context)
 
     def get(self, request):
         user = request.user
@@ -83,6 +90,16 @@ class HomePageView(TemplateView):
 
 
 class MyOrdersView(LoginRequiredMixin, View):
+    def handle_no_permission(self):
+        error_message = 'Please log in to view this page.'
+
+        context = {
+            'error_message': error_message
+        }
+        return render(self.request, 'error_pages/no-access.html', context)
+
+    template_name = 'common/my-orders.html'
+
     def get(self, request):
         # Retrieving the order information related to the current user
         orders = Order.objects.filter(user=request.user)
@@ -90,7 +107,7 @@ class MyOrdersView(LoginRequiredMixin, View):
         context = {
             'orders': orders
         }
-        return render(request, 'common/my-orders.html', context)
+        return render(request, self.template_name, context)
 
 
 class LoginUserView(LoginView):
@@ -102,6 +119,7 @@ class LoginUserView(LoginView):
         return super().form_invalid(form)
 
 
+# Reviewed
 class LogoutUserView(LogoutView):
     next_page = 'home-page'
 
@@ -128,7 +146,6 @@ class RegisterView(View):
         if form.is_valid():
             form.save()
 
-            # Get the username and password from the form
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
 
@@ -164,6 +181,10 @@ class CataloguePageView(ListView):
                 Q(category__icontains=search_query)
             )
 
+        ordering = self.request.GET.get('ordering')
+        if ordering in ('price', 'category'):
+            queryset = queryset.order_by(ordering)
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -194,7 +215,7 @@ class BookDetailView(View):
         try:
             book = Book.objects.get(pk=pk)
         except Book.DoesNotExist:
-            return redirect(reverse('book-not-found'))  # Redirect /book-not-found/
+            return redirect(reverse('book-not-found'))  # Redirects to /book-not-found/
 
         reviews = book.reviews.order_by('-created_at')  # Sort reviews by date in descending order
         review_form = ReviewForm()
@@ -296,19 +317,18 @@ class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return render(self.request, 'error_pages/no-access.html')
 
 
-class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
+# class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
+#
+#     def test_func(self):
+#         return self.request.user.is_staff
+#
+#     def dispatch(self, request, *args, **kwargs):
+#         review = get_object_or_404(BookReview, pk=self.kwargs['pk'])
+#         if self.request.user.is_staff:
+#             review.delete()
+#             return redirect('book-detail', pk=review.book.pk)
 
-    def test_func(self):
-        return self.request.user.is_staff
 
-    def dispatch(self, request, *args, **kwargs):
-        review = get_object_or_404(BookReview, pk=self.kwargs['pk'])
-        if self.request.user.is_staff:
-            review.delete()
-            return redirect('book-detail', pk=review.book.pk)
-
-
-# /TODO: Fix render no access
 class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
     form_class = BookPublishForm

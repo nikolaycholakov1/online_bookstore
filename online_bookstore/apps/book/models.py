@@ -54,18 +54,6 @@ class Customer(AbstractUser):
         ],
     )
 
-    SITE_COLOR_CHOICES = [
-        ('classic', 'Classic'),
-        ('dark', 'Dark Mode'),
-        ('light', 'Light Mode'),
-    ]
-
-    site_color_theme = models.CharField(
-        max_length=10,
-        choices=SITE_COLOR_CHOICES,
-        default='classic',
-    )
-
     def __str__(self):
         return self.username
 
@@ -183,6 +171,7 @@ class DeliveryAddress(models.Model):
     CITY_MAX_LEN = 30
     ADDRESS_MAX_LEN = 200
     ZIP_CODE_MAX_LEN = 9
+
     SHIPPING_CHOICES = (
         ('By courier', 'By courier'),
         ('From courier office', 'From courier office'),
@@ -191,7 +180,7 @@ class DeliveryAddress(models.Model):
 
     customer = models.ForeignKey(
         Customer,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         blank=True,
         null=True,
     )

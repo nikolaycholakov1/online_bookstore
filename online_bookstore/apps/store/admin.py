@@ -21,7 +21,6 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ['user__username', 'user__email']
 
 
-
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ['order', 'book', 'quantity', 'price']
