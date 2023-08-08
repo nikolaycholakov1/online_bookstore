@@ -13,47 +13,48 @@
                             <h5 class="card-title">Cart Items</h5>
                             <table class="table table-bordered mb-0">
                                 <thead>
-                                <tr>
-                                    <th>Book</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th></th>
-                                </tr>
+                                    <tr>
+                                        <th class="text-center align-middle">Book</th>
+                                        <th class="text-center align-middle">Quantity</th>
+                                        <th class="text-center align-middle">Price</th>
+                                        <th></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                {% for cart_item in cart_items %}
-                                    <tr id="cart-item-{{ cart_item.id }}">
-                                        <td>
-                                            <img src="{{ cart_item.book.cover_image.url }}" alt="Book Cover"
-                                                 class="img-thumbnail mr-2" style="width: 50px; height: 70px;">
-                                            {{ cart_item.book.title }}
-                                        </td>
-                                        <td>
-                                            <!-- Button to decrease quantity -->
-                                            <button type="button" class="btn btn-sm btn-secondary change-quantity-btn"
-                                                    data-cart-item-id="{{ cart_item.id }}" data-quantity-change="-1">
-                                                <i class="fas fa-chevron-down"></i>
-                                            </button>
-                                            <span id="cart-item-quantity-{{ cart_item.id }}">{{ cart_item.quantity }}</span>
-                                            <!-- Button to increase quantity -->
-                                            <button type="button" class="btn btn-sm btn-secondary change-quantity-btn"
-                                                    data-cart-item-id="{{ cart_item.id }}" data-quantity-change="1">
-                                                <i class="fas fa-chevron-up"></i>
-                                            </button>
-                                        </td>
-                                        <td class="card-text font-weight-bold text-danger item-price">
-                                            ${{ cart_item.get_total }}
-                                        </td>
-                                        <td>
-                                            <form method="post" action="{% url 'remove-from-cart' %}" class="d-inline">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">Remove
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+                                    {% for cart_item in cart_items %}
+                                        <tr id="cart-item-{{ cart_item.id }}">
+                                            <td class="d-flex p-3">
+                                                <img src="{{ cart_item.book.cover_image.url }}" alt="Book Cover"
+                                                     class="img-thumbnail mr-2" style="width: 35%; height: 35%;">
+                                                <p class="d-flex justify-content-center align-items-center m-0">{{ cart_item.book.title }}</p>
+                                            </td>
+                                            <td class="text-center align-middle p-3">
+                                                <!-- Button to decrease quantity -->
+                                                <div style="display: flex">
+                                                    <button type="button" class="btn btn-sm btn-secondary change-quantity-btn m-1"
+                                                            data-cart-item-id="{{ cart_item.id }}" data-quantity-change="-1">
+                                                        <i class="fas fa-chevron-down"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-secondary change-quantity-btn m-1"
+                                                            data-cart-item-id="{{ cart_item.id }}" data-quantity-change="1">
+                                                        <i class="fas fa-chevron-up"></i>
+                                                    </button>
+                                                </div>
+                                                <span id="cart-item-quantity-{{ cart_item.id }}" class="mx-2">{{ cart_item.quantity }}</span>
+                                                <!-- Button to increase quantity -->
+                                            </td>
+                                            <td class="text-center align-middle card-text font-weight-bold text-danger item-price p-3">
+                                                ${{ cart_item.get_total }}
+                                            </td>
+                                            <td class="text-center align-middle p-3">
+                                                <form method="post" action="{% url 'remove-from-cart' %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -101,7 +102,7 @@
 
             function updateOrderSummary(totalItems, totalPrice) {
                 $('#total-items').text(totalItems);
-                $totalPriceElement.text('$' + totalPrice.toFixed(2)); // Step 2
+                $totalPriceElement.text(totalPrice); // Step 2
             }
 
             function changeQuantity(cartItemId, quantityChange) {
@@ -137,7 +138,7 @@
                 totalPrice += itemUnitPrice * quantityChange;
                 totalPrice = Math.max(totalPrice, itemUnitPrice);
 
-                $totalPriceElement.text('$' + totalPrice.toFixed(2)); // Step 2
+                $totalPriceElement.text(totalPrice.toFixed(2)); // Step 2
             }
 
             $('.change-quantity-btn').on('click', function () {
