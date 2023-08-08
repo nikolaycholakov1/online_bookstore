@@ -71,12 +71,13 @@
                     <strong>
                         {{ review.user.username }}
                     </strong>
-
                     <p>
-                        Created on: {{ review.created_at }}
-                        <br>
-                        {% if review.updated_at %}
-                            Edited on: {{ review.updated_at }}
+                        Created on: {{ review.created_at|date:"F d, Y" }}
+                        {% if review.updated_at > review.created_at %}
+                            <span class="edited-indicator" data-toggle="tooltip"
+                                  title="Edited on {{ review.updated_at|date:"F d, Y" }}">
+                                  (edited)
+                            </span>
                         {% endif %}
                     </p>
                     <hr>
@@ -95,8 +96,10 @@
                     <hr>
                     {% if user.is_authenticated %}
                         {% if user == review.user %}
-                            <a href="#" class="btn btn-link edit-review-btn" data-review-id="{{ review.id }}">Edit
+                            <a href="#" class="btn btn-link edit-review-btn" data-review-id="{{ review.id }}"><i
+                                    class="fas fa-pencil-alt"></i> Edit
                                 Review</a>
+
                         {% endif %}
                     {% endif %}
                 </div>
@@ -175,6 +178,10 @@
                     // Redirect to the edit page with the reviewId
                     window.location.href = `/edit-review/${reviewId}/`; // Update URL pattern as needed
                 });
+            });
+
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
             });
 
         });

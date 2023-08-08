@@ -11,10 +11,10 @@
             {% for book in featured_books %}
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src="{{ book.cover_image.url }}" class="card-img-top img-fluid" style="height: 25rem"
+                        <img src="{{ book.cover_image.url }}" class="card-img-top img-fluid" style="height: 28rem"
                              alt="Book Cover">
                         <div class="card-body">
-                            <h5 style="height: 3rem" class="card-title">{{ book.title }}</h5>
+                            <h5 class="card-title">{{ book.title }}</h5>
                             <hr>
                             <p class="card-text">By <strong>{{ book.author }}</strong></p>
                             <p class="card-text">{{ book.description|truncatechars:60 }}</p>
@@ -23,7 +23,7 @@
 
                             <hr>
                             <div class="mt-auto text-center">
-                                <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary btn-sm">Details</a>
+                                <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-primary btn-lg">Details</a>
                                 <form method="post" action="{% url 'add-to-cart' pk=book.pk %}"
                                       style="width: 100%; background-color: transparent; box-shadow: none;">
                                     {% csrf_token %}

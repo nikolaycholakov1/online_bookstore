@@ -15,6 +15,7 @@ from .models import Book, BookReview, Customer
 from ..store.models import Order
 
 
+# Reviewed
 class ProfilePageView(LoginRequiredMixin, View):
     def handle_no_permission(self):
         error_message = 'Please log in to view this page.'
@@ -61,6 +62,7 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, 'common/profile.html', context)
 
 
+# Reviewed
 class AboutUsView(TemplateView):
     template_name = 'common/about-us.html'
 
@@ -72,7 +74,7 @@ class AboutUsView(TemplateView):
         context['superusers'] = superusers
         return context
 
-
+# Reviewed
 class HomePageView(TemplateView):
     template_name = 'common/home-page.html'
 
@@ -109,7 +111,7 @@ class MyOrdersView(LoginRequiredMixin, View):
         }
         return render(request, self.template_name, context)
 
-
+# Reviewed
 class LoginUserView(LoginView):
     template_name = 'common/login.html'
 
@@ -127,7 +129,7 @@ class LogoutUserView(LogoutView):
         context = super().get_context_data(**kwargs)
         return context
 
-
+# Reviewed
 class RegisterView(View):
     template_name = 'common/register.html'
     success_url = reverse_lazy('home-page')  # Use reverse_lazy to avoid import errors
@@ -181,11 +183,7 @@ class CataloguePageView(ListView):
                 Q(category__icontains=search_query)
             )
 
-        ordering = self.request.GET.get('ordering')
-        if ordering in ('price', 'category'):
-            queryset = queryset.order_by(ordering)
-
-        return queryset
+        return queryset.order_by('-price')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

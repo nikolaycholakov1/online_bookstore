@@ -9,6 +9,6 @@ urlpatterns = [
     path('cart/', CartView.as_view(), name='cart'),
     path('remove-from-cart/', RemoveFromCartView.as_view(), name='remove-from-cart'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
-    path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
+    # path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('change-cart-item-quantity/', ChangeCartItemQuantityView.as_view(), name='change-cart-item-quantity'),
 ]

@@ -107,7 +107,7 @@ class CheckoutView(View):
 
             cart.cartitem_set.all().delete()
 
-            return redirect('order-summary')
+            return redirect('my-orders')
         else:
             cart_items = cart.cartitem_set.all()
             total_price = cart.total_price()

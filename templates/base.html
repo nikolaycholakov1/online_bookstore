@@ -43,11 +43,12 @@
                         </li>
                     {% endif %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle h5 font-weight-bold" href="#" id="profileDropdown"
+                        <a class="nav-link dropdown-toggle h5 font-weight-bold d-flex align-items-center" href="#"
+                           id="profileDropdown"
                            role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="username">{{ user.username }}</div>
-                            <i class="fas fa-user"></i>
+                            <div class="username mr-2">{{ user.username }}</div>
+                            <i class="fas fa-user text-success"></i>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="profileDropdown">
                             <a class="dropdown-item text-dark" href="{% url 'profile-page' %}">My Profile &#x2192;</a>
@@ -63,9 +64,9 @@
                     <li class="nav-item">
                         <a class="nav-link btn btn-pop-out btn-primary h5 font-weight-bold" href="{% url 'login' %}">Login</a>
                     </li>
-                    <li class="nav-item guest-user">
-                        <div class="username h5 font-weight-bold">Guest</div>
-                        <i class="fas fa-user"></i>
+                    <li class="nav-item guest-user d-flex align-items-center">
+                        <div class="nav-link h5 font-weight-bold mr-2">Guest</div> <!-- Added nav-link class -->
+                        <i class="fas fa-user text-danger"></i>
                     </li>
                 {% endif %}
 
