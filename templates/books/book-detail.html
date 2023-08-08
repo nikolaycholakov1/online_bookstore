@@ -76,7 +76,7 @@
                         {% if review.updated_at > review.created_at %}
                             <span class="edited-indicator" data-toggle="tooltip"
                                   title="Edited on {{ review.updated_at|date:"F d, Y" }}">
-                                  (edited)
+                                  <strong>(edited)</strong>
                             </span>
                         {% endif %}
                     </p>

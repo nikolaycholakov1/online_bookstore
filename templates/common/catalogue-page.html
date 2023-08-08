@@ -74,12 +74,6 @@
                                         <a href="{% url 'book-detail' pk=book.pk %}" style="background-color: #007bff"
                                            class="btn btn-primary btn-sm">Details</a>
                                     </div>
-                                    {% if user.is_authenticated and user.is_staff %}
-                                        <div class="col-6">
-                                            <a href="{% url 'delete-book' pk=book.pk %}"
-                                               class="btn btn-danger btn-sm btn-block">Delete</a>
-                                        </div>
-                                    {% endif %}
                                 </div>
                                 <div class="row">
                                     <div class="col-12">

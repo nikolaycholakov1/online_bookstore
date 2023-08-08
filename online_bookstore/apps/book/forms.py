@@ -34,37 +34,6 @@ class ReviewForm(forms.ModelForm):
             )
 
 
-class ShippingInfoForm(forms.ModelForm):
-    class Meta:
-        model = DeliveryAddress
-        fields = ['country', 'city', 'address', 'zip_code', 'shipping_method']
-
-    def __init__(self, *args, **kwargs):
-        super(ShippingInfoForm, self).__init__(*args, **kwargs)
-
-        labels = {
-            'country': 'Country',
-            'city': 'City',
-            'address': 'Address',
-            'zip_code': 'ZIP Code',
-            'shipping_method': 'Shipping Method',
-        }
-
-        for field_name, label in labels.items():
-            self.fields[field_name].label = label
-
-        widget_placeholders = {
-            'country': 'Enter your Country',
-            'address': 'Enter your address',
-            'city': 'Enter your city',
-            'zip_code': 'Enter your ZIP code',
-            'shipping_method': 'Enter your Shipping Method',
-        }
-
-        for field_name, placeholder in widget_placeholders.items():
-            self.fields[field_name].widget.attrs['placeholder'] = placeholder
-
-
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Customer

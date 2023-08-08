@@ -13,34 +13,7 @@
                         {% csrf_token %}
                         <h3>Shipping Information</h3>
                         <hr>
-                        <div class="form-field">
-                            <label for="{{ form.shipping_full_name.id_for_label }}">*Full Name:</label>
-                            {{ form.shipping_full_name }}
-                        </div>
-                        <div class="form-field">
-                            <label for="{{ form.shipping_email.id_for_label }}">*Email:</label>
-                            {{ form.shipping_email }}
-                        </div>
-                        <div class="form-field">
-                            <label for="{{ form.shipping_country.id_for_label }}">*Country:</label>
-                            {{ form.shipping_country }}
-                        </div>
-                        <div class="form-field">
-                            <label for="{{ form.shipping_city.id_for_label }}">*City:</label>
-                            {{ form.shipping_city }}
-                        </div>
-                        <div class="form-field">
-                            <label for="{{ form.shipping_address.id_for_label }}">*Address:</label>
-                            {{ form.shipping_address }}
-                        </div>
-                        <div class="form-field">
-                            <label for="{{ form.shipping_zipcode.id_for_label }}">*Zip Code:</label>
-                            {{ form.shipping_zipcode }}
-                        </div>
-                        <div class="form-field">
-                            <label for="{{ form.payment_method.id_for_label }}">*Payment Method</label>
-                            {{ form.payment_method }}
-                        </div>
+                        {{ form.as_p }}
                         <hr>
                         <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
                     </form>
@@ -50,7 +23,6 @@
 
             <div class="col-lg-6">
                 <div class="box-element p-3 rounded bg-white shadow">
-                    {#                    <a class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>#}
                     <a class="btn btn-primary" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
                     <hr>
                     <h3>Order Summary</h3>

@@ -1,5 +1,4 @@
-<!-- publish-book.html -->
-
+<!-- edit-book.html -->
 
 {% extends 'base.html' %}
 
@@ -9,7 +8,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Publish a new book to the Emporium</h4>
+                        <h4 class="mb-0">Edit Book</h4>
                     </div>
                     <div class="card-body">
                         <form method="post" enctype="multipart/form-data">
@@ -21,7 +20,8 @@
                                     {{ field }}
                                 </div>
                             {% endfor %}
-                            <button type="submit" class="btn btn-primary btn-block mt-4">Publish Book</button>
+                            <button type="submit" class="btn btn-primary btn-block mt-4">Save Changes</button>
+                        <button type="submit" class="btn btn-primary btn-block mt-4">Cancel</button>
                         </form>
                     </div>
                 </div>

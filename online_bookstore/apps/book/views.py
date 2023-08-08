@@ -3,16 +3,88 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
 
 from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm
 from .models import Book, BookReview, Customer
 from ..store.models import Order
+
+
+# Reviewed
+class RegisterView(View):
+    template_name = 'common/register.html'
+    success_url = reverse_lazy('home-page')  # Use reverse_lazy to avoid import errors
+
+    def get(self, request):
+        form = RegistrationForm()
+
+        context = {
+            'form': form
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+
+            # Authenticate the user and log them in
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+
+            return redirect(self.success_url)
+
+        context = {
+            'form': form
+        }
+
+        return render(request, self.template_name, context)
+
+
+# Reviewed
+
+class LoginUserView(LoginView):
+    template_name = 'common/login.html'
+
+    def form_invalid(self, form):
+        # Add a custom error message to the form
+        form.add_error(None, "Incorrect username or password. Please try again.")
+        return super().form_invalid(form)
+
+
+# Reviewed
+class LogoutUserView(LogoutView):
+    next_page = 'home-page'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+# Reviewed
+class HomePageView(TemplateView):
+    template_name = 'common/home-page.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Fetch featured books from the database
+        featured_books = Book.objects.filter(featured=True)
+        context['featured_books'] = featured_books
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
 
 
 # Reviewed
@@ -74,23 +146,8 @@ class AboutUsView(TemplateView):
         context['superusers'] = superusers
         return context
 
+
 # Reviewed
-class HomePageView(TemplateView):
-    template_name = 'common/home-page.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Fetch featured books from the database
-        featured_books = Book.objects.filter(featured=True)
-        context['featured_books'] = featured_books
-
-        return context
-
-    def post(self, request, *args, **kwargs):
-        return self.get(request, *args, **kwargs)
-
-
 class MyOrdersView(LoginRequiredMixin, View):
     def handle_no_permission(self):
         error_message = 'Please log in to view this page.'
@@ -111,60 +168,8 @@ class MyOrdersView(LoginRequiredMixin, View):
         }
         return render(request, self.template_name, context)
 
-# Reviewed
-class LoginUserView(LoginView):
-    template_name = 'common/login.html'
 
-    def form_invalid(self, form):
-        # Add a custom error message to the form
-        form.add_error(None, "Incorrect username or password. Please try again.")
-        return super().form_invalid(form)
-
-
-# Reviewed
-class LogoutUserView(LogoutView):
-    next_page = 'home-page'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-# Reviewed
-class RegisterView(View):
-    template_name = 'common/register.html'
-    success_url = reverse_lazy('home-page')  # Use reverse_lazy to avoid import errors
-
-    def get(self, request):
-        form = RegistrationForm()
-
-        context = {
-            'form': form
-        }
-
-        return render(request, self.template_name, context)
-
-    def post(self, request):
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-
-            # Authenticate the user and log them in
-            user = authenticate(request, username=username, password=password)
-            if user:
-                login(request, user)
-
-            return redirect(self.success_url)
-
-        context = {
-            'form': form
-        }
-
-        return render(request, self.template_name, context)
-
-
+# Reviewed but queryset method needs studying
 class CataloguePageView(ListView):
     model = Book
     template_name = 'common/catalogue-page.html'
@@ -185,37 +190,18 @@ class CataloguePageView(ListView):
 
         return queryset.order_by('-price')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
 
-        page_number = self.request.GET.get('page')
-        paginator = context['paginator']
-        try:
-            books = paginator.get_page(page_number)
-        except PageNotAnInteger:
-            books = paginator.get_page(1)
-        except EmptyPage:
-            books = paginator.get_page(paginator.num_pages)
-
-        context = {
-            'books': books,
-            'is_paginated': books.has_other_pages(),
-            'page_obj': books,
-        }
-
-        return context
-
-
+# Reviewed
 class BookDetailView(View):
     template_name = 'books/book-detail.html'
 
-    def get(self, request, pk):
-        try:
-            book = Book.objects.get(pk=pk)
-        except Book.DoesNotExist:
-            return redirect(reverse('book-not-found'))  # Redirects to /book-not-found/
+    def get_book_and_reviews(self, pk):  # Utility method for fetching books and reviews
+        book = get_object_or_404(Book, pk=pk)
+        reviews = book.reviews.order_by('-created_at')
+        return book, reviews
 
-        reviews = book.reviews.order_by('-created_at')  # Sort reviews by date in descending order
+    def get(self, request, pk):
+        book, reviews = self.get_book_and_reviews(pk)
         review_form = ReviewForm()
 
         context = {
@@ -227,17 +213,16 @@ class BookDetailView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, pk):
-        book = get_object_or_404(Book, pk=pk)
+        book, reviews = self.get_book_and_reviews(pk)
         review_form = ReviewForm(request.POST)
 
         if review_form.is_valid():
             review = review_form.save(commit=False)
-            review.book = book
             review.user = request.user
+            review.book = book
             review.save()
             return redirect('book-detail', pk=pk)
 
-        reviews = book.reviews.order_by('-created_at')
         context = {
             'book': book,
             'reviews': reviews,
@@ -247,14 +232,18 @@ class BookDetailView(View):
         return render(request, self.template_name, context)
 
 
+# Reviewed Visit again
 class EditReviewView(LoginRequiredMixin, UpdateView):
+    template_name = 'books/edit-review.html'
     model = BookReview
     form_class = ReviewForm
-    template_name = 'books/edit-review.html'
 
     def get_success_url(self):
         review = self.object
-        return reverse_lazy('book-detail', kwargs={'pk': review.book.pk})
+        kwargs = {
+            'pk': review.book.pk
+        }
+        return reverse_lazy('book-detail', kwargs)
 
     def get_object(self, queryset=None):
         review_id = self.kwargs.get('review_id')
@@ -266,13 +255,15 @@ class EditReviewView(LoginRequiredMixin, UpdateView):
         return kwargs
 
 
-class BookNotFoundView(View):
-    template_name = 'error_pages/book-not-found.html'
+# class BookNotFoundView(View):
+#     template_name = 'error_pages/book-not-found.html'
+#
+#     def get(self, request, book_id):
+#         book = get_object_or_404(Book, id=book_id)
+#         return render(request, self.template_name, {'book': book})
 
-    def get(self, request):
-        return render(request, self.template_name)
 
-
+# Reviewed
 class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'books/publish-book.html'
     form_class = BookPublishForm
@@ -281,8 +272,11 @@ class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        # Redirect non-staff users to a different page with an error message
-        return render(self.request, 'error_pages/no-access.html')
+        error_message = 'You need staff privileges to publish a book.'
+        context = {
+            'error_message': error_message
+        }
+        return render(self.request, 'error_pages/no-access.html', context)
 
     def get(self, request):
         form = self.form_class()
@@ -303,50 +297,47 @@ class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
         return render(request, self.template_name, context)
 
 
+# Reviewed
 class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Book
     template_name = 'books/confirm-delete.html'
+    model = Book
     success_url = reverse_lazy('catalogue-page')
 
     def test_func(self):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'error_pages/no-access.html')
+        error_message = 'You need staff privileges to delete a book.'
+        context = {
+            'error_message': error_message
+        }
+        return render(self.request, 'error_pages/no-access.html', context)
 
 
-# class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, View):
-#
-#     def test_func(self):
-#         return self.request.user.is_staff
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         review = get_object_or_404(BookReview, pk=self.kwargs['pk'])
-#         if self.request.user.is_staff:
-#             review.delete()
-#             return redirect('book-detail', pk=review.book.pk)
-
-
+# Reviewed
 class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = 'books/edit-book.html'
     model = Book
     form_class = BookPublishForm
-    template_name = 'books/edit_book.html'
 
     def get_success_url(self):
-        return reverse_lazy('book-detail', kwargs={'pk': self.object.pk})
+        kwargs = {
+            'pk': self.object.pk
+        }
+        return reverse_lazy('book-detail', kwargs)
 
     def test_func(self):
         return self.request.user.is_staff
 
     def handle_no_permission(self):
-        return render(self.request, 'error_pages/no-access.html')
+        error_message = 'You need staff privileges to edit a book.'
+        context = {
+            'error_message': error_message
+        }
+        return render(self.request, 'error_pages/no-access.html', context)
 
 
-def bad_request(request, exception):
-    context = {}
-    return render(request, 'error_pages/400.html', context, status=400)
-
-
+# Reviewed - only works with DEBUG=FALSE
 class Custom404View(View):
     def get(self, request, exception):
         context = {}
