@@ -41,9 +41,9 @@
                                                 <i class="fas fa-chevron-up"></i>
                                             </button>
                                         </td>
-                                        <td class="card-text font-weight-bold text-danger">
-                                            ${{ cart_item.get_total }}</td>
-
+                                        <td class="card-text font-weight-bold text-danger item-price">
+                                            ${{ cart_item.get_total }}
+                                        </td>
                                         <td>
                                             <form method="post" action="{% url 'remove-from-cart' %}" class="d-inline">
                                                 {% csrf_token %}
@@ -86,37 +86,26 @@
 
     <script>
         $(document).ready(function () {
+            const $totalPriceElement = $('#total-price'); // Step 1
+
             // Function to get the CSRF token from the cookie
             function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
             }
 
-            // Function to update the cart item's quantity in the DOM
             function updateCartItemQuantity(cartItemId, newQuantity) {
-                $('#cart-item-quantity-' + cartItemId).text(newQuantity);
+                $(`#cart-item-quantity-${cartItemId}`).text(newQuantity);
             }
 
-            // Function to update the Order Summary section
             function updateOrderSummary(totalItems, totalPrice) {
                 $('#total-items').text(totalItems);
-                $('#total-price').text('$' + totalPrice.toFixed(2));
+                $totalPriceElement.text('$' + totalPrice.toFixed(2)); // Step 2
             }
 
-            // Function to handle quantity update
             function changeQuantity(cartItemId, quantityChange) {
-                var csrftoken = getCookie('csrftoken');
+                const csrftoken = getCookie('csrftoken');
                 $.ajax({
                     url: "{% url 'change-cart-item-quantity' %}",
                     method: "POST",
@@ -128,35 +117,40 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data.success) {
-                            // If the update was successful, update the quantity in the DOM
                             updateCartItemQuantity(cartItemId, data.new_quantity);
-
-                            // Update the Order Summary section
                             updateOrderSummary(data.total_items, data.total_price);
                         } else {
-                            // Handle any error messages if needed
                             console.log(data.error);
                         }
                     },
                     error: function () {
-                        // Handle AJAX error if needed
                         console.log("An error occurred while updating quantity.");
                     }
                 });
             }
 
-            // Event listener for the quantity change buttons
+            function handleLocalTotalPriceUpdate(cartItemId, quantityChange) {
+                const itemUnitPrice = parseFloat($(`#cart-item-${cartItemId} .item-price`).text().replace('$', ''));
+
+                let totalPrice = parseFloat($totalPriceElement.text().replace('$', ''));
+
+                totalPrice += itemUnitPrice * quantityChange;
+                totalPrice = Math.max(totalPrice, itemUnitPrice);
+
+                $totalPriceElement.text('$' + totalPrice.toFixed(2)); // Step 2
+            }
+
             $('.change-quantity-btn').on('click', function () {
-                var cartItemId = $(this).data('cart-item-id');
-                var quantityChange = $(this).data('quantity-change');
-                var currentQuantity = parseInt($('#cart-item-quantity-' + cartItemId).text());
-                var newQuantity = currentQuantity + quantityChange;
+                const cartItemId = $(this).data('cart-item-id');
+                const quantityChange = $(this).data('quantity-change');
+                let currentQuantity = parseInt($('#cart-item-quantity-' + cartItemId).text());
+                let newQuantity = currentQuantity + quantityChange;
+
                 if (newQuantity >= 1) {
-                    updateCartItemQuantity(cartItemId, newQuantity);
-                    changeQuantity(cartItemId, quantityChange); // Call AJAX function to update the backend
+                    handleLocalTotalPriceUpdate(cartItemId, quantityChange);
+                    changeQuantity(cartItemId, quantityChange);
                 }
             });
         });
     </script>
-
 {% endblock %}
