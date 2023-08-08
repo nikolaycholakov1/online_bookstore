@@ -12,8 +12,6 @@ class BaseModel(models.Model):
     )
     quantity = models.PositiveIntegerField(
         default=1,
-        null=True,
-        blank=True,
     )
     price = models.DecimalField(
         max_digits=10,
@@ -55,29 +53,8 @@ class Order(models.Model):
         default='Pending'
     )
 
-    def shipping(self):
-        shipping = False
-        order_items = self.orderitem_set.all()
-        for item in order_items:
-            if not item.book.digital_copy:
-                shipping = True
-                break
-        return shipping
-
     def total_price(self):
-        total = 0
-        order_items = self.orderitem_set.all()
-        for item in order_items:
-            total += item.get_total()
-        return total
-
-    def mark_as_shipped(self):
-        self.status = 'Shipped'
-        self.save()
-
-    def mark_as_delivered(self):
-        self.status = 'Delivered'
-        self.save()
+        return sum(item.get_total() for item in self.orderitem_set.all())
 
     def __str__(self):
         return f"Order #{self.id}"
@@ -98,11 +75,7 @@ class Cart(models.Model):
     )
 
     def total_price(self):
-        total = 0
-        cart_items = self.cartitem_set.all()
-        for item in cart_items:
-            total += item.get_total()
-        return total
+        return sum(item.get_total() for item in self.cartitem_set.all())
 
     def total_items(self):
         return sum(item.quantity for item in self.cartitem_set.all())

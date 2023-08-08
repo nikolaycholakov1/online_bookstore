@@ -1,14 +1,14 @@
 # store/views.py
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.decorators import method_decorator
 from django.views import View
 from .models import Cart, CartItem, Order, OrderItem
 from .forms import CheckoutForm
 from ..book.models import Book
 
 
+# Reviewed
 class AddToCartView(View):
     def post(self, request, pk):
         book = get_object_or_404(Book, pk=pk)
@@ -27,10 +27,11 @@ class AddToCartView(View):
         return redirect('cart')
 
 
-class CartView(View):
+# Reviewed but needs revisit to study
+class CartView(LoginRequiredMixin, View):
     template_name = 'store/cart.html'
+    login_url = 'login'
 
-    @method_decorator(login_required(login_url='login'))
     def get(self, request):
         cart, created = Cart.objects.get_or_create(user=request.user)
 
@@ -46,6 +47,7 @@ class CartView(View):
         return render(request, self.template_name, context)
 
 
+# Reviewed
 class RemoveFromCartView(View):
     def post(self, request):
         cart_item_id = request.POST.get('cart_item_id')
@@ -56,24 +58,26 @@ class RemoveFromCartView(View):
         return redirect('cart')
 
 
-class OrderSummaryView(View):
-    template_name = 'common/my-orders.html'
+# Reviewed - Change to "Thank you for your order?"
+# class OrderSummaryView(LoginRequiredMixin, View):
+#     template_name = 'common/my-orders.html'
+#     login_url = 'login'
+#
+#     def get(self, request):
+#         orders = Order.objects.filter(user=request.user)
+#
+#         context = {
+#             'orders': orders
+#         }
+#
+#         return render(request, self.template_name, context)
 
-    @method_decorator(login_required(login_url='login'))
-    def get(self, request):
-        orders = Order.objects.filter(user=request.user)
 
-        context = {
-            'orders': orders
-        }
-
-        return render(request, self.template_name, context)
-
-
-class CheckoutView(View):
+# Reviewed. Can be refactored
+class CheckoutView(LoginRequiredMixin, View):
     template_name = 'store/checkout.html'
+    login_url = 'login'
 
-    @method_decorator(login_required(login_url='login'))
     def get(self, request):
         cart = Cart.objects.get_or_create(user=request.user)[0]
         cart_items = cart.cartitem_set.all()
@@ -122,44 +126,124 @@ class CheckoutView(View):
             return render(request, self.template_name, context)
 
 
+# Reviewed. Validation is not required
 class ChangeCartItemQuantityView(View):
+
     def post(self, request):
 
+        # Retrieve the cart item ID and the quantity change from the POST request
         cart_item_id = request.POST.get('cart_item_id')
         quantity_change = int(request.POST.get('quantity_change', 0))
 
-        if not cart_item_id or quantity_change == 0:
-            context = {
-                'success': False,
-                'error': 'Invalid request'
-            }
-            return JsonResponse(context)
+        cart_item = self.get_cart_item(cart_item_id)
+        cart = cart_item.cart
 
+        # Update the quantity of the cart item based on the provided change
+        self.update_cart_item_quantity(cart_item, quantity_change)
+
+        # Create a response context with details about the updated cart
+        context = {
+            'success': True,
+            'new_quantity': cart_item.quantity if cart_item.pk else 0,
+            # Check if cart item still exists (wasn't deleted)
+            'total_items': cart.total_items(),
+        }
+
+        return JsonResponse(context)
+
+    @staticmethod
+    def get_cart_item(cart_item_id):
+        """
+        Retrieve a cart item based on its ID.
+        Returns the cart item if found, otherwise returns None.
+        """
         try:
-            cart_item = CartItem.objects.get(id=cart_item_id)
+            return CartItem.objects.get(id=cart_item_id)
         except CartItem.DoesNotExist:
-            context = {
-                'success': False,
-                'error': 'Cart item not found'
-            }
-            return JsonResponse(context)
+            return None
 
-        # Update the cart item quantity and save the changes
+    @staticmethod
+    def update_cart_item_quantity(cart_item, quantity_change):
+        """
+        Update the quantity of a cart item.
+        If the new quantity is 0 or less, the cart item is deleted.
+        Otherwise, the cart item is updated with the new quantity.
+        """
         cart_item.quantity += quantity_change
         if cart_item.quantity <= 0:
             cart_item.delete()
         else:
             cart_item.save()
 
-        # Recalculate the cart's total price after the quantity changes
-        cart = Cart.objects.get(user=request.user)
-        total_price = cart.total_price()
-
-        context = {
-            'success': True,
-            'new_quantity': cart_item.quantity,
-            'total_items': cart.total_items(),
-            'total_price': total_price,
-        }
-
-        return JsonResponse(context)
+# All checks still present
+# class ChangeCartItemQuantityView(View):
+#
+#     def post(self, request):
+#
+#         # Retrieve the cart item ID and the quantity change from the POST request
+#         cart_item_id = request.POST.get('cart_item_id')
+#         quantity_change = int(request.POST.get('quantity_change', 0))
+#
+#         # Validate that the necessary data is provided and that the quantity change is not zero
+#         if not cart_item_id or quantity_change == 0:
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': 'Invalid request'
+#             })
+#
+#         # Retrieve the cart item based on the provided ID
+#         cart_item = self.get_cart_item(cart_item_id)
+#         # If the cart item doesn't exist, return an error response
+#         if not cart_item:
+#             context = {
+#                 'success': False,
+#                 'error': 'Cart item not found'
+#             }
+#             return JsonResponse(context)
+#
+#         # Ensure that the cart associated with the cart item belongs to the current user
+#         cart = cart_item.cart
+#         if cart.user != request.user:
+#             context = {
+#                 'success': False,
+#                 'error': 'Unauthorized action'
+#             }
+#             return JsonResponse(context)
+#
+#         # Update the quantity of the cart item based on the provided change
+#         self.update_cart_item_quantity(cart_item, quantity_change)
+#
+#         # Create a response context with details about the updated cart
+#         context = {
+#             'success': True,
+#             'new_quantity': cart_item.quantity if cart_item.pk else 0,  # Check if cart item still exists (wasn't deleted)
+#             'total_items': cart.total_items(),
+#             'total_price': cart.total_price(),
+#         }
+#
+#         # Return the response as JSON
+#         return JsonResponse(context)
+#
+#     @staticmethod
+#     def get_cart_item(cart_item_id):
+#         """
+#         Retrieve a cart item based on its ID.
+#         Returns the cart item if found, otherwise returns None.
+#         """
+#         try:
+#             return CartItem.objects.get(id=cart_item_id)
+#         except CartItem.DoesNotExist:
+#             return None
+#
+#     @staticmethod
+#     def update_cart_item_quantity(cart_item, quantity_change):
+#         """
+#         Update the quantity of a cart item.
+#         If the new quantity is 0 or less, the cart item is deleted.
+#         Otherwise, the cart item is updated with the new quantity.
+#         """
+#         cart_item.quantity += quantity_change
+#         if cart_item.quantity <= 0:
+#             cart_item.delete()
+#         else:
+#             cart_item.save()
