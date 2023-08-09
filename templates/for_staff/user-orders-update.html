@@ -34,7 +34,7 @@
                         <td class="text-center align-middle border">${{ order.total_price|floatformat:2 }}</td>
                         <td class="text-center align-middle border">
                             <form style="background-color: transparent; box-shadow: none" method="post"
-                                  action="{% url 'user-orders-update' username=user.username %}"
+                                  action="{% url 'user-orders-update' username=customer.username %}"
                                   class="d-flex align-items-center justify-content-center mt-2">
                                 {% csrf_token %}
                                 {{ form.status|add_class:"custom-select custom-select-sm mr-2"|attr:"style:width:auto;" }}

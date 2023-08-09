@@ -111,7 +111,12 @@ class CheckoutView(LoginRequiredMixin, View):
 
             cart.cartitem_set.all().delete()
 
-            return redirect('my-orders')
+            context = {
+                'order': order,
+            }
+
+            return render(request, 'store/thank-you.html', context)  # Redirect to the thank-you page
+
         else:
             cart_items = cart.cartitem_set.all()
             total_price = cart.total_price()
@@ -174,76 +179,3 @@ class ChangeCartItemQuantityView(View):
             cart_item.delete()
         else:
             cart_item.save()
-
-# All checks still present
-# class ChangeCartItemQuantityView(View):
-#
-#     def post(self, request):
-#
-#         # Retrieve the cart item ID and the quantity change from the POST request
-#         cart_item_id = request.POST.get('cart_item_id')
-#         quantity_change = int(request.POST.get('quantity_change', 0))
-#
-#         # Validate that the necessary data is provided and that the quantity change is not zero
-#         if not cart_item_id or quantity_change == 0:
-#             return JsonResponse({
-#                 'success': False,
-#                 'error': 'Invalid request'
-#             })
-#
-#         # Retrieve the cart item based on the provided ID
-#         cart_item = self.get_cart_item(cart_item_id)
-#         # If the cart item doesn't exist, return an error response
-#         if not cart_item:
-#             context = {
-#                 'success': False,
-#                 'error': 'Cart item not found'
-#             }
-#             return JsonResponse(context)
-#
-#         # Ensure that the cart associated with the cart item belongs to the current user
-#         cart = cart_item.cart
-#         if cart.user != request.user:
-#             context = {
-#                 'success': False,
-#                 'error': 'Unauthorized action'
-#             }
-#             return JsonResponse(context)
-#
-#         # Update the quantity of the cart item based on the provided change
-#         self.update_cart_item_quantity(cart_item, quantity_change)
-#
-#         # Create a response context with details about the updated cart
-#         context = {
-#             'success': True,
-#             'new_quantity': cart_item.quantity if cart_item.pk else 0,  # Check if cart item still exists (wasn't deleted)
-#             'total_items': cart.total_items(),
-#             'total_price': cart.total_price(),
-#         }
-#
-#         # Return the response as JSON
-#         return JsonResponse(context)
-#
-#     @staticmethod
-#     def get_cart_item(cart_item_id):
-#         """
-#         Retrieve a cart item based on its ID.
-#         Returns the cart item if found, otherwise returns None.
-#         """
-#         try:
-#             return CartItem.objects.get(id=cart_item_id)
-#         except CartItem.DoesNotExist:
-#             return None
-#
-#     @staticmethod
-#     def update_cart_item_quantity(cart_item, quantity_change):
-#         """
-#         Update the quantity of a cart item.
-#         If the new quantity is 0 or less, the cart item is deleted.
-#         Otherwise, the cart item is updated with the new quantity.
-#         """
-#         cart_item.quantity += quantity_change
-#         if cart_item.quantity <= 0:
-#             cart_item.delete()
-#         else:
-#             cart_item.save()

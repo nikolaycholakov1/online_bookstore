@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
     <section class="about-us my-5">
@@ -7,10 +8,12 @@
                 <div class="col-lg-6">
                     <h2 class="mb-4">About Us</h2>
                     <hr>
-                    <p>Welcome to <strong>The Bookstack Emporium</strong>, where a world of stories awaits you. Our passion
+                    <p>Welcome to <strong>The Bookstack Emporium</strong>, where a world of stories awaits you. Our
+                        passion
                         for books
                         and the art of reading drives us to provide you with a unique literary experience.</p>
-                    <p>At The Bookstack Emporium, we believe that books have the power to transform, inspire, and connect.
+                    <p>At The Bookstack Emporium, we believe that books have the power to transform, inspire, and
+                        connect.
                         Our goal is
                         to curate a diverse collection of books that cater to different tastes, genres, and moods.</p>
                     <p>Our team is composed of dedicated readers, writers, and technology enthusiasts who are committed
@@ -97,10 +100,18 @@
                     {% if staff_member not in superusers %}
                         <div class="col-md-4">
                             <div class="team-member text-center mb-4">
-                                <div class="rounded-circle img-circle mx-auto team-member-img-container">
-                                    <img src="{{ staff_member.profile_picture.url }}" alt="{{ staff_member.username }}"
+                                {% if staff_member.profile_picture %}
+                                    <div class="rounded-circle img-circle mx-auto team-member-img-container">
+                                        <img src="{{ staff_member.profile_picture.url }}"
+                                             alt="{{ staff_member.username }}"
+                                             class="img-fluid team-member-img">
+                                    </div>
+                                {% else %}
+                                    <img src="{% static 'images/default_profile_picture.svg' %}"
+                                         alt="{{ staff_member.username }}"
                                          class="img-fluid team-member-img">
-                                </div>
+                                {% endif %}
+
                                 <h3>{{ staff_member.get_full_name }}</h3>
                                 <h6>{{ staff_member.email }}</h6>
                                 <p class="text-muted">Staff</p>

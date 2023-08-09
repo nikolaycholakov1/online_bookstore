@@ -18,13 +18,13 @@
             </li>
         </ul>
 
-        <table class="table table-hover shadow mb-5">
+        <table class="table table-hover shadow mb-5 border"> <!-- Add 'border' class to the table -->
             <thead class="table-light">
             <tr>
-                <th>User ID</th>
-                <th>Username</th>
-                <th class="sortable">Total Orders</th>
-                <th class="sortable">Total Reviews</th>
+                <th class="border">User ID</th> <!-- Add 'border' class to th -->
+                <th class="border">Username</th> <!-- Add 'border' class to th -->
+                <th class="sortable border">Total Orders</th> <!-- Add 'border' class to th -->
+                <th class="sortable border">Total Reviews</th> <!-- Add 'border' class to th -->
             </tr>
             </thead>
             <tbody>
@@ -36,21 +36,21 @@
                         {% else %}
                     <tr class="bg-dark text-light">
                 {% endif %}
-            <td>{{ user.id }}.</td>
-            <td>
+            <td class="border">{{ user.id }}.</td> <!-- Add 'border' class to td -->
+            <td class="border">
                 <a style="color: white; text-decoration: underline"
                    href="{% url 'user-orders-update' username=user.username %}">
                     {{ user.username }} &#x2192;
                 </a>
             </td>
-            <td>{{ user.total_orders }}</td>
+            <td class="border">{{ user.total_orders }}</td> <!-- Add 'border' class to td -->
 
-            <td>{{ user.total_reviews }}</td>
+            <td class="border">{{ user.total_reviews }}</td> <!-- Add 'border' class to td -->
             </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
-    <script src="{% static 'js/users-list.js' %}"></script>
 
+    <script src="{% static 'js/users-list.js' %}"></script>
 {% endblock %}

@@ -1,17 +1,24 @@
 # book/views.py
+# Django core
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
-from django.db.models import Q, Count
+from django.contrib.auth.views import (
+    LoginView, LogoutView, PasswordChangeView
+)
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
-
-from .custom_mixins import AnonymousRequiredMixin
-from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm, CustomPasswordChangeForm, \
-    OrderUpdateForm
+from django.views.generic import (
+    DeleteView, ListView, TemplateView, UpdateView
+)
+# Local imports
+from .custom_mixins import AnonymousRequiredMixin, CustomPermissionDeniedMixin
+from .forms import (
+    BookPublishForm, CustomPasswordChangeForm,
+    OrderUpdateForm, RegistrationForm, ReviewForm, UserProfileForm
+)
 from .models import Book, BookReview, Customer
 from ..store.models import Order
 
@@ -19,7 +26,7 @@ from ..store.models import Order
 # Reviewed
 class RegisterView(AnonymousRequiredMixin, View):
     template_name = 'registration/register.html'
-    success_url = reverse_lazy('home-page')  # Use reverse_lazy to avoid import errors
+    success_url = reverse_lazy('home-page')
 
     def get(self, request):
         form = RegistrationForm()
@@ -85,19 +92,11 @@ class HomePageView(TemplateView):
 
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
-        return self.get(request, *args, **kwargs)
-
 
 # Reviewed
-class ProfilePageView(LoginRequiredMixin, View):
-    def handle_no_permission(self):
-        error_message = 'Please log in to view this page.'
-
-        context = {
-            'error_message': error_message
-        }
-        return render(self.request, 'error_pages/no-access.html', context)
+class ProfilePageView(CustomPermissionDeniedMixin, LoginRequiredMixin, View):
+    NO_ACCESS_ERROR_MSG = 'Please log in to view this page.'
+    SUCCESS_MESSAGE = 'Your profile has been updated successfully.'
 
     def get(self, request):
         user = request.user
@@ -118,7 +117,7 @@ class ProfilePageView(LoginRequiredMixin, View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Your profile has been updated successfully.')
+            messages.success(request, self.SUCCESS_MESSAGE)
         else:
             # Pass cleaned_data to the context to display in case of an invalid form submission
             context = {
@@ -137,7 +136,7 @@ class ProfilePageView(LoginRequiredMixin, View):
 
 
 # Reviewed
-class CustomPasswordChangeView(PasswordChangeView):
+class CustomPasswordChangeView(CustomPermissionDeniedMixin, PasswordChangeView):
     template_name = 'registration/password-change-page.html'  # Name of your template
     success_url = reverse_lazy('password-change-done')
     form_class = CustomPasswordChangeForm
@@ -162,14 +161,8 @@ class AboutUsView(TemplateView):
 
 
 # Reviewed
-class MyOrdersView(LoginRequiredMixin, View):
-    def handle_no_permission(self):
-        error_message = 'Please log in to view this page.'
-
-        context = {
-            'error_message': error_message
-        }
-        return render(self.request, 'error_pages/no-access.html', context)
+class MyOrdersView(CustomPermissionDeniedMixin, LoginRequiredMixin, View):
+    NO_ACCESS_ERROR_MSG = 'Please log in to view this page.'
 
     template_name = 'common/my-orders.html'
 
@@ -204,6 +197,8 @@ class CataloguePageView(ListView):
 
         return queryset.order_by('-price')
 
+
+# 9
 
 # Reviewed
 class BookDetailView(View):
@@ -257,7 +252,7 @@ class EditReviewView(LoginRequiredMixin, UpdateView):
         kwargs = {
             'pk': review.book.pk
         }
-        return reverse_lazy('book-detail', kwargs)
+        return reverse_lazy('book-detail', kwargs=kwargs)
 
     def get_object(self, queryset=None):
         review_id = self.kwargs.get('review_id')
@@ -279,19 +274,13 @@ class EditReviewView(LoginRequiredMixin, UpdateView):
 
 
 # Reviewed
-class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
+class PublishBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'for_staff/publish-book.html'
     form_class = BookPublishForm
+    NO_ACCESS_ERROR_MSG = 'You need staff privileges to publish a book.'
 
     def test_func(self):
         return self.request.user.is_staff
-
-    def handle_no_permission(self):
-        error_message = 'You need staff privileges to publish a book.'
-        context = {
-            'error_message': error_message
-        }
-        return render(self.request, 'error_pages/no-access.html', context)
 
     def get(self, request):
         form = self.form_class()
@@ -313,27 +302,22 @@ class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
 
 
 # Reviewed
-class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class DeleteBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'for_staff/confirm-delete.html'
     model = Book
     success_url = reverse_lazy('catalogue-page')
+    NO_ACCESS_ERROR_MSG = 'You need staff privileges to delete a book.'
 
     def test_func(self):
         return self.request.user.is_staff
 
-    def handle_no_permission(self):
-        error_message = 'You need staff privileges to delete a book.'
-        context = {
-            'error_message': error_message
-        }
-        return render(self.request, 'error_pages/no-access.html', context)
-
 
 # Reviewed
-class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class EditBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'for_staff/edit-book.html'
     model = Book
     form_class = BookPublishForm
+    NO_ACCESS_ERROR_MSG = 'You need staff privileges to edit a book.'
 
     def get_success_url(self):
         kwargs = {
@@ -344,29 +328,16 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user.is_staff
 
-    def handle_no_permission(self):
-        error_message = 'You need staff privileges to edit a book.'
-        context = {
-            'error_message': error_message
-        }
-        return render(self.request, 'error_pages/no-access.html', context)
 
-
-class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+# Reviewed
+class UserListView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'for_staff/user-list.html'
     model = Customer
     context_object_name = 'users'
-    NO_ACCESS_TEMPLATE = 'error_pages/no-access.html'
     NO_ACCESS_ERROR_MSG = 'You are not allowed to view this page.'
 
     def test_func(self):
         return self.request.user.is_staff
-
-    def handle_no_permission(self):
-        context = {
-            'error_message': self.NO_ACCESS_ERROR_MSG
-        }
-        return render(self.request, self.NO_ACCESS_TEMPLATE, context)
 
     def get_queryset(self):
         queryset = super().get_queryset().annotate(
@@ -378,19 +349,12 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 
 # Reviewed
-class UserOrdersUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
+class UserOrdersUpdateView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'for_staff/user-orders-update.html'
-    NO_ACCESS_TEMPLATE = 'error_pages/no-access.html'
     NO_ACCESS_ERROR_MSG = 'You are not allowed to view this page.'
 
     def test_func(self):
         return self.request.user.is_staff
-
-    def handle_no_permission(self):
-        context = {
-            'error_message': self.NO_ACCESS_ERROR_MSG
-        }
-        return render(self.request, self.NO_ACCESS_TEMPLATE, context)
 
     def get_user(self, username):
         return get_object_or_404(Customer, username=username)

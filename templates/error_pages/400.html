@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-    <h1>
-        Bad request, Error 400
-    </h1>
+    <div class="container mt-4">
+        <div class="alert alert-danger text-center">
+            <img src="{% static 'images/man-reading.svg' %}" alt="Man Reading" class="img-fluid"
+                 style="max-height: 200px;">
+            <h1 class="display-4 mt-3">Error 400</h1>
+            <h3>Bad request.</h3>
+        </div>
+    </div>
 {% endblock %}
+
