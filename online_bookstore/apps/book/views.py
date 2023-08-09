@@ -2,7 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -16,7 +16,7 @@ from ..store.models import Order
 
 # Reviewed
 class RegisterView(View):
-    template_name = 'common/register.html'
+    template_name = 'registration/register.html'
     success_url = reverse_lazy('home-page')  # Use reverse_lazy to avoid import errors
 
     def get(self, request):
@@ -51,9 +51,8 @@ class RegisterView(View):
 
 
 # Reviewed
-
 class LoginUserView(LoginView):
-    template_name = 'common/login.html'
+    template_name = 'registration/login.html'
 
     def form_invalid(self, form):
         # Add a custom error message to the form
@@ -74,14 +73,15 @@ class LogoutUserView(LogoutView):
 class HomePageView(TemplateView):
     template_name = 'common/home-page.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
+    def get(self, request, *args, **kwargs):
         # Fetch featured books from the database
         featured_books = Book.objects.filter(featured=True)
-        context['featured_books'] = featured_books
 
-        return context
+        context = {
+            'featured_books': featured_books
+        }
+
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         return self.get(request, *args, **kwargs)
@@ -132,6 +132,16 @@ class ProfilePageView(LoginRequiredMixin, View):
         }
 
         return render(request, 'common/profile.html', context)
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'registration/password-change-page.html'  # Name of your template
+    success_url = reverse_lazy('password-change-done')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add any additional context here if needed
+        return context
 
 
 # Reviewed

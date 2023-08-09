@@ -39,6 +39,10 @@
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
                         <li class="nav-item">
+                            <a class="nav-link h5 font-weight-bold"
+                               href="http://127.0.0.1:8000/admin/">Administration</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link h5 font-weight-bold" href="{% url 'publish-book' %}">Publish</a>
                         </li>
                     {% endif %}
@@ -52,6 +56,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="profileDropdown">
                             <a class="dropdown-item text-dark" href="{% url 'profile-page' %}">My Profile &#x2192;</a>
+                            <a class="dropdown-item text-dark" href="{% url 'password-change' %}">Change Password &#x2192;</a>
                             <a class="dropdown-item text-dark" href="{% url 'cart' %}">My Cart &#x2192;</a>
                             <a class="dropdown-item text-dark" href="{% url 'my-orders' %}">My Orders &#x2192;</a>
                             <a class="dropdown-item text-dark" href="{% url 'logout' %}">&#x2190; Logout</a>
@@ -65,20 +70,10 @@
                         <a class="nav-link btn btn-pop-out btn-primary h5 font-weight-bold" href="{% url 'login' %}">Login</a>
                     </li>
                     <li class="nav-item guest-user d-flex align-items-center">
-                        <div class="nav-link h5 font-weight-bold mr-2">Guest</div> <!-- Added nav-link class -->
+                        <div class="nav-link h5 font-weight-bold mr-2">Guest</div>
                         <i class="fas fa-user text-danger"></i>
                     </li>
                 {% endif %}
-
-{#                {% if user.not_authenticated %}#}
-{##}
-{#                    <li class="nav-item">#}
-{#                        <a class="nav-link" href="{% url 'cart' %}">#}
-{#                            <i class="fas fa-shopping-cart fa-2x text-white"></i>#}
-{#                        </a>#}
-{#                    </li>#}
-{#                {% endif %}#}
-
             </ul>
         </div>
     </nav>
