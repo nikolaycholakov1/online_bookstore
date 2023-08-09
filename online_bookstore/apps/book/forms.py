@@ -1,10 +1,10 @@
 # forms.py
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 
-from online_bookstore.apps.book.models import BookReview, Customer, Book, DeliveryAddress
+from online_bookstore.apps.book.models import BookReview, Customer, Book
 from online_bookstore.apps.store.models import Order
 
 
@@ -38,30 +38,52 @@ class ReviewForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['name', 'email', 'age', 'profile_picture', 'delivery_address']
+        fields = ['username', 'first_name', 'last_name', 'email', 'age', 'profile_picture', 'delivery_address']
         widgets = {
-            'delivery_address': forms.Textarea(attrs={'rows': 3}),
+            'delivery_address': forms.Textarea(
+                attrs={'rows': 3, 'placeholder': 'Enter your delivery address'}),
         }
 
-    def clean_name(self):
-        name = self.cleaned_data['name']
+    def clean_username(self):
+        username = self.cleaned_data['username']
 
-        if not all(char.isalpha() or char.isspace() for char in name):
-            raise ValidationError('Name can only contain letters and whitespace.')
+        if not all(char.isalpha() or char.isspace() for char in username):
+            raise ValidationError('Username can only contain letters and whitespace.')
 
-        return name
+        return username
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data['first_name']
+
+        if not all(char.isalpha() or char.isspace() for char in first_name):
+            raise ValidationError('First name can only contain letters and whitespace.')
+
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data['last_name']
+
+        if not all(char.isalpha() or char.isspace() for char in last_name):
+            raise ValidationError('Last name can only contain letters and whitespace.')
+
+        return last_name
 
     def clean_email(self):
         email = self.cleaned_data['email']
 
         return email
 
-    def clean_age(self):
-        age = self.cleaned_data['age']
-        if age is not None and (age < Customer.MIN_AGE_VALUE or age > Customer.MAX_AGE_VALUE):
-            raise ValidationError(f'Age must be between {Customer.MIN_AGE_VALUE} and {Customer.MAX_AGE_VALUE}.')
+    def clean_delivery_address(self):
+        delivery_address = self.cleaned_data['delivery_address']
 
-        return age
+        if delivery_address:
+            length = len(delivery_address)
+            if length < Customer.DELIVERY_ADDRESS_MIN_LEN or length > Customer.DELIVERY_ADDRESS_MAX_LEN:
+                raise ValidationError(
+                    f'Delivery address must be between {Customer.DELIVERY_ADDRESS_MIN_LEN} and {Customer.DELIVERY_ADDRESS_MAX_LEN} characters long.'
+                )
+
+        return delivery_address
 
 
 class CustomPasswordChangeForm(PasswordChangeForm):

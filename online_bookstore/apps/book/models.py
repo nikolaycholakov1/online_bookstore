@@ -13,18 +13,11 @@ class Customer(AbstractUser):
 
     EMAIL_MAX_LEN = 50
     DELIVERY_ADDRESS_MIN_LEN = 10
+    DELIVERY_ADDRESS_MAX_LEN = 250
 
     MIN_AGE_VALUE = 1
     MAX_AGE_VALUE = 150
 
-    name = models.CharField(
-        max_length=NAME_MAX_LEN,
-        validators=[
-            validators.MinLengthValidator(NAME_MIN_LEN),
-            validate_letters_only,
-        ],
-        null=True,
-    )
     email = models.EmailField(
         max_length=EMAIL_MAX_LEN,
         unique=True,
@@ -47,6 +40,7 @@ class Customer(AbstractUser):
         blank=True,
     )
     delivery_address = models.CharField(
+        max_length=DELIVERY_ADDRESS_MAX_LEN,
         null=True,
         blank=True,
         validators=[
@@ -164,52 +158,3 @@ class BookReview(models.Model):
     # For sorting the reviews
     class Meta:
         ordering = ['-created_at']
-
-
-class DeliveryAddress(models.Model):
-    COUNTRY_MAX_LEN = 100
-    CITY_MAX_LEN = 30
-    ADDRESS_MAX_LEN = 200
-    ZIP_CODE_MAX_LEN = 9
-
-    SHIPPING_CHOICES = (
-        ('By courier', 'By courier'),
-        ('From courier office', 'From courier office'),
-        ('Supplier', 'Supplier'),
-    )
-
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-    )
-
-    country = models.CharField(
-        max_length=COUNTRY_MAX_LEN,
-        null=True,
-    )
-
-    city = models.CharField(
-        max_length=CITY_MAX_LEN,
-        null=True,
-    )
-
-    address = models.CharField(
-        max_length=ADDRESS_MAX_LEN,
-        null=True,
-    )
-    zip_code = models.CharField(
-        max_length=ZIP_CODE_MAX_LEN,
-        null=True,
-    )
-
-    shipping_method = models.CharField(
-        choices=SHIPPING_CHOICES,
-        default='By courier',
-        null=True,
-        blank=True,
-    )
-
-    def __str__(self):
-        return self.address

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 {% load static %}
 {% block content %}
     <div class="container mt-4">
@@ -13,17 +14,30 @@
 
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <h5>
-                        Edit Profile Information
-                    </h5>
+                    <h5>Edit Profile Information</h5>
                     <hr>
 
                     <div class="form-group">
-                        <label for="id_name">Name:</label>
-                        <input type="text" name="name" value="{{ user.name }}" maxlength="30" required="" id="id_name"
-                               class="form-control">
-                        {% if form.errors.name %}
-                            <div class="text-danger">{{ form.errors.name }}</div>
+                        <label for="{{ form.username.id_for_label }}">Username:</label>
+                        {{ form.username|add_class:"form-control" }}
+                        {% if form.username.errors %}
+                            <div class="text-danger">{{ form.username.errors.as_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">First Name:</label>
+                        {{ form.first_name|add_class:"form-control" }}
+                        {% if form.first_name.errors %}
+                            <div class="text-danger">{{ form.first_name.errors.as_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">Last Name:</label>
+                        {{ form.last_name|add_class:"form-control" }}
+                        {% if form.last_name.errors %}
+                            <div class="text-danger">{{ form.last_name.errors.as_text }}</div>
                         {% endif %}
                     </div>
 
@@ -68,6 +82,7 @@
 
                     <button type="submit" class="btn btn-primary mt-3">Save Profile</button>
                 </form>
+
             </div>
             <div class="col-md-6">
                 <table class="table table-bordered table-striped">
@@ -91,8 +106,12 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Name</td>
-                        <td>{{ user.name }}</td>
+                        <td>Username</td>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <td>Full Name</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
                     </tr>
                     <tr>
                         <td>Email</td>
@@ -103,7 +122,7 @@
                         <td>{{ user.date_joined }}</td>
                     </tr>
                     <tr>
-                        <td>Years</td>
+                        <td>Age</td>
                         <td>{{ user.age }}</td>
                     </tr>
                     <tr>
