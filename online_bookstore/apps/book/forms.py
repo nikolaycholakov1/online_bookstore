@@ -1,7 +1,7 @@
 # forms.py
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 
 from online_bookstore.apps.book.models import BookReview, Customer, Book, DeliveryAddress
@@ -61,6 +61,29 @@ class UserProfileForm(forms.ModelForm):
             raise ValidationError(f'Age must be between {Customer.MIN_AGE_VALUE} and {Customer.MAX_AGE_VALUE}.')
 
         return age
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Current Password'}),
+        label="Current Password",
+        required=True
+    )
+
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New Password'}),
+        label="New Password",
+        required=True
+    )
+
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm New Password'}),
+        label="Confirm New Password",
+        required=True
+    )
+
+    class Meta:
+        fields = ['old_password', 'new_password1', 'new_password2']
 
 
 class BookPublishForm(forms.ModelForm):

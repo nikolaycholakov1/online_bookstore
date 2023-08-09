@@ -9,13 +9,14 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
 
-from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm
+from .custom_mixins import AnonymousRequiredMixin
+from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm, CustomPasswordChangeForm
 from .models import Book, BookReview, Customer
 from ..store.models import Order
 
 
 # Reviewed
-class RegisterView(View):
+class RegisterView(AnonymousRequiredMixin, View):
     template_name = 'registration/register.html'
     success_url = reverse_lazy('home-page')  # Use reverse_lazy to avoid import errors
 
@@ -51,7 +52,7 @@ class RegisterView(View):
 
 
 # Reviewed
-class LoginUserView(LoginView):
+class LoginUserView(AnonymousRequiredMixin, LoginView):
     template_name = 'registration/login.html'
 
     def form_invalid(self, form):
@@ -134,9 +135,11 @@ class ProfilePageView(LoginRequiredMixin, View):
         return render(request, 'common/profile.html', context)
 
 
+# Reviewed
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'registration/password-change-page.html'  # Name of your template
     success_url = reverse_lazy('password-change-done')
+    form_class = CustomPasswordChangeForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

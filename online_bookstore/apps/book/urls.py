@@ -1,11 +1,11 @@
 # book/urls.py
-from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from django.contrib.auth.views import PasswordChangeDoneView
 from django.urls import path
 from .views import (
     RegisterView, HomePageView, BookDetailView, CataloguePageView,
     EditBookView, PublishBookView, DeleteBookView, ProfilePageView,
     LoginUserView, LogoutUserView, MyOrdersView, EditReviewView,
-    AboutUsView
+    AboutUsView, CustomPasswordChangeView
 )
 
 urlpatterns = [
@@ -16,10 +16,10 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
 
     path('profile/', ProfilePageView.as_view(), name='profile-page'),
-    path('password-change/', PasswordChangeView.as_view(), name='password-change'),
+    path('password-change/', CustomPasswordChangeView.as_view(), name='password-change'),
     path('password-change/done/',
          PasswordChangeDoneView.as_view(template_name='registration/password-change-done.html'),
-         name='password_change_done'),  # Change the name here
+         name='password-change-done'),
 
     path('profile/my-orders/', MyOrdersView.as_view(), name='my-orders'),
 
