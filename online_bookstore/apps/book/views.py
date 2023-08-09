@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
-from django.db.models import Q
+from django.db.models import Q, Count, Sum, F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
@@ -351,6 +351,9 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return render(self.request, 'error_pages/no-access.html', context)
 
 
+from django.db.models import Count, Sum, F
+
+
 class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Customer
     template_name = 'for_staff/user-list.html'
@@ -359,6 +362,14 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.is_staff
 
+    def get_queryset(self):
+        queryset = super().get_queryset().annotate(
+            total_orders=Count('orders'),
+            total_price=Sum(F('orders__orderitem__price') * F('orders__orderitem__quantity')),
+            total_comments=Count('bookreview')  # Adjusted to 'bookreview'
+        )
+        return queryset.order_by('username')
+
 
 class UserOrdersUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'for_staff/user-orders-update.html'
@@ -366,8 +377,8 @@ class UserOrdersUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
     def test_func(self):
         return self.request.user.is_staff
 
-    def get(self, request, user_id):
-        user = get_object_or_404(Customer, id=user_id)
+    def get(self, request, username):
+        user = get_object_or_404(Customer, username=username)
         orders = Order.objects.filter(user=user)
         form = OrderUpdateForm()
 
@@ -379,12 +390,13 @@ class UserOrdersUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
 
         return render(request, self.template_name, context)
 
-    def post(self, request, user_id):
+    def post(self, request, username):
+        user = get_object_or_404(Customer, username=username)
         order = get_object_or_404(Order, id=request.POST.get('order_id'))
         form = OrderUpdateForm(request.POST, instance=order)
         if form.is_valid():
             form.save()
-            return redirect('user-orders-update', user_id=user_id)
+            return redirect('user-orders-update', username=user.username)
 
 
 # Reviewed - only works with DEBUG=FALSE

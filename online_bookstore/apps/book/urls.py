@@ -33,5 +33,6 @@ urlpatterns = [
     path('delete-book/<int:pk>/', DeleteBookView.as_view(), name='delete-book'),
     path('edit-book/<int:pk>/', EditBookView.as_view(), name='edit-book'),
     path('users/', UserListView.as_view(), name='user-list'),
-    path('users/<int:user_id>/orders/', UserOrdersUpdateView.as_view(), name='user-orders-update'),
+    path('users/<str:username>/orders/', UserOrdersUpdateView.as_view(), name='user-orders-update'),
+
 ]

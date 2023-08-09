@@ -2,14 +2,50 @@
 {% load static %}
 
 {% block content %}
-    <div class="container mt-4">
-        <h2>All Users</h2>
-        <ul class="list-group">
-            {% for user in users %}
-                <li class="list-group-item">
-                    <a href="{% url 'user-orders-update' user_id=user.id %}">{{ user.username }}</a>
-                </li>
-            {% endfor %}
+    <div class="container mt-5">
+        <h2 class="mb-4">All Users</h2>
+
+        <!-- Color Legend -->
+        <ul class="list-inline mb-4">
+            <li class="list-inline-item"><span class="badge bg-info rounded-circle"></span> Staff User</li>
+            <li class="list-inline-item"><span class="badge bg-success rounded-circle"></span> Super User</li>
         </ul>
+
+        <table class="table table-hover shadow mb-5">
+            <thead class="table-light">
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Total Orders</th>
+                <th>Price for all orders</th>
+                <th>Total Reviews</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                {% if user.is_superuser %}
+                    <tr class="bg-success text-light">
+                        {% elif user.is_staff %}
+                    <tr class="bg-info text-light">
+                        {% else %}
+                    <tr class="bg-dark text-light">
+                {% endif %}
+            <td>{{ user.id }}.</td>
+            <td>
+                <a style="color: white" href="{% url 'user-orders-update' username=user.username %}">
+                    {{ user.username }} &#x2192;
+                </a>
+            </td>
+            <td>{{ user.total_orders }}</td>
+            {% if user.total_price > 0 %}
+                <td>${{ user.total_price|floatformat:2 }}</td>
+            {% else %}
+                <td>0</td>
+            {% endif %}
+            <td>{{ user.total_comments }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
