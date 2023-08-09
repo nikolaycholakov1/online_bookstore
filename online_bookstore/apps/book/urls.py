@@ -5,7 +5,7 @@ from .views import (
     RegisterView, HomePageView, BookDetailView, CataloguePageView,
     EditBookView, PublishBookView, DeleteBookView, ProfilePageView,
     LoginUserView, LogoutUserView, MyOrdersView, EditReviewView,
-    AboutUsView, CustomPasswordChangeView, UserListView, UserOrdersUpdateView
+    AboutUsView, CustomPasswordChangeView, UserListView, UserOrdersUpdateView, DeleteOrderView
 )
 
 urlpatterns = [
@@ -34,5 +34,5 @@ urlpatterns = [
     path('edit-book/<int:pk>/', EditBookView.as_view(), name='edit-book'),
     path('users/', UserListView.as_view(), name='user-list'),
     path('users/<str:username>/orders/', UserOrdersUpdateView.as_view(), name='user-orders-update'),
-
+    path('order/delete/<int:pk>/', DeleteOrderView.as_view(), name='order-delete'),
 ]

@@ -7,8 +7,15 @@
 
         <!-- Color Legend -->
         <ul class="list-inline mb-4">
-            <li class="list-inline-item"><span class="badge bg-info rounded-circle"></span> Staff User</li>
-            <li class="list-inline-item"><span class="badge bg-success rounded-circle"></span> Super User</li>
+            <li style="padding: .5rem; border-radius: 50%;" class="list-inline-item bg-success text-light">
+                <span>Super User</span>
+            </li>
+            <li style="padding: .5rem; border-radius: 50%;" class="list-inline-item bg-info text-light">
+                <span>Staff User</span>
+            </li>
+            <li style="padding: .5rem; border-radius: 50%;" class="list-inline-item bg-dark text-light">
+                <span>Regular User</span>
+            </li>
         </ul>
 
         <table class="table table-hover shadow mb-5">
@@ -16,9 +23,8 @@
             <tr>
                 <th>User ID</th>
                 <th>Username</th>
-                <th>Total Orders</th>
-                <th>Price for all orders</th>
-                <th>Total Reviews</th>
+                <th class="sortable">Total Orders</th>
+                <th class="sortable">Total Reviews</th>
             </tr>
             </thead>
             <tbody>
@@ -32,20 +38,19 @@
                 {% endif %}
             <td>{{ user.id }}.</td>
             <td>
-                <a style="color: white" href="{% url 'user-orders-update' username=user.username %}">
+                <a style="color: white; text-decoration: underline"
+                   href="{% url 'user-orders-update' username=user.username %}">
                     {{ user.username }} &#x2192;
                 </a>
             </td>
             <td>{{ user.total_orders }}</td>
-            {% if user.total_price > 0 %}
-                <td>${{ user.total_price|floatformat:2 }}</td>
-            {% else %}
-                <td>0</td>
-            {% endif %}
-            <td>{{ user.total_comments }}</td>
+
+            <td>{{ user.total_reviews }}</td>
             </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    <script src="{% static 'js/users-list.js' %}"></script>
+
 {% endblock %}

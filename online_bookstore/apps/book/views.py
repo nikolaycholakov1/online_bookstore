@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
-from django.db.models import Q, Count, Sum, F
+from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
@@ -269,6 +269,7 @@ class EditReviewView(LoginRequiredMixin, UpdateView):
         return kwargs
 
 
+# Book not found
 # class BookNotFoundView(View):
 #     template_name = 'error_pages/book-not-found.html'
 #
@@ -279,7 +280,7 @@ class EditReviewView(LoginRequiredMixin, UpdateView):
 
 # Reviewed
 class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
-    template_name = 'books/publish-book.html'
+    template_name = 'for_staff/publish-book.html'
     form_class = BookPublishForm
 
     def test_func(self):
@@ -313,7 +314,7 @@ class PublishBookView(LoginRequiredMixin, UserPassesTestMixin, View):
 
 # Reviewed
 class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    template_name = 'books/confirm-delete.html'
+    template_name = 'for_staff/confirm-delete.html'
     model = Book
     success_url = reverse_lazy('catalogue-page')
 
@@ -330,7 +331,7 @@ class DeleteBookView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 # Reviewed
 class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    template_name = 'books/edit-book.html'
+    template_name = 'for_staff/edit-book.html'
     model = Book
     form_class = BookPublishForm
 
@@ -351,34 +352,51 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return render(self.request, 'error_pages/no-access.html', context)
 
 
-from django.db.models import Count, Sum, F
-
-
 class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-    model = Customer
     template_name = 'for_staff/user-list.html'
+    model = Customer
     context_object_name = 'users'
+    NO_ACCESS_TEMPLATE = 'error_pages/no-access.html'
+    NO_ACCESS_ERROR_MSG = 'You are not allowed to view this page.'
 
     def test_func(self):
         return self.request.user.is_staff
+
+    def handle_no_permission(self):
+        context = {
+            'error_message': self.NO_ACCESS_ERROR_MSG
+        }
+        return render(self.request, self.NO_ACCESS_TEMPLATE, context)
 
     def get_queryset(self):
         queryset = super().get_queryset().annotate(
-            total_orders=Count('orders'),
-            total_price=Sum(F('orders__orderitem__price') * F('orders__orderitem__quantity')),
-            total_comments=Count('bookreview')  # Adjusted to 'bookreview'
+            total_orders=Count('orders', distinct=True),
+            total_reviews=Count('bookreview', distinct=True)
         )
+
         return queryset.order_by('username')
 
 
+# Reviewed
 class UserOrdersUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'for_staff/user-orders-update.html'
+    NO_ACCESS_TEMPLATE = 'error_pages/no-access.html'
+    NO_ACCESS_ERROR_MSG = 'You are not allowed to view this page.'
 
     def test_func(self):
         return self.request.user.is_staff
 
+    def handle_no_permission(self):
+        context = {
+            'error_message': self.NO_ACCESS_ERROR_MSG
+        }
+        return render(self.request, self.NO_ACCESS_TEMPLATE, context)
+
+    def get_user(self, username):
+        return get_object_or_404(Customer, username=username)
+
     def get(self, request, username):
-        user = get_object_or_404(Customer, username=username)
+        user = self.get_user(username)
         orders = Order.objects.filter(user=user)
         form = OrderUpdateForm()
 
@@ -387,16 +405,30 @@ class UserOrdersUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
             'customer': user,
             'form': form
         }
-
         return render(request, self.template_name, context)
 
     def post(self, request, username):
-        user = get_object_or_404(Customer, username=username)
-        order = get_object_or_404(Order, id=request.POST.get('order_id'))
+        user = self.get_user(username)
+        order_id = request.POST.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+
         form = OrderUpdateForm(request.POST, instance=order)
         if form.is_valid():
             form.save()
             return redirect('user-orders-update', username=user.username)
+
+
+# Reviewed
+class DeleteOrderView(DeleteView):
+    model = Order
+
+    def get_success_url(self):
+        order = self.object
+        kwargs = {
+            'username': order.user.username
+        }
+
+        return reverse_lazy('user-orders-update', kwargs=kwargs)
 
 
 # Reviewed - only works with DEBUG=FALSE
