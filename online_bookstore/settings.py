@@ -27,6 +27,7 @@ INSTALLED_APPS = [
 
     'online_bookstore.apps.book',
     'online_bookstore.apps.store',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -120,8 +121,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'book.Customer'
-
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

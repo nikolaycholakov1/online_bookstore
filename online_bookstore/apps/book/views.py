@@ -10,7 +10,8 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView
 
 from .custom_mixins import AnonymousRequiredMixin
-from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm, CustomPasswordChangeForm
+from .forms import RegistrationForm, ReviewForm, UserProfileForm, BookPublishForm, CustomPasswordChangeForm, \
+    OrderUpdateForm
 from .models import Book, BookReview, Customer
 from ..store.models import Order
 
@@ -348,6 +349,42 @@ class EditBookView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             'error_message': error_message
         }
         return render(self.request, 'error_pages/no-access.html', context)
+
+
+class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Customer
+    template_name = 'for_staff/user-list.html'
+    context_object_name = 'users'
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+
+class UserOrdersUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
+    template_name = 'for_staff/user-orders-update.html'
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get(self, request, user_id):
+        user = get_object_or_404(Customer, id=user_id)
+        orders = Order.objects.filter(user=user)
+        form = OrderUpdateForm()
+
+        context = {
+            'orders': orders,
+            'customer': user,
+            'form': form
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, user_id):
+        order = get_object_or_404(Order, id=request.POST.get('order_id'))
+        form = OrderUpdateForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect('user-orders-update', user_id=user_id)
 
 
 # Reviewed - only works with DEBUG=FALSE

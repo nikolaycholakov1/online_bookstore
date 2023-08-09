@@ -5,7 +5,7 @@ from .views import (
     RegisterView, HomePageView, BookDetailView, CataloguePageView,
     EditBookView, PublishBookView, DeleteBookView, ProfilePageView,
     LoginUserView, LogoutUserView, MyOrdersView, EditReviewView,
-    AboutUsView, CustomPasswordChangeView
+    AboutUsView, CustomPasswordChangeView, UserListView, UserOrdersUpdateView
 )
 
 urlpatterns = [
@@ -32,4 +32,6 @@ urlpatterns = [
     path('publish/', PublishBookView.as_view(), name='publish-book'),
     path('delete-book/<int:pk>/', DeleteBookView.as_view(), name='delete-book'),
     path('edit-book/<int:pk>/', EditBookView.as_view(), name='edit-book'),
+    path('users/', UserListView.as_view(), name='user-list'),
+    path('users/<int:user_id>/orders/', UserOrdersUpdateView.as_view(), name='user-orders-update'),
 ]

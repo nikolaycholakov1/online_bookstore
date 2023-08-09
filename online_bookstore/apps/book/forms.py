@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from django.core.exceptions import ValidationError
 
 from online_bookstore.apps.book.models import BookReview, Customer, Book, DeliveryAddress
+from online_bookstore.apps.store.models import Order
 
 
 class RegistrationForm(UserCreationForm):
@@ -93,3 +94,13 @@ class BookPublishForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'cols': 32, 'rows': 7}),
         }
+
+
+class OrderUpdateForm(forms.ModelForm):
+    status = forms.ChoiceField(
+        choices=Order.ORDER_STATUS
+    )
+
+    class Meta:
+        model = Order
+        fields = ['status']

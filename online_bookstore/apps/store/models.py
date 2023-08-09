@@ -53,6 +53,9 @@ class Order(models.Model):
         default='Pending'
     )
 
+    def total_items(self):
+        return self.orderitem_set.count()
+
     def total_price(self):
         return sum(item.get_total() for item in self.orderitem_set.all())
 

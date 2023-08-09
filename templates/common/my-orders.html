@@ -17,6 +17,7 @@
                 <tr>
                     <th class="text-center sortable" data-sort="status">Status</th>
                     <th class="text-center sortable" data-sort="date">Date Order</th>
+                    <th class="text-center sortable" data-sort="items">Total Items</th>
                     <th class="text-center sortable" data-sort="price">Total Price</th>
                 </tr>
                 </thead>
@@ -26,13 +27,14 @@
                         <td class="text-center"
                             data-status="{{ order.get_status_display }}">{{ order.get_status_display }}</td>
                         <td class="text-center">{{ order.order_date }}</td>
+                        <td class="text-center">{{ order.total_items }}</td>
                         <td class="text-center">${{ order.total_price }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="3" class="text-center">
+                    <td colspan="4" class="text-center">
                         <strong>Total Orders: {{ orders|length }}</strong>
                     </td>
                 </tr>

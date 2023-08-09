@@ -39,6 +39,9 @@
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
                         <li class="nav-item">
+                            <a class="nav-link h5 font-weight-bold" href="{% url 'user-list' %}">Users</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link h5 font-weight-bold"
                                href="http://127.0.0.1:8000/admin/">Administration</a>
                         </li>
@@ -56,7 +59,8 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="profileDropdown">
                             <a class="dropdown-item text-dark" href="{% url 'profile-page' %}">My Profile &#x2192;</a>
-                            <a class="dropdown-item text-dark" href="{% url 'password-change' %}">Change Password &#x2192;</a>
+                            <a class="dropdown-item text-dark" href="{% url 'password-change' %}">Change Password
+                                &#x2192;</a>
                             <a class="dropdown-item text-dark" href="{% url 'cart' %}">My Cart &#x2192;</a>
                             <a class="dropdown-item text-dark" href="{% url 'my-orders' %}">My Orders &#x2192;</a>
                             <a class="dropdown-item text-dark" href="{% url 'logout' %}">&#x2190; Logout</a>

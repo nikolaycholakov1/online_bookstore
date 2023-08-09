@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="mb-4">Orders for {{ customer.username }}</h2>
+
+        <div class="table-responsive shadow rounded">
+            <table class="table table-hover">
+                <thead class="bg-primary text-white">
+                <tr>
+                    <th class="text-center align-middle">Order ID</th>
+                    <th class="text-center align-middle">Date</th>
+                    <th class="text-center align-middle">Current Status</th>
+                    <th class="text-center align-middle">Total Items</th>
+                    <th class="text-center align-middle">Total Price</th>
+                    <th class="text-center align-middle">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td class="text-center align-middle">#{{ order.id }}</td>
+                        <td class="text-center align-middle">{{ order.order_date|date:"M d, Y" }}</td>
+                        <td class="text-center align-middle"
+                            data-status="{{ order.get_status_display }}">{{ order.get_status_display }}</td>
+                        <td class="text-center align-middle">{{ order.total_items }}</td>
+                        <td class="text-center align-middle">${{ order.total_price|floatformat:2 }}</td>
+                        <td class="text-center" style="border-left: 1px solid #dee2e6;">
+                            <form style="background-color: transparent; box-shadow: none" method="post"
+                                  action="{% url 'user-orders-update' user_id=customer.id %}"
+                                  class="d-flex align-items-center justify-content-center mt-2">
+                                {% csrf_token %}
+                                {{ form.status|add_class:"custom-select custom-select-sm mr-2"|attr:"style:width:auto;" }}
+
+                                <input type="hidden" name="order_id" value="{{ order.id }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="{% static 'js/user-orders.js' %}"></script>
+{% endblock %}
