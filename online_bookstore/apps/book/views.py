@@ -264,15 +264,6 @@ class EditReviewView(LoginRequiredMixin, UpdateView):
         return kwargs
 
 
-# Book not found
-# class BookNotFoundView(View):
-#     template_name = 'error_pages/book-not-found.html'
-#
-#     def get(self, request, book_id):
-#         book = get_object_or_404(Book, id=book_id)
-#         return render(request, self.template_name, {'book': book})
-
-
 # Reviewed
 class PublishBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'for_staff/publish-book.html'
@@ -323,7 +314,7 @@ class EditBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTe
         kwargs = {
             'pk': self.object.pk
         }
-        return reverse_lazy('book-detail', kwargs)
+        return reverse_lazy('book-detail', kwargs=kwargs)
 
     def test_func(self):
         return self.request.user.is_staff

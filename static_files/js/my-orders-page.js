@@ -28,11 +28,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         const cellB = rowB.querySelectorAll("td")[columnIndex].textContent.trim();
                         return statusPriority[cellA] - statusPriority[cellB];
                     });
-                } else if (columnIndex === 2) {
+                } else if (columnIndex === 3) { // Updated the index here
                     // Sorting based on Total Price (highest to lowest)
                     rows.sort(function (rowA, rowB) {
-                        const cellA = parseFloat(rowA.querySelectorAll("td")[columnIndex].textContent.replace("$", ""));
-                        const cellB = parseFloat(rowB.querySelectorAll("td")[columnIndex].textContent.replace("$", ""));
+                        const cellA = parseFloat(rowA.querySelectorAll("td")[columnIndex].textContent.replace("$", "").trim());
+                        const cellB = parseFloat(rowB.querySelectorAll("td")[columnIndex].textContent.replace("$", "").trim());
                         return cellB - cellA;
                     });
                 } else {
@@ -79,5 +79,3 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-
-

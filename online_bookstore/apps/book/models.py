@@ -105,6 +105,12 @@ class Book(models.Model):
 
     )
 
+    pages = models.IntegerField(
+        default=1,
+        null=False,
+        blank=False,
+    )
+
     price = models.DecimalField(
         max_digits=6,
         decimal_places=2,
