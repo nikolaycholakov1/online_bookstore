@@ -8,7 +8,6 @@ from .forms import CheckoutForm
 from ..book.models import Book
 
 
-# Reviewed
 class AddToCartView(View):
     def post(self, request, pk):
         book = get_object_or_404(Book, pk=pk)
@@ -47,7 +46,6 @@ class CartView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-# Reviewed
 class RemoveFromCartView(View):
     def post(self, request):
         cart_item_id = request.POST.get('cart_item_id')
@@ -58,62 +56,54 @@ class RemoveFromCartView(View):
         return redirect('cart')
 
 
-# Reviewed. Can be refactored
 class CheckoutView(LoginRequiredMixin, View):
     template_name = 'store/checkout.html'
     login_url = 'login'
 
-    def get(self, request):
-        cart = Cart.objects.get_or_create(user=request.user)[0]
+    def get_cart_and_items(self):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user)
         cart_items = cart.cartitem_set.all()
-        total_price = cart.total_price()
-        form = CheckoutForm()
+        return cart, cart_items
 
+    def get_context_data(self, form=None):
+        cart, cart_items = self.get_cart_and_items()
+        total_price = cart.total_price()
         context = {
             'cart': cart,
             'cart_items': cart_items,
             'total_price': total_price,
-            'form': form
+            'form': form or CheckoutForm()
         }
+        return context
 
+    def handle_successful_checkout(self, cart):
+        order = Order.objects.create(user=self.request.user, status='Pending')
+        for cart_item in cart.cartitem_set.all():
+            OrderItem.objects.create(
+                order=order,
+                book=cart_item.book,
+                quantity=cart_item.quantity,
+                price=cart_item.price
+            )
+        cart.cartitem_set.all().delete()
+        context = {
+            'order': order
+        }
+        return render(self.request, 'store/thank-you.html', context)
+
+    def get(self, request):
+        context = self.get_context_data()
         return render(request, self.template_name, context)
 
     def post(self, request):
-        cart = Cart.objects.get_or_create(user=request.user)[0]
-
+        cart, _ = self.get_cart_and_items()
         form = CheckoutForm(request.POST)
 
         if form.is_valid():
-            order = Order.objects.create(user=request.user, status='Pending')
+            return self.handle_successful_checkout(cart)
 
-            for cart_item in cart.cartitem_set.all():
-                OrderItem.objects.create(
-                    order=order,
-                    book=cart_item.book,
-                    quantity=cart_item.quantity,
-                    price=cart_item.price
-                )
-
-            cart.cartitem_set.all().delete()
-
-            context = {
-                'order': order,
-            }
-
-            return render(request, 'store/thank-you.html', context)  # Redirect to the thank-you page
-
-        else:
-            cart_items = cart.cartitem_set.all()
-            total_price = cart.total_price()
-
-            context = {
-                'cart': cart,
-                'cart_items': cart_items,
-                'total_price': total_price,
-                'form': form
-            }
-
-            return render(request, self.template_name, context)
+        context = self.get_context_data(form)
+        return render(request, self.template_name, context)
 
 
 # Reviewed. Validation is not required
