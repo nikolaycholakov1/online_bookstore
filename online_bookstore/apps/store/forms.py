@@ -33,12 +33,21 @@ class CheckoutForm(forms.Form):
         label='Full Name',
         max_length=NAME_MAX_LEN,
         validators=name_validators,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'John Doe'}),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'John Doe'
+        }
+        ),
     )
 
     shipping_email = forms.EmailField(
         label='Email',
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'example@email.com'})
+        widget=forms.EmailInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'example@email.com'
+            }
+        )
     )
 
     shipping_country = forms.CharField(
@@ -50,19 +59,30 @@ class CheckoutForm(forms.Form):
 
     shipping_city = forms.CharField(
         label='City',
-        max_length=SHIPPING_CITY_MAX_LEN, validators=country_city_validators['city'],
+        max_length=SHIPPING_CITY_MAX_LEN,
+        validators=country_city_validators['city'],
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
     shipping_address = forms.CharField(
         label='Address',
         max_length=SHIPPING_ADDRESS_MAX_LEN,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '1234 Elm Street'}),
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': '1234 Elm Street'
+            }
+        ),
     )
 
     shipping_zipcode = forms.IntegerField(
         label='Zip Code',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '12345'}),
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': '12345'
+            }
+        ),
     )
 
     payment_method = forms.ChoiceField(

@@ -1,5 +1,4 @@
 # book/views.py
-# Django core
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -23,7 +22,6 @@ from .models import Book, BookReview, Customer
 from ..store.models import Order
 
 
-# Reviewed
 class RegisterView(AnonymousRequiredMixin, View):
     template_name = 'registration/register.html'
     success_url = reverse_lazy('home-page')
@@ -59,7 +57,6 @@ class RegisterView(AnonymousRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-# Reviewed
 class LoginUserView(AnonymousRequiredMixin, LoginView):
     template_name = 'registration/login.html'
 
@@ -69,7 +66,6 @@ class LoginUserView(AnonymousRequiredMixin, LoginView):
         return super().form_invalid(form)
 
 
-# Reviewed
 class LogoutUserView(LogoutView):
     next_page = 'home-page'
 
@@ -78,12 +74,10 @@ class LogoutUserView(LogoutView):
         return context
 
 
-# Reviewed
 class HomePageView(TemplateView):
     template_name = 'common/home-page.html'
 
     def get(self, request, *args, **kwargs):
-        # Fetch featured books from the database
         featured_books = Book.objects.filter(featured=True)
 
         context = {
@@ -93,7 +87,6 @@ class HomePageView(TemplateView):
         return render(request, self.template_name, context)
 
 
-# Reviewed
 class ProfilePageView(CustomPermissionDeniedMixin, LoginRequiredMixin, View):
     NO_ACCESS_ERROR_MSG = 'Please log in to view this page.'
     SUCCESS_MESSAGE = 'Your profile has been updated successfully.'
@@ -135,19 +128,16 @@ class ProfilePageView(CustomPermissionDeniedMixin, LoginRequiredMixin, View):
         return render(request, 'common/profile.html', context)
 
 
-# Reviewed
 class CustomPasswordChangeView(CustomPermissionDeniedMixin, PasswordChangeView):
-    template_name = 'registration/password-change-page.html'  # Name of your template
+    template_name = 'registration/password-change-page.html'
     success_url = reverse_lazy('password-change-done')
     form_class = CustomPasswordChangeForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add any additional context here if needed
         return context
 
 
-# Reviewed
 class AboutUsView(TemplateView):
     template_name = 'common/about-us.html'
 
@@ -160,14 +150,12 @@ class AboutUsView(TemplateView):
         return context
 
 
-# Reviewed
 class MyOrdersView(CustomPermissionDeniedMixin, LoginRequiredMixin, View):
     NO_ACCESS_ERROR_MSG = 'Please log in to view this page.'
 
     template_name = 'common/my-orders.html'
 
     def get(self, request):
-        # Retrieving the order information related to the current user
         orders = Order.objects.filter(user=request.user)
 
         context = {
@@ -198,13 +186,11 @@ class CataloguePageView(ListView):
         return queryset.order_by('-price')
 
 
-# 9
-
-# Reviewed
 class BookDetailView(View):
     template_name = 'books/book-detail.html'
 
-    def get_book_and_reviews(self, pk):  # Utility method for fetching books and reviews
+    @staticmethod
+    def get_book_and_reviews(pk):  # Utility method for fetching books and reviews
         book = get_object_or_404(Book, pk=pk)
         reviews = book.reviews.order_by('-created_at')
         return book, reviews
@@ -264,7 +250,6 @@ class EditReviewView(LoginRequiredMixin, UpdateView):
         return kwargs
 
 
-# Reviewed
 class PublishBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'for_staff/publish-book.html'
     form_class = BookPublishForm
@@ -292,7 +277,6 @@ class PublishBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPasse
         return render(request, self.template_name, context)
 
 
-# Reviewed
 class DeleteBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'for_staff/confirm-delete.html'
     model = Book
@@ -303,7 +287,6 @@ class DeleteBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPasses
         return self.request.user.is_staff
 
 
-# Reviewed
 class EditBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'for_staff/edit-book.html'
     model = Book
@@ -320,7 +303,6 @@ class EditBookView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTe
         return self.request.user.is_staff
 
 
-# Reviewed
 class UserListView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'for_staff/user-list.html'
     model = Customer
@@ -339,7 +321,6 @@ class UserListView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTe
         return queryset.order_by('username')
 
 
-# Reviewed
 class UserOrdersUpdateView(CustomPermissionDeniedMixin, LoginRequiredMixin, UserPassesTestMixin, View):
     template_name = 'for_staff/user-orders-update.html'
     NO_ACCESS_ERROR_MSG = 'You are not allowed to view this page.'
@@ -347,7 +328,8 @@ class UserOrdersUpdateView(CustomPermissionDeniedMixin, LoginRequiredMixin, User
     def test_func(self):
         return self.request.user.is_staff
 
-    def get_user(self, username):
+    @staticmethod
+    def get_user(username):  # Utility method for fetching the user
         return get_object_or_404(Customer, username=username)
 
     def get(self, request, username):
@@ -373,7 +355,6 @@ class UserOrdersUpdateView(CustomPermissionDeniedMixin, LoginRequiredMixin, User
             return redirect('user-orders-update', username=user.username)
 
 
-# Reviewed
 class DeleteOrderView(DeleteView):
     model = Order
 
@@ -386,7 +367,6 @@ class DeleteOrderView(DeleteView):
         return reverse_lazy('user-orders-update', kwargs=kwargs)
 
 
-# Reviewed - only works with DEBUG=FALSE
 class Custom404View(View):
     def get(self, request, exception):
         context = {}

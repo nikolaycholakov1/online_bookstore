@@ -5,10 +5,6 @@ from django.urls import reverse_lazy
 
 
 class AnonymousRequiredMixin(UserPassesTestMixin, AccessMixin):
-    """
-    Mixin ensures that authenticated users get redirected.
-    """
-
     request: HttpRequest
 
     def test_func(self):

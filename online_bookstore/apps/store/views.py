@@ -58,21 +58,6 @@ class RemoveFromCartView(View):
         return redirect('cart')
 
 
-# Reviewed - Change to "Thank you for your order?"
-# class OrderSummaryView(LoginRequiredMixin, View):
-#     template_name = 'common/my-orders.html'
-#     login_url = 'login'
-#
-#     def get(self, request):
-#         orders = Order.objects.filter(user=request.user)
-#
-#         context = {
-#             'orders': orders
-#         }
-#
-#         return render(request, self.template_name, context)
-
-
 # Reviewed. Can be refactored
 class CheckoutView(LoginRequiredMixin, View):
     template_name = 'store/checkout.html'

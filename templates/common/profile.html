@@ -9,6 +9,13 @@
 
 
         <br>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-success mt-3">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="row">
             <div class="col-md-6">
 
@@ -85,6 +92,7 @@
 
                 </form>
 
+
             </div>
             <div class="col-md-6">
                 <table class="table table-bordered table-striped">
@@ -134,7 +142,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Comments</td>
+                        <td>Reviews</td>
                         {% if total_comments %}
                             <td>{{ total_comments }}</td>
                         {% else %}

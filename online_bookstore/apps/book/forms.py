@@ -1,9 +1,11 @@
 # forms.py
 
+# Import statements for forms
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 
+# Importing model classes from different apps
 from online_bookstore.apps.book.models import BookReview, Customer, Book
 from online_bookstore.apps.store.models import Order
 

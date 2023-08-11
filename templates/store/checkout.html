@@ -8,7 +8,6 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="box-element p-3 rounded bg-white shadow">
-                    {#<form style="width: 100%" method="post" action="{% url 'my-orders' %}">#}
                     <form style="width: 100%" method="post" action="{% url 'checkout' %}?next=/profile/my-orders/">
                         {% csrf_token %}
                         <h3>Shipping Information</h3>

@@ -4,8 +4,6 @@ from django.contrib.auth.models import User, AbstractUser
 from django.core import validators
 from django.db import models
 
-from validators import validate_letters_only
-
 
 class Customer(AbstractUser):
     NAME_MAX_LEN = 30
