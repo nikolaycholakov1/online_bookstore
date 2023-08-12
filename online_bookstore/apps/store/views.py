@@ -3,6 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+
+# Local application imports
 from .models import Cart, CartItem, Order, OrderItem
 from .forms import CheckoutForm
 from ..book.models import Book
@@ -26,7 +28,6 @@ class AddToCartView(View):
         return redirect('cart')
 
 
-# Reviewed but needs revisit to study
 class CartView(LoginRequiredMixin, View):
     template_name = 'store/cart.html'
     login_url = 'login'
@@ -106,7 +107,6 @@ class CheckoutView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-# Reviewed. Validation is not required
 class ChangeCartItemQuantityView(View):
 
     def post(self, request):
@@ -121,7 +121,6 @@ class ChangeCartItemQuantityView(View):
         # Update the quantity of the cart item based on the provided change
         self.update_cart_item_quantity(cart_item, quantity_change)
 
-        # Create a response context with details about the updated cart
         context = {
             'success': True,
             'new_quantity': cart_item.quantity if cart_item.pk else 0,
@@ -133,10 +132,6 @@ class ChangeCartItemQuantityView(View):
 
     @staticmethod
     def get_cart_item(cart_item_id):
-        """
-        Retrieve a cart item based on its ID.
-        Returns the cart item if found, otherwise returns None.
-        """
         try:
             return CartItem.objects.get(id=cart_item_id)
         except CartItem.DoesNotExist:
@@ -144,11 +139,6 @@ class ChangeCartItemQuantityView(View):
 
     @staticmethod
     def update_cart_item_quantity(cart_item, quantity_change):
-        """
-        Update the quantity of a cart item.
-        If the new quantity is 0 or less, the cart item is deleted.
-        Otherwise, the cart item is updated with the new quantity.
-        """
         cart_item.quantity += quantity_change
         if cart_item.quantity <= 0:
             cart_item.delete()

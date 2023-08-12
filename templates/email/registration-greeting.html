@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greetings from The Bookstack Emporium!</title>
+    <!-- Bootstrap CSS link -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Greetings from The Bookstack Emporium!
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Special Offer Just For You!</h5>
+            <p class="card-text">Hello {{ user.username }}, we're thrilled to share our latest book collections with
+                you. Enjoy a special 10% discount on your next purchase. Use code: BOOKSTACK10 at checkout!</p>
+            <a href="http://127.0.0.1:8000/" class="btn btn-primary">Shop Now</a>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
