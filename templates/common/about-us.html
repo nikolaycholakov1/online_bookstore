@@ -57,6 +57,7 @@
                         <li><strong>Email:</strong> contact@bookstackemporium.com</li>
                         <li><strong>Phone:</strong> +1 (123) 456-7890</li>
                         <li><strong>Address:</strong> 123 Bookshelf Street, Literary Town, Bookland</li>
+                        <hr>
                         <li>
                             <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d2073.4798475047455!2d23.320115659679498!3d42.69645070763487!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1ssofia%20city%20center!5e0!3m2!1sen!2sbg!4v1691346746830!5m2!1sen!2sbg"
                                     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
@@ -91,49 +92,61 @@
         </div>
     </section>
 
-    <section class="team my-5">
-        <div class="container">
-            <h2 class="text-center mb-4">Meet Our Team</h2>
-            <hr>
-            <div class="row justify-content-center">
-                {% for staff_member in staff_members %}
-                    {% if staff_member not in superusers %}
-                        <div class="col-md-4">
-                            <div class="team-member text-center mb-4">
-                                {% if staff_member.profile_picture %}
-                                    <div class="rounded-circle img-circle mx-auto team-member-img-container">
-                                        <img src="{{ staff_member.profile_picture.url }}"
-                                             alt="{{ staff_member.username }}"
-                                             class="img-fluid team-member-img">
-                                    </div>
-                                {% else %}
-                                    <img src="{% static 'images/default_profile_picture.svg' %}"
+    <section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Meet Our Team</h2>
+        <div class="row justify-content-center">
+            {% for staff_member in staff_members %}
+                {% if staff_member not in superusers %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-center shadow">
+                            {% if staff_member.profile_picture %}
+                                <div class="card-img-top rounded-circle mx-auto d-block mt-4" style="width: 100px; height: 100px; overflow: hidden;">
+                                    <img src="{{ staff_member.profile_picture.url }}"
                                          alt="{{ staff_member.username }}"
-                                         class="img-fluid team-member-img">
-                                {% endif %}
-
-                                <h3>{{ staff_member.get_full_name }}</h3>
-                                <h6>{{ staff_member.email }}</h6>
-                                <p class="text-muted">Staff</p>
+                                         class="img-fluid" style="object-fit: cover;">
+                                </div>
+                            {% else %}
+                                <div class="card-img-top rounded-circle mx-auto d-block mt-4" style="width: 100px; height: 100px; overflow: hidden;">
+                                    <img src="{% static 'images/default_profile_picture.svg' %}"
+                                         alt="Default Profile"
+                                         class="img-fluid" style="object-fit: cover;">
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ staff_member.get_full_name }}</h5>
+                                <p class="card-text text-muted">{{ staff_member.email }}</p>
+                                <p class="card-text text-muted">Staff</p>
                             </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-
-                {% for superuser in superusers %}
-                    <div class="col-md-4">
-                        <div class="team-member text-center mb-4">
-                            <div class="rounded-circle img-circle mx-auto superuser-img-container">
-                                <img src="{{ superuser.profile_picture.url }}" alt="{{ superuser.username }}"
-                                     class="img-fluid superuser-img">
-                            </div>
-                            <h3>{{ superuser.get_full_name }}</h3>
-                            <h6>{{ superuser.email }}</h6>
-                            <p class="text-muted">CEO</p>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
+                {% endif %}
+            {% endfor %}
+
+            {% for superuser in superusers %}
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center shadow">
+                        {% if superuser.profile_picture %}
+                            <div class="card-img-top rounded-circle mx-auto d-block mt-4" style="width: 100px; height: 100px; overflow: hidden;">
+                                <img src="{{ superuser.profile_picture.url }}" alt="{{ superuser.username }}"
+                                     class="img-fluid" style="object-fit: cover;">
+                            </div>
+                        {% else %}
+                            <div class="card-img-top rounded-circle mx-auto d-block mt-4" style="width: 100px; height: 100px; overflow: hidden;">
+                                <img src="{% static 'images/default_profile_picture.svg' %}"
+                                     alt="Default Profile"
+                                     class="img-fluid" style="object-fit: cover;">
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ superuser.get_full_name }}</h5>
+                            <p class="card-text text-muted">{{ superuser.email }}</p>
+                            <p class="card-text text-muted">CEO</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    </section>
+    </div>
+</section>
 {% endblock %}

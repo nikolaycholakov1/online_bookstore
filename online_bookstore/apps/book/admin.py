@@ -21,7 +21,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'price', 'featured', 'category', 'get_review_count')
+    list_display = ('title', 'author', 'price', 'pages', 'featured', 'category', 'get_review_count')
     list_filter = ('category', 'featured')
     search_fields = ('title', 'author')
     ordering = ('title',)

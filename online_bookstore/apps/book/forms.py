@@ -49,8 +49,8 @@ class UserProfileForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data['username']
 
-        if not all(char.isalpha() or char.isspace() for char in username):
-            raise ValidationError('Username can only contain letters and whitespace.')
+        if len(username) > 30:
+            raise ValidationError('Username cannot be longer than 30 characters.')
 
         return username
 
