@@ -3,6 +3,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <style>
+        a.btn {
+            cursor: pointer;
+            margin-top: -16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .d-inline {
+            box-shadow: none;
+            background: none;
+            padding: 0;
+        }
+    </style>
+
     <div class="container mt-4">
         <h2>Confirm Delete</h2>
         <hr>
@@ -22,11 +39,13 @@
                         <form method="post" class="d-inline">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger" name="delete">Delete</button>
-                            <button type="submit" class="btn btn-secondary" name="cancel">Cancel</button>
+                            <a href="{% url 'book-detail' pk=book.pk %}" class="btn btn-secondary">Cancel</a>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
 {% endblock %}

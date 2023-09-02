@@ -1,0 +1,59 @@
+/* styles.css (or any CSS file where you store your styles) */
+
+/* Center the form on the page */
+
+form {
+    width: 300px;
+    margin: 0 auto;
+}
+
+h2 {
+  text-align: center;
+}
+
+/* Style the form fields */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Style the submit button */
+form button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Add some spacing between the form fields */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form button[type="submit"] {
+    margin-bottom: 15px;
+}
+
+/* Style form errors */
+form .errorlist {
+    color: red;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Optional: Add some additional styles to make the form more visually appealing */
+form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

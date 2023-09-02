@@ -1,0 +1,63 @@
+/* Add this CSS in the <head> section of your HTML or link to an external CSS file */
+
+body {
+    background-color: lightgrey;
+}
+
+.custom-body-id {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* Style for the navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #333;
+    padding: 10px 20px;
+}
+
+/* Style for the navigation links in the navbar */
+.navbar a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.nav-item {
+    margin-left: 25px;
+}
+
+/* Button styles */
+.btn-pop-out {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+/* Hover effect */
+.btn-pop-out:hover {
+    transform: scale(1.1); /* Increase the scale by 10% on hover */
+}
+
+#footer {
+    margin-top: auto;
+}
+
+#pagination {
+    align-items: center;
+}
+
+.center-heading {
+    display: flex;
+    justify-content: center;
+}
+

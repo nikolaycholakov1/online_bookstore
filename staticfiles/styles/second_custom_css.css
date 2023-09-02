@@ -1,0 +1,89 @@
+/* Style for the book title and author */
+h1 {
+    font-size: 2.5rem;
+}
+
+.text-muted {
+    font-size: 1.2rem;
+}
+
+/* Style for the book description */
+p.mb-4 {
+    font-size: 1.1rem;
+}
+
+/* Style for the "Buy Now" button */
+.btn-primary {
+    font-size: 1.2rem;
+    padding: 10px 30px;
+}
+
+/* Style for the reviews section */
+h2 {
+    font-size: 2rem;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-text {
+    font-size: 1.1rem;
+}
+
+.text-muted {
+    font-size: 1rem;
+}
+
+.card:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+
+.card-img-big {
+    width: 100%;
+    height: 100%;
+}
+
+.fa-user {
+    color: lawngreen;
+}
+
+a.nav-link div.username {
+    color: white;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+li.guest-user > div.username {
+    color: white;
+    display: inline-block;
+    margin-right: 5px;
+    margin-top: 10px;
+}
+
+li.guest-user > i.fas.fa-user {
+    color: red;
+}
+
+
+/* book detail page */
+
+.body > div > div.row > div:nth-child(1) > img {
+    width: 70%;
+}
+
+.body > div > .custom-form-style {
+    width: 50%;
+}
+
+#id_review_text {
+    width: 100%;
+}
